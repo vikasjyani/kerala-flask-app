@@ -18,8 +18,8 @@ pandas==2.2.3
 numpy==1.26.4
 openpyxl==3.1.5
 
-# Visualization / PDF
-matplotlib==3.10.1
+# Visualization / PDF  (matplotlib capped at 3.9.x for Python 3.9 compatibility)
+matplotlib==3.9.4
 reportlab==4.4.0
 Pillow==11.1.0
 
