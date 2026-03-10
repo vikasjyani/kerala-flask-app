@@ -62,8 +62,8 @@ hostinger.md
 TECHNICAL_DEBUG_GUIDE.md
 render.yaml
 
-# ─── Compiled translations (regenerated from .po files) ──────────────────────
-translations/*/LC_MESSAGES/*.mo
+# .mo files are included intentionally — server needs compiled translations
+# to regenerate: pybabel compile -d translations
 
 # NOTE: cooking_webapp.db and user_data.db are intentionally tracked.
 # cooking_webapp.db = master reference data (constants, emission factors)
