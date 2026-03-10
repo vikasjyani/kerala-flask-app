@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Error') }} - {{ error_code }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-green fade-in-up text-center">
+            <div class="card-body p-5">
+                <!-- Error Icon -->
+                <div class="error-icon mb-4">
+                    {% if error_code == 404 %}
+                    <i class="bi bi-compass text-warning"></i>
+                    {% elif error_code == 500 %}
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    {% elif error_code == 403 %}
+                    <i class="bi bi-lock text-danger"></i>
+                    {% else %}
+                    <i class="bi bi-exclamation-circle text-warning"></i>
+                    {% endif %}
+                </div>
+
+                <!-- Error Code -->
+                <h1 class="display-3 fw-bold text-primary-green mb-3">{{ error_code }}</h1>
+
+                <!-- Error Message -->
+                <h4 class="mb-4">{{ error_title }}</h4>
+                <p class="lead text-muted mb-4">{{ error_message }}</p>
+
+                <!-- Helpful Information -->
+                {% if error_code == 404 %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>{{ _('Page not found') }}</strong><br>
+                    {{ _('The page you are looking for might have been moved or deleted.') }}
+                </div>
+                {% elif error_code == 500 %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>{{ _('Server Error') }}</strong><br>
+                    {{ _('Something went wrong on our end. Our team has been notified and is working to fix the issue.')
+                    }}
+                </div>
+                {% elif error_code == 403 %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-shield-x me-2"></i>
+                    <strong>{{ _('Access Denied') }}</strong><br>
+                    {{ _('You do not have permission to access this page.') }}
+                </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="mt-5">
+                    <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary-green btn-lg">
+                            <i class="bi bi-house-door me-2"></i>{{ _('Return to Home') }}
+                        </a>
+
+                        <button onclick="history.back()" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>{{ _('Go Back') }}
+                        </button>
+
+                        {% if error_code == 404 %}
+                        <a href="{{ url_for('analysis_selection') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-calculator me-2"></i>{{ _('Start Analysis') }}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Links (for 404) -->
+                {% if error_code == 404 %}
+                <div class="mt-5 pt-4 border-top">
+                    <h6 class="text-muted mb-3">{{ _('Quick Links') }}:</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="{{ url_for('analysis_selection') }}" class="text-decoration-none">
+                                <div class="quick-link-card">
+                                    <i class="bi bi-house-fill mb-2"></i>
+                                    <p class="mb-0">{{ _('Residential Analysis') }}</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ url_for('commercial_selection') }}" class="text-decoration-none">
+                                <div class="quick-link-card">
+                                    <i class="bi bi-building mb-2"></i>
+                                    <p class="mb-0">{{ _('Commercial Analysis') }}</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ url_for('index') }}" class="text-decoration-none">
+                                <div class="quick-link-card">
+                                    <i class="bi bi-info-circle mb-2"></i>
+                                    <p class="mb-0">{{ _('About') }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

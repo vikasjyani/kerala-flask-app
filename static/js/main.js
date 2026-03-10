@@ -1,0 +1,743 @@
+// Global Variables
+let currentStep = 1;
+let totalSteps = 4;
+let formData = {};
+
+// Initialize current step based on page
+function initializeCurrentStep() {
+    const progressWrapper = document.querySelector('.progress-wrapper');
+    if (progressWrapper) {
+        const dataCurrent = parseInt(progressWrapper.dataset.currentStep, 10);
+        const dataTotal = parseInt(progressWrapper.dataset.totalSteps, 10);
+
+        if (!isNaN(dataTotal) && dataTotal > 0) {
+            totalSteps = dataTotal;
+        }
+        if (!isNaN(dataCurrent) && dataCurrent > 0) {
+            currentStep = dataCurrent;
+        }
+    } else {
+        // Fallback to legacy width detection if wrapper not present
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar && progressBar.style.width) {
+            const percentage = parseInt(progressBar.style.width, 10);
+            if (percentage === 25) currentStep = 1;
+            else if (percentage === 50) currentStep = 2;
+            else if (percentage === 75) currentStep = 3;
+            else if (percentage === 100) currentStep = 4;
+        }
+    }
+}
+
+// Translation object (will be populated based on current language)
+let translations = {
+    en: {
+        'validation_required': 'This field is required',
+        'validation_email': 'Please enter a valid email address',
+        'validation_number': 'Please enter a valid number',
+        'calculation_progress': 'Calculating your energy consumption...',
+        'analysis_progress': 'Performing comprehensive analysis...',
+        'success_message': 'Data saved successfully!',
+        'error_message': 'An error occurred. Please try again.',
+        'confirm_navigation': 'Are you sure you want to leave? Your data will be lost.',
+        'download_starting': 'Your report is being generated...',
+        'share_success': 'Link copied to clipboard!',
+        'share_copy_failed': 'Unable to copy link',
+        'share_title': 'Keralam Cooking Energy Analysis Results',
+        'share_text': 'Check out my cooking energy analysis results!',
+        'loading': 'Loading...',
+        'step_template': 'Step {current} of {total}',
+        'chart_monthly_cost_label': 'Monthly Cost (₹)',
+        'chart_monthly_cost_title': 'Monthly Cost Comparison',
+        'chart_annual_co2_label': 'Annual CO₂ (kg)',
+        'chart_annual_co2_title': 'Annual CO₂ Emissions Comparison',
+        'chart_health_risk_label': 'Health Risk Score',
+        'chart_health_risk_title': 'Health Risk Score Comparison',
+        'chart_low_risk_threshold': 'Low Risk Threshold',
+        'chart_radar_cost_efficiency': 'Cost Efficiency',
+        'chart_radar_low_emissions': 'Low Emissions',
+        'chart_radar_health_safety': 'Health Safety',
+        'chart_radar_overall_rating': 'Overall Rating',
+        'chart_radar_title': 'Multi-Criteria Performance Comparison'
+    },
+    ml: {
+        'validation_required': 'ഈ ഫീൽഡ് ആവശ്യമാണ്',
+        'validation_email': 'സാധുവായ ഇമെയിൽ വിലാസം നൽകുക',
+        'validation_number': 'സാധുവായ നമ്പർ നൽകുക',
+        'calculation_progress': 'നിങ്ങളുടെ ഊർജ്ജ ഉപഭോഗം കണക്കാക്കുന്നു...',
+        'analysis_progress': 'സമഗ്ര വിശകലനം നടത്തുന്നു...',
+        'success_message': 'ഡാറ്റ വിജയകരമായി സേവ് ചെയ്തു!',
+        'error_message': 'ഒരു പിശക് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.',
+        'confirm_navigation': 'നിങ്ങൾക്ക് ഉറപ്പാണോ? നിങ്ങളുടെ ഡാറ്റ നഷ്ടപ്പെടും.',
+        'download_starting': 'നിങ്ങളുടെ റിപ്പോർട്ട് തയ്യാറാക്കുന്നു...',
+        'share_success': 'ലിങ്ക് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി!',
+        'share_copy_failed': 'ലിങ്ക് പകർത്താൻ കഴിഞ്ഞില്ല',
+        'share_title': 'കേരള പാചക ഊർജ വിശകലന ഫലങ്ങൾ',
+        'share_text': 'എന്റെ പാചക ഊർജ വിശകലന ഫലങ്ങൾ കാണൂ!',
+        'loading': 'ലോഡിംഗ്...',
+        'step_template': 'ഘട്ടം {current} / {total}',
+        'chart_monthly_cost_label': 'മാസാന്ത്യ ചെലവ് (₹)',
+        'chart_monthly_cost_title': 'മാസാന്ത്യ ചെലവ് താരതമ്യം',
+        'chart_annual_co2_label': 'വാർഷിക CO₂ (kg)',
+        'chart_annual_co2_title': 'വാർഷിക CO₂ ഉത്സർജനം താരതമ്യം',
+        'chart_health_risk_label': 'ആരോഗ്യ അപകട സ്കോർ',
+        'chart_health_risk_title': 'ആരോഗ്യ അപകട സ്കോർ താരതമ്യം',
+        'chart_low_risk_threshold': 'കുറഞ്ഞ അപകട പരിധി',
+        'chart_radar_cost_efficiency': 'ചെലവ് കാര്യക്ഷമത',
+        'chart_radar_low_emissions': 'കുറഞ്ഞ ഉത്സർജനം',
+        'chart_radar_health_safety': 'ആരോഗ്യ സുരക്ഷ',
+        'chart_radar_overall_rating': 'മൊത്തം റേറ്റിംഗ്',
+        'chart_radar_title': 'ബഹുമാനദണ്ഡ പ്രകടന താരതമ്യം'
+    }
+};
+
+// Get current language
+function getCurrentLanguage() {
+    return document.documentElement.lang || 'en';
+}
+
+// Get translation
+function t(key) {
+    const lang = getCurrentLanguage();
+    return translations[lang] && translations[lang][key] ? translations[lang][key] : key;
+}
+
+// Initialize application
+document.addEventListener('DOMContentLoaded', function () {
+    initializeApp();
+});
+
+function initializeApp() {
+    // Initialize current step
+    initializeCurrentStep();
+
+    // Initialize tooltips
+    initializeTooltips();
+
+    // Initialize form validation
+    initializeFormValidation();
+
+    // Initialize progress tracking
+    updateProgress();
+
+    // Initialize charts if on analysis page
+    if (document.getElementById('costChart')) {
+        initializeCharts();
+    }
+
+    // Add animation classes to elements
+    addAnimations();
+
+    // Initialize navigation warnings
+    initializeNavigationWarnings();
+}
+
+// Tooltip initialization
+function initializeTooltips() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+}
+
+// Form Validation
+function initializeFormValidation() {
+    const forms = document.querySelectorAll('.needs-validation');
+
+    forms.forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                showValidationErrors(form);
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+}
+
+function showValidationErrors(form) {
+    const invalidFields = form.querySelectorAll(':invalid');
+    if (invalidFields.length > 0) {
+        invalidFields[0].focus();
+        showToast(t('validation_required'), 'error');
+    }
+}
+
+// Progress tracking
+function updateProgress() {
+    const progressBar = document.querySelector('.progress-bar');
+    const progressText = document.querySelector('.progress-text');
+
+    if (progressBar) {
+        const progress = (currentStep / totalSteps) * 100;
+        progressBar.style.width = progress + '%';
+        progressBar.setAttribute('aria-valuenow', progress);
+    }
+
+    if (progressText) {
+        const template = progressText.dataset.labelTemplate || t('step_template');
+        const description = progressText.dataset.labelDescription || '';
+        let label = template.replace('{current}', currentStep).replace('{total}', totalSteps);
+        if (description) {
+            label += ` - ${description}`;
+        }
+        progressText.textContent = label;
+    }
+}
+
+// Navigation functions
+function goToNextStep(url, data = null) {
+    if (data) {
+        submitFormData(url, data);
+    } else {
+        window.location.href = url;
+    }
+}
+
+function goToPreviousStep() {
+    window.history.back();
+}
+
+// Form submission
+function submitFormData(url, data) {
+    showLoadingOverlay();
+
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+
+    // Add CSRF token if available
+    const csrfInput = document.querySelector('input[name="csrf_token"]');
+    if (csrfInput) {
+        headers['X-CSRFToken'] = csrfInput.value;
+    }
+
+    fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            hideLoadingOverlay();
+            if (data.status === 'success') {
+                // Increment step on successful submission
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateProgress();
+                }
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    showToast(t('success_message'), 'success');
+                }
+            } else {
+                showToast(data.message || t('error_message'), 'error');
+            }
+        })
+        .catch(error => {
+            hideLoadingOverlay();
+            console.error('Error:', error);
+            showToast(t('error_message'), 'error');
+        });
+}
+
+// Loading overlay
+function showLoadingOverlay(message = null) {
+    const overlay = document.createElement('div');
+    overlay.className = 'spinner-overlay';
+    overlay.id = 'loadingOverlay';
+
+    const spinner = document.createElement('div');
+    spinner.className = 'text-center';
+    spinner.innerHTML = `
+        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">${t('loading')}</span>
+        </div>
+        ${message ? `<p class="mt-3 text-success">${message}</p>` : ''}
+    `;
+
+    overlay.appendChild(spinner);
+    document.body.appendChild(overlay);
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+// Toast notifications
+function showToast(message, type = 'info') {
+    const toastContainer = getOrCreateToastContainer();
+
+    const toastId = 'toast-' + Date.now();
+    const bgClass = type === 'success' ? 'bg-success' :
+        type === 'error' ? 'bg-danger' :
+            type === 'warning' ? 'bg-warning' : 'bg-info';
+
+    const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center ${bgClass} text-white border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-${getToastIcon(type)} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: type === 'error' ? 5000 : 3000
+    });
+
+    toast.show();
+
+    // Remove toast element after it's hidden
+    toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
+    });
+}
+
+function getOrCreateToastContainer() {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '11000';
+        document.body.appendChild(container);
+    }
+    return container;
+}
+
+function getToastIcon(type) {
+    switch (type) {
+        case 'success': return 'check-circle-fill';
+        case 'error': return 'exclamation-triangle-fill';
+        case 'warning': return 'exclamation-circle-fill';
+        default: return 'info-circle-fill';
+    }
+}
+
+// Chart initialization
+let chartInstances = {};
+
+function destroyExistingCharts() {
+    Object.keys(chartInstances).forEach(chartId => {
+        if (chartInstances[chartId]) {
+            chartInstances[chartId].destroy();
+        }
+    });
+    chartInstances = {};
+}
+
+function initializeCharts() {
+    // Destroy existing charts before creating new ones
+    destroyExistingCharts();
+
+    // Get analysis type from DOM
+    const container = document.getElementById('analysis-container');
+    const type = container ? container.dataset.analysisType : null;
+
+    // Get chart data from API
+    const url = type ? `/api/chart_data?type=${type}` : '/api/chart_data';
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Chart data error:', data.error);
+                return;
+            }
+
+            createCostChart(data.cost_comparison);
+            createEmissionsChart(data.emissions_comparison);
+            createHealthChart(data.health_comparison);
+            createRadarChart(data);
+        })
+        .catch(error => {
+            console.error('Error fetching chart data:', error);
+        });
+}
+
+function createCostChart(data) {
+    const ctx = document.getElementById('costChart');
+    if (!ctx) return;
+
+    chartInstances['costChart'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: t('chart_monthly_cost_label'),
+                data: data.data,
+                backgroundColor: [
+                    '#228B22',
+                    '#32CD32',
+                    '#90EE90',
+                    '#FFD700',
+                    '#FFA500',
+                    '#FF6347'
+                ],
+                borderColor: '#228B22',
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: t('chart_monthly_cost_title'),
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    color: '#228B22'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            return '₹' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            animation: {
+                delay: (context) => {
+                    return context.dataIndex * 200;
+                }
+            }
+        }
+    });
+}
+
+function createEmissionsChart(data) {
+    const ctx = document.getElementById('emissionsChart');
+    if (!ctx) return;
+
+    chartInstances['emissionsChart'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: t('chart_annual_co2_label'),
+                data: data.data,
+                backgroundColor: data.data.map(value => {
+                    if (value < 200) return '#28a745';
+                    if (value < 500) return '#ffc107';
+                    if (value < 1000) return '#fd7e14';
+                    return '#dc3545';
+                }),
+                borderRadius: 8,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: t('chart_annual_co2_title'),
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    color: '#228B22'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            return value.toLocaleString() + ' kg';
+                        }
+                    }
+                }
+            },
+            animation: {
+                delay: (context) => {
+                    return context.dataIndex * 200;
+                }
+            }
+        }
+    });
+}
+
+function createHealthChart(data) {
+    const ctx = document.getElementById('healthChart');
+    if (!ctx) return;
+
+    chartInstances['healthChart'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: t('chart_health_risk_label'),
+                data: data.data,
+                backgroundColor: data.data.map(value => {
+                    if (value < 30) return '#28a745';
+                    if (value < 50) return '#ffc107';
+                    if (value < 70) return '#fd7e14';
+                    return '#dc3545';
+                }),
+                borderRadius: 8,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: t('chart_health_risk_title'),
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    color: '#228B22'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function (value) {
+                            return value + '/100';
+                        }
+                    }
+                }
+            },
+            annotation: {
+                annotations: {
+                    line1: {
+                        type: 'line',
+                        yMin: 30,
+                        yMax: 30,
+                        borderColor: '#28a745',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        label: {
+                            content: t('chart_low_risk_threshold'),
+                            enabled: true,
+                            position: 'end'
+                        }
+                    }
+                }
+            },
+            animation: {
+                delay: (context) => {
+                    return context.dataIndex * 200;
+                }
+            }
+        }
+    });
+}
+
+function createRadarChart(data) {
+    const ctx = document.getElementById('radarChart');
+    if (!ctx) return;
+
+    // Simplified radar chart with top 3 alternatives
+    const topAlternatives = data.cost_comparison.labels.slice(0, 4); // Current + top 3
+
+    chartInstances['radarChart'] = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: [
+                t('chart_radar_cost_efficiency'),
+                t('chart_radar_low_emissions'),
+                t('chart_radar_health_safety'),
+                t('chart_radar_overall_rating')
+            ],
+            datasets: topAlternatives.map((label, index) => {
+                const costScore = Math.max(0, 100 - (data.cost_comparison.data[index] / Math.max(...data.cost_comparison.data) * 100));
+                const emissionScore = Math.max(0, 100 - (data.emissions_comparison.data[index] / Math.max(...data.emissions_comparison.data) * 100));
+                const healthScore = Math.max(0, 100 - data.health_comparison.data[index]);
+                const overallScore = (costScore + emissionScore + healthScore) / 3;
+
+                return {
+                    label: label,
+                    data: [costScore, emissionScore, healthScore, overallScore],
+                    borderColor: getColorForIndex(index),
+                    backgroundColor: getColorForIndex(index, 0.1),
+                    pointBackgroundColor: getColorForIndex(index),
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: getColorForIndex(index)
+                };
+            })
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: t('chart_radar_title'),
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    color: '#228B22'
+                }
+            },
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            },
+            animation: {
+                animateRotate: true,
+                animateScale: true
+            }
+        }
+    });
+}
+
+function getColorForIndex(index, alpha = 1) {
+    const colors = [
+        `rgba(34, 139, 34, ${alpha})`,   // Green
+        `rgba(50, 205, 50, ${alpha})`,   // Lime Green
+        `rgba(255, 215, 0, ${alpha})`,   // Gold
+        `rgba(255, 165, 0, ${alpha})`,   // Orange
+        `rgba(255, 99, 71, ${alpha})`,   // Tomato
+        `rgba(220, 20, 60, ${alpha})`    // Crimson
+    ];
+    return colors[index % colors.length];
+}
+
+// Animation helpers
+function addAnimations() {
+    // Add fade-in animation to cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in-up');
+    });
+
+    // Add slide-in animation to metrics
+    const metrics = document.querySelectorAll('.metric-card');
+    metrics.forEach((metric, index) => {
+        metric.style.animationDelay = `${index * 0.2}s`;
+        metric.classList.add('slide-in-right');
+    });
+}
+
+// Navigation warnings
+function initializeNavigationWarnings() {
+    let hasUnsavedChanges = false;
+
+    // Track form changes
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('input', () => {
+            hasUnsavedChanges = true;
+        });
+
+        form.addEventListener('submit', () => {
+            hasUnsavedChanges = false;
+        });
+    });
+
+    // Warn before leaving
+    window.addEventListener('beforeunload', (e) => {
+        if (hasUnsavedChanges) {
+            e.preventDefault();
+            e.returnValue = t('confirm_navigation');
+            return t('confirm_navigation');
+        }
+    });
+}
+
+// Download and share functions
+function downloadReport(type) {
+    showToast(t('download_starting'), 'info');
+    const url = type ? `/download_report?type=${type}` : '/download_report';
+    window.location.href = url;
+}
+
+function shareResults() {
+    if (navigator.share) {
+        navigator.share({
+            title: t('share_title'),
+            text: t('share_text'),
+            url: window.location.href
+        }).catch(console.error);
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showToast(t('share_success'), 'success');
+        }).catch(() => {
+            showToast(t('share_copy_failed'), 'error');
+        });
+    }
+}
+
+// Utility functions
+function formatCurrency(amount) {
+    return '₹' + amount.toLocaleString('en-IN');
+}
+
+function formatNumber(number, decimals = 0) {
+    return number.toLocaleString('en-IN', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+    });
+}
+
+function getHealthRiskClass(score) {
+    if (score < 30) return 'health-risk-low';
+    if (score < 50) return 'health-risk-moderate';
+    if (score < 70) return 'health-risk-high';
+    return 'health-risk-very-high';
+}
+
+function getEnvironmentalGradeClass(grade) {
+    const gradeMap = {
+        'A+': 'grade-a-plus',
+        'A': 'grade-a',
+        'B': 'grade-b',
+        'C': 'grade-c',
+        'D': 'grade-d'
+    };
+    return gradeMap[grade] || 'grade-d';
+}
+
+// Export functions for global use
+window.goToNextStep = goToNextStep;
+window.goToPreviousStep = goToPreviousStep;
+window.downloadReport = downloadReport;
+window.shareResults = shareResults;
+window.showToast = showToast;

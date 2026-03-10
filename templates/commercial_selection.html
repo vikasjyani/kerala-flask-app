@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Commercial Analysis') }} - {{ _('Keralam Clean Cooking Platform') }}{% endblock %}
+
+{% set progress = 25 %}
+{% set progress_text %}{{ _('Step 1 of 4') }} - {{ _('Institution Profile') }}{% endset %}
+{% set progress_label %}{{ _('Institution Profile') }}{% endset %}
+{% set current_step = 1 %}
+{% set total_steps = 4 %}
+
+{% block content %}
+<script>
+    console.debug("DEBUG: Commercial Selection Defaults", {
+        progressText: "{{ _('Step 1 of 4') }}",
+        defaultWorkingDays: 26,
+        hasProgressBar: true
+    });
+</script>
+<div class="container my-2.5 py-3 analysis-container-custom">
+    <div class="text-center mb-2.5">
+        <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial Cooking') }}</p>
+        <h3 class="fw-bold text-primary-green mb-1">
+            <img src="{{ url_for('static', filename='icons/commercial_selection.svg') }}"
+                alt="{{ _('Institution Icon') }}" class="me-2 icon-xxl align-middle">
+            {{ _('Institution Profile') }}
+        </h3>
+        <p class="mb-0 text-muted">{{ _('Tell us about your institution to get a customized energy analysis') }}</p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-10">
+            <form action="{{ url_for('commercial_institution_profile') }}" method="POST" id="institutionForm"
+                class="needs-validation" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                <!-- Institution Type Selection -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary-green mb-4">
+                            <i class="bi bi-building me-2"></i>{{ _('Select Institution Type') }}
+                        </h4>
+
+                        <div class="institution-buttons-grid mb-3">
+                            <div class="institution-btn-wrapper">
+                                <input type="radio" id="inst_school" name="institution_type" value="School" required>
+                                <label for="inst_school" class="institution-btn">
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                    <span>{{ _('School') }}</span>
+                                </label>
+                            </div>
+
+                            <div class="institution-btn-wrapper">
+                                <input type="radio" id="inst_anganwadi" name="institution_type" value="Anganwadi">
+                                <label for="inst_anganwadi" class="institution-btn">
+                                    <i class="bi bi-heart-pulse-fill"></i>
+                                    <span>{{ _('Anganwadi') }}</span>
+                                </label>
+                            </div>
+
+                            <div class="institution-btn-wrapper">
+                                <input type="radio" id="inst_hotel" name="institution_type" value="Hotel">
+                                <label for="inst_hotel" class="institution-btn">
+                                    <i class="bi bi-shop-window"></i>
+                                    <span>{{ _('Hotel/Restaurant') }}</span>
+                                </label>
+                            </div>
+
+                            <div class="institution-btn-wrapper">
+                                <input type="radio" id="inst_factory" name="institution_type" value="Factory">
+                                <label for="inst_factory" class="institution-btn">
+                                    <i class="bi bi-building-fill-gear"></i>
+                                    <span>{{ _('Factory Canteen') }}</span>
+                                </label>
+                            </div>
+
+                            <div class="institution-btn-wrapper">
+                                <input type="radio" id="inst_community" name="institution_type"
+                                    value="Community Kitchen">
+                                <label for="inst_community" class="institution-btn">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>{{ _('Community Kitchen') }}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">{{ _('Please select an institution type') }}</div>
+                    </div>
+                </div>
+
+                <!-- Form Details (Hidden initially) -->
+                <div id="formDetails" class="d-none">
+                    <!-- Basic Information -->
+                    <div class="card shadow-green fade-in-up mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary-green mb-4">
+                                <i class="bi bi-info-circle me-2"></i>{{ _('Basic Information') }}
+                            </h4>
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="institution_name" class="form-label">{{ _('Institution Name') }}
+                                        *</label>
+                                    <input type="text" class="form-control" id="institution_name"
+                                        name="institution_name" required
+                                        placeholder="{{ _('Enter institution name') }}">
+                                    <div class="invalid-feedback">{{ _('Please enter institution name') }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="contact_person" class="form-label">{{ _('Contact Person') }} *</label>
+                                    <input type="text" class="form-control" id="contact_person" name="contact_person"
+                                        required placeholder="{{ _('Full name') }}">
+                                    <div class="invalid-feedback">{{ _('Please enter contact person name') }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">{{ _('Email Address') }}</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="{{ _('email@example.com') }}">
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="phone" class="form-label">{{ _('Contact Number') }}</label>
+                                    <div class="input-group">
+                                        <select class="form-select mw-150" id="country_code" name="country_code">
+                                            <option value="+91" selected>+91 ({{ _('India') }})</option>
+                                            <option value="+971">+971 ({{ _('UAE') }})</option>
+                                            <option value="+94">+94 ({{ _('Sri Lanka') }})</option>
+                                            <option value="+44">+44 ({{ _('UK') }})</option>
+                                            <option value="+1">+1 ({{ _('USA') }})</option>
+                                        </select>
+                                        <input type="tel" class="form-control" id="phone" name="phone"
+                                            placeholder="{{ _('10-digit number') }}" pattern="[0-9]{10}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Details -->
+                    <div class="card shadow-green fade-in-up mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary-green mb-4">
+                                <i class="bi bi-geo-alt me-2"></i>{{ _('Location Details') }}
+                            </h4>
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="address" class="form-label">{{ _('Address') }}</label>
+                                    <textarea class="form-control" id="address" name="address" rows="2"
+                                        placeholder="{{ _('Street, locality, landmark') }}"></textarea>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="district" class="form-label">{{ _('District') }} *</label>
+                                    <select class="form-select" id="district" name="district" required>
+                                        <option value="">{{ _('Select district') }}</option>
+                                        {% for dist in district_options %}
+                                        <option value="{{ dist.value }}">{{ localize_db_label(dist.label_en,
+                                            dist.label_ml) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">{{ _('Please select district') }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="area_type" class="form-label">{{ _('Area Type') }} *</label>
+                                    <select class="form-select" id="area_type" name="area_type" required>
+                                        <option value="">{{ _('Select area type') }}</option>
+                                        <option value="Urban">{{ _('Urban') }} ({{ _('Municipal/Corporation') }})
+                                        </option>
+                                        <option value="Rural">{{ _('Rural') }} ({{ _('Panchayat/Village') }})</option>
+                                    </select>
+                                    <div class="invalid-feedback">{{ _('Please select area type') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operational Parameters -->
+                    <div class="card shadow-green fade-in-up mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary-green mb-4">
+                                <i class="bi bi-clipboard-data me-2"></i>{{ _('Operational Details') }}
+                            </h4>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="servings_per_day" class="form-label" id="servings_label">
+                                        {{ _('Daily Servings') }} *
+                                    </label>
+                                    <input type="number" class="form-control" id="servings_per_day"
+                                        name="servings_per_day" min="10" max="10000" required value="250"
+                                        placeholder="100">
+                                    <div class="form-text" id="servings_help">{{ _('Average meals per day') }}</div>
+                                    <div class="invalid-feedback">{{ _('Please enter daily servings') }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="working_days" class="form-label">{{ _('Working Days per Month') }}
+                                        *</label>
+                                    <input type="number" class="form-control" id="working_days" name="working_days"
+                                        min="1" max="31" value="26" required>
+                                    <div class="form-text">{{ _('Operating days monthly') }}</div>
+                                    <div class="invalid-feedback">{{ _('Please enter working days') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Economic Parameters -->
+                    <div class="card shadow-green fade-in-up mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary-green mb-4">
+                                <i class="bi bi-graph-up me-2"></i>{{ _('Energy & Budget Parameters') }}
+                            </h4>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="electricity_tariff" class="form-label">
+                                        {{ _('Electricity Rate') }} (₹/kWh)
+                                    </label>
+                                    <input type="number" step="0.01" class="form-control" id="electricity_tariff"
+                                        name="electricity_tariff" value="{{ default_electricity_rate or 9.50 }}"
+                                        placeholder="9.50">
+                                    <div class="form-text">{{ _('Check your electricity bill for accurate rate') }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="budget" class="form-label">{{ _('Budget Priority') }}</label>
+                                    <select class="form-select" id="budget" name="budget">
+                                        <option value="">{{ _('Not specified') }}</option>
+                                        <option value="Low">{{ _('Low') }}</option>
+                                        <option value="Medium">{{ _('Medium') }}</option>
+                                        <option value="High">{{ _('High') }}</option>
+                                        <option value="No constraints">{{ _('No Constraints') }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="solar_willing" class="form-label">
+                                        {{ _('Interested in Solar Rooftop?') }}
+                                    </label>
+                                    <select class="form-select" id="solar_willing" name="solar_willing"
+                                        onchange="toggleSolarArea()">
+                                        <option value="No" selected>{{ _('No') }}</option>
+                                        <option value="Maybe">{{ _('Maybe') }}</option>
+                                        <option value="Yes">{{ _('Yes') }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 d-none" id="solar_area_field">
+                                    <label for="available_roof_area" class="form-label">
+                                        {{ _('Available Roof Area') }} (m²)
+                                    </label>
+                                    <input type="number" class="form-control" id="available_roof_area"
+                                        name="available_roof_area" placeholder="100" min="10">
+                                    <div class="form-text">{{ _('Minimum 10 m² required') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('analysis_selection') }}" class="btn btn-nav-back">
+                            <i class="bi bi-arrow-left me-2"></i>{{ _('Back') }}
+                        </a>
+                        <button type="submit" class="btn btn-nav-next">
+                            {{ _('Next') }} <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Institution-specific configurations
+    const institutionConfig = {
+        'School': {
+            label: '{{ _("Number of Students") }}',
+            help: '{{ _("Total enrolled students") }}',
+            placeholder: '250'
+        },
+        'Anganwadi': {
+            label: '{{ _("Registered Children") }}',
+            help: '{{ _("Children in program") }}',
+            placeholder: '40'
+        },
+        'Hotel': {
+            label: '{{ _("Daily Customers") }}',
+            help: '{{ _("Average customers per day") }}',
+            placeholder: '120'
+        },
+        'Factory': {
+            label: '{{ _("Number of Employees") }}',
+            help: '{{ _("Total workforce") }}',
+            placeholder: '350'
+        },
+        'Community Kitchen': {
+            label: '{{ _("Daily Meals") }}',
+            help: '{{ _("Meals served daily") }}',
+            placeholder: '200'
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('institutionForm');
+        const formDetails = document.getElementById('formDetails');
+        console.debug('DEBUG: commercial_selection page ready', {
+            defaultElectricityRate: {{ default_electricity_rate | default(9.5) }},
+        districtsCount: {{ districts| length if districts is defined else 0 }}
+        });
+
+    // Show form details when institution type is selected
+    document.querySelectorAll('input[name="institution_type"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            const config = institutionConfig[this.value];
+
+            // Update dynamic labels
+            if (config) {
+                document.getElementById('servings_label').innerHTML =
+                    config.label + ' <span class="text-danger">*</span>';
+                document.getElementById('servings_help').textContent = config.help;
+                document.getElementById('servings_per_day').placeholder = config.placeholder;
+            }
+
+            // Show form with animation
+            if (formDetails.classList.contains('d-none')) {
+                formDetails.classList.remove('d-none');
+                setTimeout(() => {
+                    formDetails.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        });
+    });
+
+    // Form submission
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+        }
+
+        // Submit the form
+        console.log('DEBUG: Submitting institution form', {
+            institution_type: form.querySelector('input[name="institution_type"]:checked')?.value
+        });
+        form.submit();
+    });
+    });
+
+    // Toggle solar area field visibility
+    function toggleSolarArea() {
+        const solarInterest = document.getElementById('solar_willing').value;
+        const areaField = document.getElementById('solar_area_field');
+
+        if (solarInterest === 'Yes' || solarInterest === 'Maybe') {
+            areaField.classList.remove('d-none');
+            document.getElementById('available_roof_area').setAttribute('required', 'required');
+        } else {
+            areaField.classList.add('d-none');
+            document.getElementById('available_roof_area').removeAttribute('required');
+        }
+    }
+</script>
+{% endblock %}

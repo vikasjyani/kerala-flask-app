@@ -1,0 +1,72 @@
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ─── Virtual environments ─────────────────────────────────────────────────────
+venv/
+.venv/
+.venv-docs/
+env/
+ENV/
+
+# ─── Flask / App runtime ──────────────────────────────────────────────────────
+instance/
+*.db
+*.sqlite
+*.sqlite3
+application.log
+*.log
+.flask_secret
+
+# ─── Environment / secrets ────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Node / migration tooling (not part of Flask app) ────────────────────────
+node-migration/
+
+# ─── Generated / uploaded files (runtime data, not code) ─────────────────────
+uploads/
+reports/
+backups/
+
+# ─── Data files (too large, not source code) ─────────────────────────────────
+*.xlsx
+*.xls
+*.csv
+cooking_webapp.db
+user_data.db
+
+# ─── Jupyter notebooks ────────────────────────────────────────────────────────
+*.ipynb
+.ipynb_checkpoints/
+
+# ─── OS files ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── IDEs ─────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ─── Deployment notes (local only) ───────────────────────────────────────────
+hostinger.md
+TECHNICAL_DEBUG_GUIDE.md
+render.yaml
+
+# ─── Compiled translations (regenerated from .po files) ──────────────────────
+translations/*/LC_MESSAGES/*.mo

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Information & Methodology') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="text-center mb-5">
+                <h1 class="fw-bold text-primary-green">{{ _('About the Platform') }}</h1>
+                <p class="lead text-muted">{{ _('Platform overview is designed, validated, and kept up to date.') }}</p>
+            </div>
+
+            <!-- Features Section -->
+            <div class="card shadow-sm mb-5 fade-in-up">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 text-success"><i class="bi bi-stars me-2"></i>{{ _('Key Features') }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-calculator fs-3 text-success"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="fw-bold">{{ _('Flexible assessment options') }}</h5>
+                                    <p class="text-muted small mb-2">{{ _('Use meal data or totals inputs or summarize
+                                        existing fuel consumption—whichever fits your data best.') }}</p>
+                                    <ul class="list-unstyled small text-secondary">
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Granular dish-level energy modeling')
+                                            }}</li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Historical consumption analysis') }}
+                                        </li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Multi-fuel scenario comparison') }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-heart-pulse fs-3 text-success"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="fw-bold">{{ _('Health risk evaluation') }}</h5>
+                                    <p class="text-muted small mb-2">{{ _('WHO-based health risk analysis guidance and
+                                        highlights vulnerable groups.') }}</p>
+                                    <ul class="list-unstyled small text-secondary">
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('WHO air quality benchmarking') }}
+                                        </li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Peak exposure modeling') }}</li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Vulnerable group protection') }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-tree fs-3 text-success"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="fw-bold">{{ _('Environmental impact') }}</h5>
+                                    <p class="text-muted small mb-2">{{ _('Lifecycle carbon accounting across all fuel
+                                        options.') }}</p>
+                                    <ul class="list-unstyled small text-secondary">
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('CO₂ emissions quantification') }}
+                                        </li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Sustainability grading system') }}
+                                        </li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Social cost of carbon') }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-lightbulb fs-3 text-success"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="fw-bold">{{ _('Strategic recommendations') }}</h5>
+                                    <p class="text-muted small mb-2">{{ _('Clean cooking recommendations transition
+                                        strategies.') }}</p>
+                                    <ul class="list-unstyled small text-secondary">
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Multi-criteria decision analysis') }}
+                                        </li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('ROI & Payback calculation') }}</li>
+                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Feasibility assessment') }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Methodology Section -->
+            <div class="card shadow-sm mb-5 fade-in-up delay-1">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 text-success"><i class="bi bi-journal-text me-2"></i>{{ _('Research-Validated
+                        Methodology') }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary-green border-bottom pb-2 mb-3">{{ _('Energy Calculations') }}</h6>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Ministry of
+                                    Petroleum & Natural Gas formulas') }}</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Gas utilities
+                                    slab structure') }}</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Thermal
+                                    efficiency standards') }}</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Economies of
+                                    scale for larger households') }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary-green border-bottom pb-2 mb-3">{{ _('Economic Analysis') }}</h6>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('RBI interest
+                                    rates and inflation') }}</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('NPV and
+                                    payback calculations') }}</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Solar
+                                    investment analysis') }}</li>
+                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('EMI and
+                                    financing options') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-light border-success mt-3">
+                        <div class="d-flex">
+                            <i class="bi bi-shield-lock text-success fs-4 me-3"></i>
+                            <div>
+                                <strong>{{ _('Data Privacy Commitment') }}</strong>
+                                <p class="mb-0 small text-muted">{{ _('Anonymized data only; secure storage to
+                                    strengthen
+                                    cooking energy policies in Keralam. Personal details are optional and stored
+                                    securely.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div class="card shadow-sm fade-in-up delay-2">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 text-success"><i class="bi bi-life-preserver me-2"></i>{{ _('Support & Resources')
+                        }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4 text-center">
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded h-100">
+                                <i class="bi bi-question-circle fs-2 text-success mb-3"></i>
+                                <h6>{{ _('Need Help?') }}</h6>
+                                <p class="small text-muted">{{ _('Platform support available the tool or understanding
+                                    your
+                                    results.') }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded h-100">
+                                <i class="bi bi-file-earmark-pdf fs-2 text-success mb-3"></i>
+                                <h6>{{ _('Download Report') }}</h6>
+                                <p class="small text-muted">{{ _('Download PDF report of your analysis results.')
+                                    }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded h-100">
+                                <i class="bi bi-share fs-2 text-success mb-3"></i>
+                                <h6>{{ _('Share Results') }}</h6>
+                                <p class="small text-muted">{{ _('Share results with family or energy
+                                    consultants.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

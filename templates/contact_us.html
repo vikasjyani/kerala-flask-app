@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Contact Us') }} - {{ _('Keralam Clean Cooking Tool') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-green fade-in-up">
+                <div class="card-header text-center">
+                    <h1 class="mb-0">{{ _('Contact Us') }}</h1>
+                </div>
+                <div class="card-body p-5 text-center">
+                    <div class="mb-5">
+                        <i class="bi bi-envelope-at icon-giant mb-3"></i>
+                        <h4 class="text-primary-green mb-3">{{ _('Get in Touch') }}</h4>
+                        <p class="text-muted">{{ _('We would love to hear from you. Please reach out to us using the
+                            contact details below.') }}</p>
+                    </div>
+
+                    <div class="d-flex flex-column gap-4 align-items-center">
+                        <a href="mailto:info@vasudha-foundation.org"
+                            class="text-decoration-none text-dark d-flex align-items-center gap-3 p-3 border rounded w-100 justify-content-center hover-shadow">
+                            <i class="bi bi-envelope fs-4 text-primary-green"></i>
+                            <span class="fs-5">info@vasudha-foundation.org</span>
+                        </a>
+
+                        <a href="https://www.vasudha-foundation.org" target="_blank"
+                            class="text-decoration-none text-dark d-flex align-items-center gap-3 p-3 border rounded w-100 justify-content-center hover-shadow">
+                            <i class="bi bi-globe fs-4 text-primary-green"></i>
+                            <span class="fs-5">www.vasudha-foundation.org</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

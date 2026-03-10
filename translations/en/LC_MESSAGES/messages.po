@@ -1,0 +1,4703 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-02-18 11:08+0000\n"
+"PO-Revision-Date: 2025-06-26 15:40+0530\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: app.py:282 app.py:348
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: app.py:518 app.py:523
+msgid "An error occurred during calculation. Please try again."
+msgstr ""
+
+#: app.py:625
+msgid "Session expired. Please start a new analysis."
+msgstr ""
+
+#: app.py:671
+msgid "An error occurred while submitting feedback. Please try again."
+msgstr ""
+
+#: app.py:723
+msgid "No analysis data available. Please complete an analysis first."
+msgstr ""
+
+#: app.py:759
+msgid "An error occurred while generating the report. Please try again."
+msgstr ""
+
+#: app.py:1162 app.py:1164 app.py:1166 templates/analysis.html:139
+#: templates/commercial_analysis.html:302
+msgid "Current"
+msgstr ""
+
+#: app.py:1271
+msgid "Page Not Found"
+msgstr ""
+
+#: app.py:1272
+msgid ""
+"The page you are looking for does not exist. It may have been moved or "
+"deleted."
+msgstr ""
+
+#: app.py:1283
+msgid "Something went wrong on our end. Please try again."
+msgstr ""
+
+#: app.py:1289
+msgid "Internal Server Error"
+msgstr ""
+
+#: app.py:1290 templates/error.html:41
+msgid ""
+"Something went wrong on our end. Our team has been notified and is "
+"working to fix the issue."
+msgstr ""
+
+#: app.py:1297 templates/error.html:47
+msgid "Access Denied"
+msgstr ""
+
+#: app.py:1298 templates/error.html:48
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: app.py:1306
+msgid "Session expired. Please refresh the page and try again."
+msgstr ""
+
+#: app.py:1311
+msgid "Session Expired"
+msgstr ""
+
+#: app.py:1312
+msgid "Your session has expired. Please refresh the page and try again."
+msgstr ""
+
+#: app.py:1320 app.py:1325
+msgid "Bad Request"
+msgstr ""
+
+#: app.py:1326
+msgid "The request could not be understood or was missing required parameters."
+msgstr ""
+
+#: templates/analysis.html:3
+msgid "Analysis Results"
+msgstr "Analysis Results"
+
+#: templates/analysis.html:3 templates/commercial_analysis.html:3
+#: templates/commercial_energy_calculation.html:3
+#: templates/energy_calculation.html:3 templates/feedback.html:3
+#: templates/feedback_success.html:3 templates/household_profile.html:3
+#: templates/kitchen_profile.html:3
+#, fuzzy
+msgid "Keralam Clean Cooking Insights Platform"
+msgstr "Keralam Cooking Energy Analysis Tool"
+
+#: templates/analysis.html:6 templates/commercial_analysis.html:7
+msgid "Step 4 of 4"
+msgstr "Step 4 of 4"
+
+#: templates/analysis.html:6 templates/analysis.html:7
+#: templates/commercial_analysis.html:7 templates/commercial_analysis.html:8
+msgid "Analysis Complete"
+msgstr "Analysis Complete"
+
+#: templates/analysis.html:15 templates/commercial_analysis.html:16
+#: templates/commercial_selection.html:233
+msgid "Low"
+msgstr ""
+
+#: templates/analysis.html:17 templates/commercial_analysis.html:18
+msgid "Moderate"
+msgstr ""
+
+#: templates/analysis.html:19 templates/commercial_analysis.html:20
+#: templates/commercial_selection.html:235
+msgid "High"
+msgstr ""
+
+#: templates/analysis.html:21 templates/commercial_analysis.html:22
+msgid "Very High"
+msgstr ""
+
+#: templates/analysis.html:27
+#, fuzzy
+msgid "Clean Cooking Analysis Report"
+msgstr "Keralam Cooking Energy Analysis Tool"
+
+#: templates/analysis.html:29 templates/commercial_analysis.html:41
+msgid "Assessment with key recommendations"
+msgstr ""
+
+#: templates/analysis.html:38 templates/commercial_analysis.html:123
+msgid ""
+"Current\n"
+"                        Usage"
+msgstr ""
+
+#: templates/analysis.html:44 templates/commercial_analysis.html:129
+msgid "Fuel"
+msgstr ""
+
+#: templates/analysis.html:45 templates/commercial_analysis.html:130
+msgid "Quantity"
+msgstr ""
+
+#: templates/analysis.html:46 templates/commercial_analysis.html:131
+msgid "Consumption"
+msgstr ""
+
+#: templates/analysis.html:46 templates/commercial_analysis.html:131
+msgid "Joules"
+msgstr ""
+
+#: templates/analysis.html:47 templates/analysis.html:110
+#: templates/analysis.html:302 templates/analysis.html:355
+#: templates/analysis.html:392 templates/commercial_analysis.html:132
+#: templates/commercial_analysis.html:272
+#: templates/commercial_analysis.html:473
+#: templates/commercial_analysis.html:527
+#: templates/commercial_analysis.html:567
+msgid "Monthly Cost"
+msgstr "Monthly Cost"
+
+#: templates/analysis.html:48 templates/commercial_analysis.html:133
+msgid "Annual Emission"
+msgstr ""
+
+#: templates/analysis.html:86 templates/commercial_analysis.html:199
+msgid "Total"
+msgstr ""
+
+#: templates/analysis.html:102 templates/commercial_analysis.html:262
+msgid "Cooking with an energy source"
+msgstr ""
+
+#: templates/analysis.html:104 templates/commercial_analysis.html:265
+msgid "Comparative Cost and Emission Estimates"
+msgstr ""
+
+#: templates/analysis.html:109 templates/commercial_analysis.html:271
+msgid "Energy Source"
+msgstr ""
+
+#: templates/analysis.html:112 templates/analysis.html:314
+#: templates/analysis.html:342 templates/analysis.html:397
+#: templates/commercial_analysis.html:274
+#: templates/commercial_analysis.html:485
+#: templates/commercial_analysis.html:514
+#: templates/commercial_analysis.html:572
+msgid "Annual CO₂"
+msgstr ""
+
+#: templates/analysis.html:114 templates/commercial_analysis.html:276
+msgid ""
+"Thermal\n"
+"                                        Efficiency"
+msgstr ""
+
+#: templates/analysis.html:116 templates/analysis.html:324
+#: templates/analysis.html:367 templates/analysis.html:411
+#: templates/commercial_analysis.html:279
+#: templates/commercial_analysis.html:495
+#: templates/commercial_analysis.html:539
+#: templates/commercial_analysis.html:588
+msgid "Health Risk"
+msgstr ""
+
+#: templates/analysis.html:119 templates/commercial_analysis.html:282
+msgid "Status"
+msgstr ""
+
+#: templates/analysis.html:124 templates/commercial_analysis.html:287
+msgid "Your Current Setup"
+msgstr ""
+
+# New translations added for Solar + BESS and emission labels
+#: templates/analysis.html:147 templates/commercial_analysis.html:310
+msgid ""
+"Emissions shown are lifecycle emissions from manufacturing and "
+"installation, not from daily use. During operation, this energy source "
+"produces zero direct emissions."
+msgstr ""
+"Emissions shown are lifecycle emissions from manufacturing and "
+"installation, not from daily use. During operation, this energy source "
+"produces zero direct emissions."
+
+#: templates/analysis.html:171 templates/commercial_analysis.html:237
+#: templates/commercial_analysis.html:334
+msgid "Cost"
+msgstr ""
+
+#: templates/analysis.html:172 templates/analysis.html:180
+#: templates/commercial_analysis.html:335
+#: templates/commercial_analysis.html:348
+msgid "less"
+msgstr ""
+
+#: templates/analysis.html:173 templates/analysis.html:181
+#: templates/commercial_analysis.html:337
+#: templates/commercial_analysis.html:349
+#: templates/commercial_analysis.html:1015
+msgid "more"
+msgstr ""
+
+#: templates/analysis.html:173 templates/analysis.html:182
+#: templates/commercial_analysis.html:339
+#: templates/commercial_analysis.html:351
+msgid "Same"
+msgstr ""
+
+#: templates/analysis.html:179 templates/commercial_analysis.html:346
+msgid "CO₂"
+msgstr ""
+
+#: templates/analysis.html:200 templates/commercial_analysis.html:370
+msgid ""
+"Technical\n"
+"                        Specifications: Solar +\n"
+"                        BESS"
+msgstr ""
+
+#: templates/analysis.html:207 templates/commercial_analysis.html:377
+msgid "Specification"
+msgstr ""
+
+#: templates/analysis.html:208 templates/commercial_analysis.html:378
+msgid "Value"
+msgstr ""
+
+#: templates/analysis.html:209 templates/commercial_analysis.html:379
+msgid "Description"
+msgstr ""
+
+#: templates/analysis.html:214 templates/commercial_analysis.html:384
+msgid "Solar PV System Size"
+msgstr ""
+
+#: templates/analysis.html:216 templates/commercial_analysis.html:386
+msgid "Capacity required based on daily load"
+msgstr ""
+
+#: templates/analysis.html:219 templates/commercial_analysis.html:389
+msgid "Battery Storage"
+msgstr ""
+
+#: templates/analysis.html:221 templates/commercial_analysis.html:391
+msgid "Units"
+msgstr ""
+
+#: templates/analysis.html:221 templates/commercial_analysis.html:391
+msgid "Modules"
+msgstr ""
+
+#: templates/analysis.html:225 templates/commercial_analysis.html:395
+msgid "Roof Area Required"
+msgstr ""
+
+#: templates/analysis.html:227 templates/commercial_analysis.html:397
+msgid "Approx"
+msgstr ""
+
+#: templates/analysis.html:230 templates/commercial_analysis.html:400
+msgid "Daily Generation"
+msgstr ""
+
+#: templates/analysis.html:232 templates/commercial_analysis.html:402
+msgid "Based on Keralam GHI"
+msgstr ""
+
+#: templates/analysis.html:236 templates/commercial_analysis.html:406
+msgid "Grid Backup Needed"
+msgstr ""
+
+#: templates/analysis.html:238 templates/commercial_analysis.html:408
+msgid ""
+"of daily energy drawn\n"
+"                                        from grid due to area limit"
+msgstr ""
+
+#: templates/analysis.html:243 templates/commercial_analysis.html:413
+msgid "Total Upfront Cost"
+msgstr ""
+
+#: templates/analysis.html:245 templates/commercial_analysis.html:415
+msgid "Solar Panels + Inverter + Batteries + Installation"
+msgstr ""
+
+#: templates/analysis.html:250 templates/commercial_analysis.html:420
+#, fuzzy
+msgid "Monthly EMI / Cost"
+msgstr "Monthly Cost"
+
+#: templates/analysis.html:252 templates/commercial_analysis.html:422
+msgid "Levelized cost over 25 years"
+msgstr ""
+
+#: templates/analysis.html:252 templates/commercial_analysis.html:422
+msgid "Loan"
+msgstr ""
+
+#: templates/analysis.html:253 templates/commercial_analysis.html:423
+#: templates/household_profile.html:190 templates/household_profile.html:191
+#: templates/household_profile.html:192 templates/household_profile.html:193
+#: templates/household_profile.html:194
+msgid "years"
+msgstr ""
+
+#: templates/analysis.html:267 templates/commercial_analysis.html:437
+msgid ""
+"Strategic\n"
+"                        Recommendations"
+msgstr ""
+
+#: templates/analysis.html:284 templates/commercial_analysis.html:454
+msgid "Cost Effective"
+msgstr ""
+
+#: templates/analysis.html:287 templates/commercial_analysis.html:457
+msgid "Environmentally Friendly"
+msgstr ""
+
+#: templates/analysis.html:290 templates/commercial_analysis.html:460
+msgid "Top Rated"
+msgstr ""
+
+#: templates/analysis.html:307 templates/commercial_analysis.html:478
+msgid "You Save"
+msgstr ""
+
+#: templates/analysis.html:319 templates/analysis.html:361
+#: templates/analysis.html:406 templates/commercial_analysis.html:490
+#: templates/commercial_analysis.html:533
+#: templates/commercial_analysis.html:583
+msgid "Efficiency"
+msgstr ""
+
+#: templates/analysis.html:348 templates/commercial_analysis.html:520
+msgid "You Reduce"
+msgstr ""
+
+#: templates/analysis.html:387 templates/commercial_analysis.html:562
+msgid "Score"
+msgstr ""
+
+#: templates/analysis.html:402 templates/commercial_analysis.html:577
+msgid "Balance"
+msgstr ""
+
+#: templates/analysis.html:403 templates/commercial_analysis.html:579
+msgid "Best Overall"
+msgstr ""
+
+#: templates/analysis.html:422 templates/commercial_analysis.html:599
+msgid "No rating available"
+msgstr ""
+
+#: templates/analysis.html:430 templates/commercial_analysis.html:607
+msgid "No alternative recommendations available."
+msgstr ""
+
+#: templates/analysis.html:438 templates/commercial_analysis.html:616
+#, fuzzy
+msgid "Monthly OpEx Comparison"
+msgstr "Monthly Cost"
+
+#: templates/analysis.html:439 templates/analysis.html:451
+#: templates/commercial_analysis.html:617
+#: templates/commercial_analysis.html:629
+#: templates/commercial_analysis.html:644
+msgid "Baseline: Current setup"
+msgstr ""
+
+#: templates/analysis.html:442 templates/commercial_analysis.html:620
+msgid "Bar chart comparing monthly operating costs across fuels"
+msgstr ""
+
+#: templates/analysis.html:443
+msgid ""
+"Lower bars indicate lower monthly\n"
+"                            operating expense (₹/month)."
+msgstr ""
+
+#: templates/analysis.html:450 templates/commercial_analysis.html:628
+msgid "Annual Carbon Footprint Comparison"
+msgstr ""
+
+#: templates/analysis.html:454 templates/commercial_analysis.html:632
+msgid "Bar chart comparing annual CO₂ emissions across fuels"
+msgstr ""
+
+#: templates/analysis.html:455
+msgid ""
+"Values shown as kg CO₂ per year; lower\n"
+"                            is better."
+msgstr ""
+
+#: templates/analysis.html:469 templates/commercial_analysis.html:738
+msgid ""
+"Next Steps &\n"
+"                    Actions"
+msgstr ""
+
+#: templates/analysis.html:474 templates/commercial_analysis.html:743
+#: templates/info.html:172
+msgid "Download Report"
+msgstr ""
+
+#: templates/analysis.html:479 templates/commercial_analysis.html:748
+#: templates/info.html:180
+msgid "Share Results"
+msgstr ""
+
+#: templates/analysis.html:485 templates/commercial_analysis.html:754
+msgid "Next Step"
+msgstr ""
+
+#: templates/analysis.html:494 templates/commercial_analysis.html:763
+msgid "Next Steps:"
+msgstr ""
+
+#: templates/analysis.html:496 templates/commercial_analysis.html:765
+msgid "Contact local suppliers for price quotes on recommended solutions"
+msgstr ""
+
+#: templates/analysis.html:497 templates/commercial_analysis.html:766
+msgid "Consult with energy professionals for installation planning"
+msgstr ""
+
+#: templates/analysis.html:498 templates/commercial_analysis.html:767
+msgid "Check government subsidy schemes for clean cooking solutions"
+msgstr ""
+
+#: templates/analysis.html:499 templates/commercial_analysis.html:768
+msgid "Monitor your energy consumption and costs over time"
+msgstr ""
+
+#: templates/analysis.html:512 templates/commercial_analysis.html:781
+msgid "Contributing to Clean Cooking Research"
+msgstr ""
+
+#: templates/analysis.html:515
+msgid ""
+" anonymised data helps strengthen cooking-energy policies in Keralam using"
+"\n"
+"                            research-backed methods that support a "
+"sustainable energy transition"
+msgstr ""
+
+#: templates/analysis.html:521 templates/commercial_analysis.html:789
+msgid "Analysis ID:"
+msgstr ""
+
+#: templates/analysis.html:522 templates/commercial_analysis.html:790
+msgid "Generated:"
+msgstr ""
+
+#: templates/analysis_selection.html:3
+msgid "Choose Your Analysis"
+msgstr ""
+
+#: templates/analysis_selection.html:12
+msgid "Select the Cooking Pathway that Best Reflects Your Usage"
+msgstr ""
+
+#: templates/analysis_selection.html:22 templates/analysis_selection.html:26
+msgid "Household Cooking"
+msgstr ""
+
+#: templates/analysis_selection.html:34 templates/analysis_selection.html:58
+msgid "Select"
+msgstr ""
+
+#: templates/analysis_selection.html:47 templates/analysis_selection.html:50
+#: templates/commercial_analysis.html:37
+#: templates/commercial_energy_calculation.html:21
+#: templates/commercial_kitchen_profile.html:20
+#: templates/commercial_selection.html:21
+#, fuzzy
+msgid "Commercial Cooking"
+msgstr "Keralam Cooking Energy Analysis Tool"
+
+#: templates/analysis_selection.html:52
+msgid ""
+"(Schools, Hotels, Factories, and Community\n"
+"                    Kitchens)"
+msgstr ""
+
+#: templates/base.html:76 templates/contact_us.html:3
+#, fuzzy
+msgid "Keralam Clean Cooking Tool"
+msgstr "Keralam Cooking Energy Analysis Tool"
+
+#: templates/base.html:78
+msgid "Keralam"
+msgstr ""
+
+#: templates/base.html:78 templates/index.html:19
+msgid "Clean Cooking Tool"
+msgstr ""
+
+#: templates/base.html:89 templates/base.html:92
+msgid "English"
+msgstr ""
+
+#: templates/base.html:145
+msgid "Thiruvananthapuram | Keralam"
+msgstr ""
+
+#: templates/base.html:150
+msgid "© 2025 Vasudha Foundation & EMC Keralam."
+msgstr ""
+
+#: templates/commercial_analysis.html:3
+#, fuzzy
+msgid "Commercial Analysis Results"
+msgstr "Analysis Results"
+
+#: templates/commercial_analysis.html:39
+#, fuzzy
+msgid "Commercial Cooking Analysis Report"
+msgstr "Keralam Cooking Energy Analysis Tool"
+
+#: templates/commercial_analysis.html:42 templates/commercial_analysis.html:55
+msgid "Institution Type"
+msgstr ""
+
+#: templates/commercial_analysis.html:51
+msgid ""
+"Institution\n"
+"                        Profile"
+msgstr ""
+
+#: templates/commercial_analysis.html:59
+#: templates/commercial_selection.html:189
+msgid "Daily Servings"
+msgstr ""
+
+#: templates/commercial_analysis.html:63
+msgid "Working Days/Month"
+msgstr ""
+
+#: templates/commercial_analysis.html:67
+msgid "Calculation Method"
+msgstr ""
+
+#: templates/commercial_analysis.html:81
+msgid "Selected Dishes"
+msgstr ""
+
+#: templates/commercial_analysis.html:86
+#: templates/commercial_energy_calculation.html:235
+#: templates/energy_calculation.html:234
+msgid "Category"
+msgstr ""
+
+#: templates/commercial_analysis.html:87
+msgid "Dish Name"
+msgstr ""
+
+#: templates/commercial_analysis.html:88
+#: templates/commercial_energy_calculation.html:237
+#: templates/energy_calculation.html:236
+msgid "Fuel Type"
+msgstr ""
+
+#: templates/commercial_analysis.html:98
+#: templates/commercial_energy_calculation.html:268
+#: templates/energy_calculation.html:262 templates/energy_calculation.html:511
+msgid "LPG"
+msgstr ""
+
+#: templates/commercial_analysis.html:100
+#: templates/commercial_energy_calculation.html:269
+#: templates/energy_calculation.html:263
+msgid "PNG"
+msgstr ""
+
+#: templates/commercial_analysis.html:102
+msgid "Grid Electricity"
+msgstr ""
+
+#: templates/commercial_analysis.html:104
+#: templates/commercial_energy_calculation.html:271
+msgid "Biogas"
+msgstr ""
+
+#: templates/commercial_analysis.html:106
+msgid "Biomass"
+msgstr ""
+
+#: templates/commercial_analysis.html:186
+msgid "Source:"
+msgstr ""
+
+#: templates/commercial_analysis.html:209
+msgid "Per Serving Metrics"
+msgstr ""
+
+#: templates/commercial_analysis.html:229
+msgid ""
+"Meal-wise\n"
+"                        Energy Breakdown"
+msgstr ""
+
+#: templates/commercial_analysis.html:235
+msgid "Meal"
+msgstr ""
+
+#: templates/commercial_analysis.html:236
+#: templates/commercial_energy_calculation.html:23
+msgid "Energy"
+msgstr ""
+
+#: templates/commercial_analysis.html:238
+msgid "Percent of Total"
+msgstr ""
+
+#: templates/commercial_analysis.html:621
+msgid ""
+"Lower bars indicate lower monthly operating\n"
+"                            expense (₹/month)."
+msgstr ""
+
+#: templates/commercial_analysis.html:633
+msgid ""
+"Values shown as kg CO₂ per year; lower is\n"
+"                            better."
+msgstr ""
+
+#: templates/commercial_analysis.html:643
+msgid "Health Risk Score Comparison"
+msgstr ""
+
+#: templates/commercial_analysis.html:647
+msgid "Bar chart comparing health risk scores across fuels"
+msgstr ""
+
+#: templates/commercial_analysis.html:648
+msgid ""
+"Scores on 0–100 scale; lower indicates safer\n"
+"                            indoor air exposure."
+msgstr ""
+
+#: templates/commercial_analysis.html:655
+msgid "Multi-Criteria Performance"
+msgstr ""
+
+#: templates/commercial_analysis.html:656
+msgid "Top options overview"
+msgstr ""
+
+#: templates/commercial_analysis.html:659
+msgid ""
+"Radar chart summarizing cost, emissions, health, and overall performance "
+"for top fuels"
+msgstr ""
+
+#: templates/commercial_analysis.html:660
+msgid ""
+"Balanced view across cost efficiency,\n"
+"                            emissions,\n"
+"                            health safety, and overall rating."
+msgstr ""
+
+#: templates/commercial_analysis.html:673
+msgid ""
+"Health &\n"
+"                    Safety Evaluation"
+msgstr ""
+
+#: templates/commercial_analysis.html:681
+#: templates/commercial_analysis.html:1203 templates/kitchen_profile.html:251
+msgid "Low Risk"
+msgstr ""
+
+#: templates/commercial_analysis.html:683
+#: templates/commercial_analysis.html:1204 templates/kitchen_profile.html:254
+msgid "Moderate Risk"
+msgstr ""
+
+#: templates/commercial_analysis.html:685
+#: templates/commercial_analysis.html:1205 templates/kitchen_profile.html:257
+msgid "High Risk"
+msgstr ""
+
+#: templates/commercial_analysis.html:687
+#: templates/commercial_analysis.html:1202 templates/kitchen_profile.html:260
+msgid "Very High Risk"
+msgstr ""
+
+#: templates/commercial_analysis.html:690
+msgid "Health Risk Level"
+msgstr ""
+
+#: templates/commercial_analysis.html:698
+msgid "Peak PM2.5 (μg/m³)"
+msgstr ""
+
+#: templates/commercial_analysis.html:701
+msgid "WHO Safe Level"
+msgstr ""
+
+#: templates/commercial_analysis.html:703
+msgid "Above WHO Guidelines"
+msgstr ""
+
+#: templates/commercial_analysis.html:712
+msgid "Health Risk Index"
+msgstr ""
+
+#: templates/commercial_analysis.html:715
+msgid "Lower is better"
+msgstr ""
+
+#: templates/commercial_analysis.html:717
+msgid "Higher is worse"
+msgstr ""
+
+#: templates/commercial_analysis.html:727
+msgid "Health Advisory:"
+msgstr ""
+
+#: templates/commercial_analysis.html:728
+msgid ""
+"Your current cooking setup exposes you to PM2.5 levels above WHO "
+"guidelines. Consider\n"
+"                    cleaner\n"
+"                    cooking alternatives, especially if you have children"
+" or elderly family members."
+msgstr ""
+
+#: templates/commercial_analysis.html:784
+msgid "Your data supports Keralam cooking energy policy"
+msgstr ""
+
+#: templates/commercial_analysis.html:796
+msgid "Environmental Grade"
+msgstr ""
+
+#: templates/commercial_analysis.html:801
+#: templates/commercial_analysis.html:1184
+msgid "Health Risk Score"
+msgstr ""
+
+#: templates/commercial_analysis.html:886
+msgid "Network error: Unable to load chart data"
+msgstr ""
+
+#: templates/commercial_analysis.html:895
+msgid "Failed to load chart data"
+msgstr ""
+
+#: templates/commercial_analysis.html:904
+msgid "No chart data available for this analysis."
+msgstr ""
+
+#: templates/commercial_analysis.html:957
+msgid "Retry"
+msgstr ""
+
+#: templates/commercial_analysis.html:985
+msgid "Monthly Cost (₹)"
+msgstr ""
+
+#: templates/commercial_analysis.html:1013
+msgid "Saves"
+msgstr ""
+
+#: templates/commercial_analysis.html:1015
+msgid "Costs"
+msgstr ""
+
+#: templates/commercial_analysis.html:1110
+msgid "Lowest OpEx"
+msgstr ""
+
+#: templates/commercial_analysis.html:1111
+msgid "Lowest CO₂"
+msgstr ""
+
+#: templates/commercial_analysis.html:1112
+msgid "Best grade"
+msgstr ""
+
+#: templates/commercial_analysis.html:1123
+#: templates/energy_calculation.html:457
+msgid "Annual CO₂ (kg)"
+msgstr ""
+
+#: templates/commercial_analysis.html:1144
+msgid "Reduces by"
+msgstr ""
+
+#: templates/commercial_analysis.html:1248
+msgid "Cost Efficiency"
+msgstr ""
+
+#: templates/commercial_analysis.html:1249
+msgid "Low Emissions"
+msgstr ""
+
+#: templates/commercial_analysis.html:1250
+msgid "Health Safety"
+msgstr ""
+
+#: templates/commercial_analysis.html:1251
+msgid "Overall Rating"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:3
+#: templates/commercial_energy_calculation.html:6
+#: templates/commercial_energy_calculation.html:7
+#: templates/commercial_energy_calculation.html:25
+#: templates/energy_calculation.html:3 templates/energy_calculation.html:6
+#: templates/energy_calculation.html:7 templates/energy_calculation.html:16
+msgid "Energy Assessment"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:6
+#: templates/kitchen_profile.html:6
+#, fuzzy
+msgid "Step 3 of 4"
+msgstr "Step 4 of 4"
+
+#: templates/commercial_energy_calculation.html:27
+msgid "For"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:29
+msgid "servings/day"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:30
+msgid "working days/month"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:39
+#: templates/energy_calculation.html:31
+msgid "Select a Calculation Method"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:53
+#: templates/energy_calculation.html:46
+msgid "Dish Method"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:56
+#: templates/energy_calculation.html:50
+msgid "Dish-based Modelling"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:57
+msgid ""
+"Detailed meal analysis based on\n"
+"                                        specific dish preparation"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:74
+#: templates/energy_calculation.html:70
+msgid "Consumption Method"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:77
+#: templates/energy_calculation.html:73
+msgid "Consumption-based Modelling"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:78
+#: templates/energy_calculation.html:75
+msgid ""
+"Analysis based on aggregate fuel\n"
+"                                        consumption data"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:94
+msgid ""
+"Dish\n"
+"                                Selection & Current Fuel Usage"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:99
+msgid ""
+"Select the dishes you prepare regularly, then specify the energy sources "
+"applied\n"
+"                                to each category."
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:105
+#: templates/energy_calculation.html:102
+msgid "All fuels"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:115
+#: templates/commercial_energy_calculation.html:270
+#: templates/commercial_energy_calculation.html:544
+#: templates/commercial_energy_calculation.html:650
+#: templates/energy_calculation.html:113 templates/energy_calculation.html:264
+#: templates/energy_calculation.html:553 templates/energy_calculation.html:660
+msgid "Electricity"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:134
+#: templates/commercial_energy_calculation.html:641
+#: templates/energy_calculation.html:132 templates/energy_calculation.html:649
+msgid "Breakfast"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:137
+#: templates/energy_calculation.html:135
+msgid "Breakfast Type"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:140
+#: templates/commercial_energy_calculation.html:166
+#: templates/commercial_energy_calculation.html:193
+#: templates/energy_calculation.html:138 templates/energy_calculation.html:164
+#: templates/energy_calculation.html:191
+msgid "Normal"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:141
+#: templates/commercial_energy_calculation.html:167
+#: templates/commercial_energy_calculation.html:194
+#: templates/energy_calculation.html:139 templates/energy_calculation.html:165
+#: templates/energy_calculation.html:192
+msgid "Heavy"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:142
+#: templates/commercial_energy_calculation.html:168
+#: templates/commercial_energy_calculation.html:195
+#: templates/energy_calculation.html:140 templates/energy_calculation.html:166
+#: templates/energy_calculation.html:193
+msgid "Light"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:147
+msgid ""
+"Select Breakfast Dishes (Multiple\n"
+"                                                    choices)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:162
+#: templates/commercial_energy_calculation.html:642
+#: templates/energy_calculation.html:160 templates/energy_calculation.html:650
+msgid "Lunch"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:164
+#: templates/energy_calculation.html:162
+msgid "Lunch Type"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:173
+#: templates/energy_calculation.html:171
+msgid "Select Lunch Dishes (Multiple choices)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:188
+#: templates/commercial_energy_calculation.html:643
+#: templates/energy_calculation.html:186 templates/energy_calculation.html:651
+msgid "Dinner"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:190
+#: templates/energy_calculation.html:189
+msgid "Dinner Type"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:200
+msgid ""
+"Select Dinner Dishes (Multiple\n"
+"                                                    choices)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:215
+#: templates/commercial_energy_calculation.html:644
+#: templates/energy_calculation.html:213 templates/energy_calculation.html:652
+msgid "Snacks"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:217
+#: templates/energy_calculation.html:216
+msgid "Select Snacks (Multiple choices)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:230
+#: templates/energy_calculation.html:229
+msgid "Selected Dishes Summary"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:236
+#: templates/energy_calculation.html:235
+msgid "Dish"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:255
+msgid "Current Energy Consumption"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:259
+msgid "Enter your cooking fuel consumption to estimate energy usage"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:264
+#: templates/energy_calculation.html:258
+msgid "Enter Your Primary Cooking Fuel?"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:267
+#: templates/energy_calculation.html:261
+msgid "Select Your Main Cooking Fuel"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:268
+#: templates/energy_calculation.html:262
+msgid "Liquefied Petroleum Gas"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:269
+#: templates/energy_calculation.html:263
+msgid "Piped Natural Gas"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:272
+#: templates/commercial_energy_calculation.html:566
+#: templates/energy_calculation.html:265 templates/energy_calculation.html:575
+msgid "Traditional Solid Biomass"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:274
+#: templates/energy_calculation.html:266
+msgid "Mixed Usage"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:276
+#: templates/energy_calculation.html:268
+msgid "Please select your primary fuel"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:281
+msgid ""
+"LPG\n"
+"                                    Consumption Details"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:286
+msgid "Select which types of LPG cylinders you use"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:297
+msgid "Domestic LPG (14.2 kg)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:301
+#: templates/commercial_energy_calculation.html:325
+msgid ""
+"Monthly\n"
+"                                                        Cylinders"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:305
+msgid "e.g., 10"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:307
+msgid ""
+"Average price:\n"
+"                                                        ₹850/cylinder"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:321
+msgid "Commercial LPG (19 kg)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:329
+msgid "e.g., 5"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:331
+msgid ""
+"Average price:\n"
+"                                                        ₹1,800/cylinder"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:342
+msgid ""
+"PNG\n"
+"                                    Consumption Details"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:346
+#: templates/energy_calculation.html:337
+msgid "How would you like to provide PNG data?"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:353
+#: templates/energy_calculation.html:344
+msgid "Monthly bill amount"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:362
+#: templates/energy_calculation.html:353
+msgid "Monthly consumption (SCM)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:370
+#: templates/energy_calculation.html:370
+msgid "Monthly PNG Bill"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:373
+msgid "e.g., 8500"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:374
+#: templates/energy_calculation.html:373
+msgid "Enter your typical monthly PNG bill amount"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:380
+#: templates/energy_calculation.html:377
+msgid "Monthly PNG Consumption"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:384
+msgid "e.g., 250"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:385
+#: templates/energy_calculation.html:381
+msgid "Standard Cubic Meters per month"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:388
+msgid "Rate per SCM"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:400
+msgid ""
+"Electricity\n"
+"                                    Consumption for Cooking"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:405
+msgid ""
+"Monthly Electricity for\n"
+"                                            Cooking"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:408
+msgid "e.g., 1200"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:409
+msgid ""
+"Check electricity bill or estimate based on\n"
+"                                            appliance usage"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:413
+#: templates/commercial_kitchen_profile.html:104
+#: templates/commercial_selection.html:220
+msgid "Electricity Rate"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:424
+msgid ""
+"Biogas\n"
+"                                    Production Details"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:429
+msgid "Daily Production"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:433
+msgid "e.g., 15"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:436
+msgid "Operating Cost"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:439
+msgid "e.g., 2000"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:446
+msgid ""
+"Biomass\n"
+"                                    Consumption Details"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:451
+#, fuzzy
+msgid "Monthly Quantity"
+msgstr "Monthly Energy (kWh)"
+
+#: templates/commercial_energy_calculation.html:455
+msgid "e.g., 500"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:458
+msgid "Biomass Type"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:460
+#: templates/energy_calculation.html:473
+msgid "Firewood"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:461
+msgid "Coconut Shells/Husk"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:462
+msgid "Agricultural Residue"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:464
+msgid "Other"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:468
+msgid "Cost per kg"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:477
+#: templates/energy_calculation.html:490
+msgid "Warning:"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:477
+msgid ""
+"Traditional biomass cooking has severe\n"
+"                                    health and environmental impacts!"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:484
+msgid ""
+"Mixed\n"
+"                                    Fuel Usage Details"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:488
+msgid ""
+"Select and enter the consumption details for each fuel type you use for\n"
+"                                    cooking."
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:498
+msgid ""
+"LPG\n"
+"                                                (Commercial 19kg)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:505
+msgid ""
+"Monthly\n"
+"                                                    Cylinders"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:521
+msgid ""
+"PNG (Piped\n"
+"                                                Natural Gas)"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:528
+msgid ""
+"Monthly PNG\n"
+"                                                    Bill"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:550
+msgid ""
+"Monthly\n"
+"                                                    Electricity for "
+"Cooking"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:572
+msgid ""
+"Monthly\n"
+"                                                    Consumption"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:579
+msgid ""
+"Biomass cooking\n"
+"                                                has health impacts"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:592
+#: templates/commercial_kitchen_profile.html:137
+#: templates/commercial_selection.html:267
+#: templates/energy_calculation.html:602 templates/household_profile.html:276
+#: templates/kitchen_profile.html:135
+msgid "Back"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:596
+#: templates/commercial_kitchen_profile.html:140
+#: templates/commercial_kitchen_profile.html:193
+#: templates/commercial_kitchen_profile.html:199
+#: templates/commercial_selection.html:270
+#: templates/energy_calculation.html:605 templates/household_profile.html:279
+#: templates/kitchen_profile.html:138
+msgid "Next"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:609
+#: templates/energy_calculation.html:616
+msgid "Select fuel for"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:610
+#: templates/energy_calculation.html:617
+msgid "Close"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:613
+#: templates/energy_calculation.html:620
+msgid "Choose a fuel from your current mix"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:615
+#: templates/energy_calculation.html:623
+msgid "Select fuel"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:619
+#: templates/energy_calculation.html:627
+msgid "Cancel"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:621
+#: templates/energy_calculation.html:629
+msgid "Save"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:647
+#: templates/energy_calculation.html:657
+msgid "Select fuel for this dish"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:648
+#: templates/energy_calculation.html:658
+msgid "Select fuels above to assign for this dish"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:649
+#: templates/energy_calculation.html:659
+msgid "Not selected"
+msgstr ""
+
+#: templates/commercial_energy_calculation.html:951
+#: templates/energy_calculation.html:854
+msgid "Please select your current cooking fuels first."
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:3
+#: templates/commercial_kitchen_profile.html:6
+#: templates/commercial_kitchen_profile.html:7
+#: templates/commercial_kitchen_profile.html:23
+msgid "Kitchen & Facility Profile"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:3
+#: templates/commercial_selection.html:3
+msgid "Keralam Clean Cooking Platform"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:6
+#: templates/energy_calculation.html:6
+msgid "Step 2 of 4"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:22
+#: templates/kitchen_profile.html:15 templates/kitchen_profile.html:24
+msgid "Kitchen Icon"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:25
+msgid "Describe your kitchen setup for accurate commercial analysis"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:36
+msgid "Kitchen Details"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:42
+#: templates/kitchen_profile.html:52
+msgid "Kitchen Ventilation Scenario"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:45
+#: templates/kitchen_profile.html:55
+msgid "Select scenario"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:50
+#: templates/kitchen_profile.html:60
+msgid "exposure"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:54
+#: templates/kitchen_profile.html:64
+msgid "Please select a kitchen scenario"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:55
+#: templates/kitchen_profile.html:65
+msgid "Affects health impact calculation"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:65
+#: templates/kitchen_profile.html:78
+msgid "Cooking Patterns"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:71
+#: templates/kitchen_profile.html:83
+msgid "Daily Cooking Duration"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:71
+#: templates/kitchen_profile.html:85
+msgid "Hours"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:75
+#: templates/kitchen_profile.html:88
+msgid "Total daily active cooking time"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:76
+#: templates/kitchen_profile.html:89
+msgid "Please enter daily cooking hours"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:77
+#: templates/kitchen_profile.html:90
+msgid "Aggregate time for all meal preparations"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:82
+msgid "Kitchen Staff Exposed"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:86
+msgid "Workers regularly in the cooking area"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:87
+msgid "Please enter staff count"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:88
+msgid "Number of workers in the cooking area"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:98
+msgid "Budget & Energy Preferences"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:109
+msgid "Use the tariff from your latest bill"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:110
+#: templates/household_profile.html:163 templates/household_profile.html:266
+msgid "Please enter electricity tariff"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:111
+msgid "Commercial tariff used for grid comparisons"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:116
+msgid "Investment Priority"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:119
+#: templates/kitchen_profile.html:118
+msgid "Select Priority"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:120
+msgid "Minimize Upfront Cost"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:121
+#: templates/kitchen_profile.html:120
+msgid "Balanced ROI"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:122
+msgid "Maximize Long-term Savings"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:123
+msgid "Maximize Environmental Benefit"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:126
+#: templates/kitchen_profile.html:125
+msgid "Please select budget preference"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:127
+#: templates/kitchen_profile.html:126
+msgid "Primary driver for financial decision making"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:174
+msgid "Processing"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:191
+msgid "Failed to save data"
+msgstr ""
+
+#: templates/commercial_kitchen_profile.html:197
+msgid "Network error occurred"
+msgstr ""
+
+#: templates/commercial_selection.html:3 templates/error.html:88
+msgid "Commercial Analysis"
+msgstr ""
+
+#: templates/commercial_selection.html:6 templates/commercial_selection.html:14
+#: templates/household_profile.html:6
+msgid "Step 1 of 4"
+msgstr ""
+
+#: templates/commercial_selection.html:6 templates/commercial_selection.html:7
+#: templates/commercial_selection.html:25
+msgid "Institution Profile"
+msgstr ""
+
+#: templates/commercial_selection.html:23
+msgid "Institution Icon"
+msgstr ""
+
+#: templates/commercial_selection.html:27
+msgid "Tell us about your institution to get a customized energy analysis"
+msgstr ""
+
+#: templates/commercial_selection.html:40
+msgid "Select Institution Type"
+msgstr ""
+
+#: templates/commercial_selection.html:48
+msgid "School"
+msgstr ""
+
+#: templates/commercial_selection.html:56
+msgid "Anganwadi"
+msgstr ""
+
+#: templates/commercial_selection.html:64
+msgid "Hotel/Restaurant"
+msgstr ""
+
+#: templates/commercial_selection.html:72
+msgid "Factory Canteen"
+msgstr ""
+
+#: templates/commercial_selection.html:81
+msgid "Community Kitchen"
+msgstr ""
+
+#: templates/commercial_selection.html:85
+msgid "Please select an institution type"
+msgstr ""
+
+#: templates/commercial_selection.html:95
+msgid "Basic Information"
+msgstr ""
+
+#: templates/commercial_selection.html:100
+msgid "Institution Name"
+msgstr ""
+
+#: templates/commercial_selection.html:104
+msgid "Enter institution name"
+msgstr ""
+
+#: templates/commercial_selection.html:105
+msgid "Please enter institution name"
+msgstr ""
+
+#: templates/commercial_selection.html:109
+msgid "Contact Person"
+msgstr ""
+
+#: templates/commercial_selection.html:111
+msgid "Full name"
+msgstr ""
+
+#: templates/commercial_selection.html:112
+msgid "Please enter contact person name"
+msgstr ""
+
+#: templates/commercial_selection.html:116 templates/feedback.html:68
+#: templates/household_profile.html:37
+msgid "Email Address"
+msgstr ""
+
+#: templates/commercial_selection.html:118
+msgid "email@example.com"
+msgstr ""
+
+#: templates/commercial_selection.html:122 templates/household_profile.html:44
+msgid "Contact Number"
+msgstr ""
+
+#: templates/commercial_selection.html:132
+msgid "10-digit number"
+msgstr ""
+
+#: templates/commercial_selection.html:143
+msgid "Location Details"
+msgstr ""
+
+#: templates/commercial_selection.html:148
+msgid "Address"
+msgstr ""
+
+#: templates/commercial_selection.html:150
+msgid "Street, locality, landmark"
+msgstr ""
+
+#: templates/commercial_selection.html:154 templates/household_profile.html:82
+msgid "District"
+msgstr ""
+
+#: templates/commercial_selection.html:156
+msgid "Select district"
+msgstr ""
+
+#: templates/commercial_selection.html:162
+msgid "Please select district"
+msgstr ""
+
+#: templates/commercial_selection.html:166
+msgid "Area Type"
+msgstr ""
+
+#: templates/commercial_selection.html:168
+msgid "Select area type"
+msgstr ""
+
+#: templates/commercial_selection.html:169 templates/household_profile.html:101
+msgid "Urban"
+msgstr ""
+
+#: templates/commercial_selection.html:169 templates/household_profile.html:101
+msgid "Municipal/Corporation"
+msgstr ""
+
+#: templates/commercial_selection.html:171 templates/household_profile.html:103
+msgid "Rural"
+msgstr ""
+
+#: templates/commercial_selection.html:171 templates/household_profile.html:103
+msgid "Panchayat/Village"
+msgstr ""
+
+#: templates/commercial_selection.html:173 templates/household_profile.html:105
+msgid "Please select area type"
+msgstr ""
+
+#: templates/commercial_selection.html:183
+msgid "Operational Details"
+msgstr ""
+
+#: templates/commercial_selection.html:194
+msgid "Average meals per day"
+msgstr ""
+
+#: templates/commercial_selection.html:195
+msgid "Please enter daily servings"
+msgstr ""
+
+#: templates/commercial_selection.html:199
+msgid "Working Days per Month"
+msgstr ""
+
+#: templates/commercial_selection.html:203
+msgid "Operating days monthly"
+msgstr ""
+
+#: templates/commercial_selection.html:204
+msgid "Please enter working days"
+msgstr ""
+
+#: templates/commercial_selection.html:214
+msgid "Energy & Budget Parameters"
+msgstr ""
+
+#: templates/commercial_selection.html:225
+msgid "Check your electricity bill for accurate rate"
+msgstr ""
+
+#: templates/commercial_selection.html:230
+msgid "Budget Priority"
+msgstr ""
+
+#: templates/commercial_selection.html:232
+msgid "Not specified"
+msgstr ""
+
+#: templates/commercial_selection.html:234
+msgid "Medium"
+msgstr ""
+
+#: templates/commercial_selection.html:236
+msgid "No Constraints"
+msgstr ""
+
+#: templates/commercial_selection.html:242
+msgid "Interested in Solar Rooftop?"
+msgstr ""
+
+#: templates/commercial_selection.html:246 templates/household_profile.html:231
+msgid "No"
+msgstr ""
+
+#: templates/commercial_selection.html:247
+msgid "Maybe"
+msgstr ""
+
+#: templates/commercial_selection.html:248 templates/household_profile.html:229
+msgid "Yes"
+msgstr ""
+
+#: templates/commercial_selection.html:254
+msgid "Available Roof Area"
+msgstr ""
+
+#: templates/commercial_selection.html:258
+msgid "Minimum 10 m² required"
+msgstr ""
+
+#: templates/commercial_selection.html:286
+msgid "Number of Students"
+msgstr ""
+
+#: templates/commercial_selection.html:287
+msgid "Total enrolled students"
+msgstr ""
+
+#: templates/commercial_selection.html:291
+msgid "Registered Children"
+msgstr ""
+
+#: templates/commercial_selection.html:292
+msgid "Children in program"
+msgstr ""
+
+#: templates/commercial_selection.html:296
+msgid "Daily Customers"
+msgstr ""
+
+#: templates/commercial_selection.html:297
+msgid "Average customers per day"
+msgstr ""
+
+#: templates/commercial_selection.html:301
+msgid "Number of Employees"
+msgstr ""
+
+#: templates/commercial_selection.html:302
+msgid "Total workforce"
+msgstr ""
+
+#: templates/commercial_selection.html:306
+msgid "Daily Meals"
+msgstr ""
+
+#: templates/commercial_selection.html:307
+msgid "Meals served daily"
+msgstr ""
+
+#: templates/contact_us.html:3 templates/contact_us.html:11
+msgid "Contact Us"
+msgstr ""
+
+#: templates/contact_us.html:16
+msgid "Get in Touch"
+msgstr ""
+
+#: templates/contact_us.html:17
+msgid ""
+"We would love to hear from you. Please reach out to us using the\n"
+"                            contact details below."
+msgstr ""
+
+#: templates/energy_calculation.html:18
+msgid ""
+"Enter cooking energy data with either detailed menu inputs or existing\n"
+"            consumption\n"
+"            records"
+msgstr ""
+
+#: templates/energy_calculation.html:51
+msgid ""
+"Detailed meal analysis based on\n"
+"                                        specific dish\n"
+"                                        preparation"
+msgstr ""
+
+#: templates/energy_calculation.html:91
+msgid "Dish Selection & Current Fuel Usage"
+msgstr ""
+
+#: templates/energy_calculation.html:95
+msgid ""
+"Select the dishes you prepare regularly, then specify the energy sources "
+"applied to\n"
+"                            each\n"
+"                            category."
+msgstr ""
+
+#: templates/energy_calculation.html:145
+msgid "Select Breakfast Dishes (Multiple choices)"
+msgstr ""
+
+#: templates/energy_calculation.html:198
+msgid "Select Dinner Dishes (Multiple choices)"
+msgstr ""
+
+#: templates/energy_calculation.html:253
+msgid ""
+"Current\n"
+"                            Energy Consumption"
+msgstr ""
+
+#: templates/energy_calculation.html:273
+msgid ""
+"LPG Consumption\n"
+"                                Details"
+msgstr ""
+
+#: templates/energy_calculation.html:277
+msgid "Cylinder Size"
+msgstr ""
+
+#: templates/energy_calculation.html:279
+msgid "Domestic"
+msgstr ""
+
+#: templates/energy_calculation.html:280
+msgid "Commercial"
+msgstr ""
+
+#: templates/energy_calculation.html:281
+msgid "Small"
+msgstr ""
+
+#: templates/energy_calculation.html:285
+msgid "Cylinder Lasts (Days)"
+msgstr ""
+
+#: templates/energy_calculation.html:288
+msgid "How many days does one cylinder last"
+msgstr ""
+
+#: templates/energy_calculation.html:291
+msgid "Price of a Cylinder"
+msgstr ""
+
+#: templates/energy_calculation.html:300
+msgid "LPG Consumption Analysis"
+msgstr ""
+
+#: templates/energy_calculation.html:305
+msgid "kWh per cylinder"
+msgstr ""
+
+#: templates/energy_calculation.html:311 templates/energy_calculation.html:404
+msgid "Monthly energy (kWh)"
+msgstr ""
+
+#: templates/energy_calculation.html:317
+msgid "Cylinders/month"
+msgstr ""
+
+#: templates/energy_calculation.html:323 templates/energy_calculation.html:451
+msgid "Monthly cost (₹)"
+msgstr ""
+
+#: templates/energy_calculation.html:332
+msgid ""
+"PNG\n"
+"                                Consumption\n"
+"                                Details"
+msgstr ""
+
+#: templates/energy_calculation.html:362
+msgid "Daily average"
+msgstr ""
+
+#: templates/energy_calculation.html:385
+msgid "Daily Average Consumption"
+msgstr ""
+
+#: templates/energy_calculation.html:389
+msgid "Daily average consumption"
+msgstr ""
+
+#: templates/energy_calculation.html:393
+msgid "PNG Consumption Analysis"
+msgstr ""
+
+#: templates/energy_calculation.html:398
+msgid "Monthly SCM"
+msgstr ""
+
+#: templates/energy_calculation.html:410
+msgid "Monthly bill (₹)"
+msgstr ""
+
+#: templates/energy_calculation.html:416
+msgid "Avg rate (₹/SCM)"
+msgstr ""
+
+#: templates/energy_calculation.html:425
+msgid ""
+"Electricity\n"
+"                                Consumption for Cooking"
+msgstr ""
+
+#: templates/energy_calculation.html:430
+msgid ""
+"Monthly Electricity for\n"
+"                                        Cooking"
+msgstr ""
+
+#: templates/energy_calculation.html:434
+msgid ""
+"Check electricity bill or estimate based on appliance\n"
+"                                        usage"
+msgstr ""
+
+#: templates/energy_calculation.html:440
+msgid "Electricity Consumption Analysis"
+msgstr ""
+
+#: templates/energy_calculation.html:445
+msgid "Cooking energy (kWh)"
+msgstr ""
+
+#: templates/energy_calculation.html:466
+msgid ""
+"Biomass Consumption\n"
+"                                Details"
+msgstr ""
+
+#: templates/energy_calculation.html:471
+msgid "Type of biomass"
+msgstr ""
+
+#: templates/energy_calculation.html:474
+msgid "Agricultural waste"
+msgstr ""
+
+#: templates/energy_calculation.html:475
+msgid "Cow dung cake"
+msgstr ""
+
+#: templates/energy_calculation.html:476
+msgid "Mixed"
+msgstr ""
+
+#: templates/energy_calculation.html:480
+msgid "Monthly consumption"
+msgstr ""
+
+#: templates/energy_calculation.html:484
+msgid "Estimate monthly biomass consumption in kg"
+msgstr ""
+
+#: templates/energy_calculation.html:490
+msgid ""
+"Traditional biomass cooking has severe health\n"
+"                                and\n"
+"                                environmental impacts!"
+msgstr ""
+
+#: templates/energy_calculation.html:498
+msgid ""
+"Mixed Fuel\n"
+"                                Usage Details"
+msgstr ""
+
+#: templates/energy_calculation.html:502
+msgid ""
+"Select and enter the consumption details for each fuel type you use for "
+"cooking."
+msgstr ""
+
+#: templates/energy_calculation.html:518
+msgid ""
+"Cylinder Lasts\n"
+"                                                (Days)"
+msgstr ""
+
+#: templates/energy_calculation.html:532
+msgid ""
+"PNG (Piped\n"
+"                                            Natural Gas)"
+msgstr ""
+
+#: templates/energy_calculation.html:539
+msgid ""
+"Monthly PNG\n"
+"                                                Bill"
+msgstr ""
+
+#: templates/energy_calculation.html:560
+msgid ""
+"Monthly Electricity\n"
+"                                                for Cooking"
+msgstr ""
+
+#: templates/energy_calculation.html:581
+msgid ""
+"Monthly\n"
+"                                                Consumption"
+msgstr ""
+
+#: templates/energy_calculation.html:588
+msgid ""
+"Biomass cooking has\n"
+"                                            health impacts"
+msgstr ""
+
+#: templates/energy_calculation.html:655
+msgid "Vegetarian"
+msgstr ""
+
+#: templates/energy_calculation.html:656
+msgid "Non-Vegetarian"
+msgstr ""
+
+#: templates/energy_calculation.html:905
+msgid "Please select a fuel for this dish."
+msgstr ""
+
+#: templates/energy_calculation.html:1334
+#: templates/energy_calculation.html:1399
+msgid "Calculating your energy consumption..."
+msgstr ""
+
+#: templates/energy_calculation.html:1340
+msgid "Please select primary fuel"
+msgstr ""
+
+#: templates/energy_calculation.html:1394
+msgid "Please select at least one fuel type"
+msgstr ""
+
+#: templates/error.html:3
+msgid "Error"
+msgstr ""
+
+#: templates/error.html:34
+msgid "Page not found"
+msgstr ""
+
+#: templates/error.html:35
+msgid "The page you are looking for might have been moved or deleted."
+msgstr ""
+
+#: templates/error.html:40
+msgid "Server Error"
+msgstr ""
+
+#: templates/error.html:56
+msgid "Return to Home"
+msgstr ""
+
+#: templates/error.html:60
+msgid "Go Back"
+msgstr ""
+
+#: templates/error.html:65
+msgid "Start Analysis"
+msgstr ""
+
+#: templates/error.html:74
+msgid "Quick Links"
+msgstr ""
+
+#: templates/error.html:80
+msgid "Residential Analysis"
+msgstr ""
+
+#: templates/error.html:96
+msgid "About"
+msgstr ""
+
+#: templates/feedback.html:3
+msgid "Feedback & Schemes"
+msgstr ""
+
+#: templates/feedback.html:19
+#, fuzzy
+msgid "Analysis Complete!"
+msgstr "Analysis Complete"
+
+#: templates/feedback.html:21
+msgid ""
+"Explore government schemes that can help you transition to clean-cooking\n"
+"            Government schemes"
+msgstr ""
+
+#: templates/feedback.html:38
+msgid ""
+"Allow Concerned Authorities to\n"
+"                                    Contact Me to Consent"
+msgstr ""
+
+#: templates/feedback.html:42
+msgid ""
+"I permit government authorities and scheme coordinators to contact me via"
+"\n"
+"                                    phone or email regarding the selected"
+" subsidy schemes and assistance programmes\n"
+"                                    "
+msgstr ""
+
+#: templates/feedback.html:54
+msgid "Verify Your Information"
+msgstr ""
+
+#: templates/feedback.html:55
+msgid "Please verify or update your contact information"
+msgstr ""
+
+#: templates/feedback.html:59
+msgid "Name"
+msgstr ""
+
+#: templates/feedback.html:64 templates/household_profile.html:34
+msgid "Please enter your name"
+msgstr ""
+
+#: templates/feedback.html:73
+msgid "Please enter a valid email"
+msgstr ""
+
+#: templates/feedback.html:77 templates/household_profile.html:53
+msgid "Phone Number"
+msgstr ""
+
+#: templates/feedback.html:82
+msgid "Please enter a valid 10-digit phone number"
+msgstr ""
+
+#: templates/feedback.html:92
+msgid ""
+"Government\n"
+"                            Subsidy Schemes"
+msgstr ""
+
+#: templates/feedback.html:94
+msgid ""
+"Select the schemes you're interested in learning more\n"
+"                            about"
+msgstr ""
+
+#: templates/feedback.html:108
+msgid "PM Surya Ghar: Muft Bijli Yojana"
+msgstr ""
+
+#: templates/feedback.html:109
+msgid ""
+"Up to ₹78,000\n"
+"                                                        Subsidy"
+msgstr ""
+
+#: templates/feedback.html:113
+msgid ""
+"Get subsidy for rooftop solar panel installation. Provides up\n"
+"                                                    to 300 units of free "
+"electricity per month."
+msgstr ""
+
+#: templates/feedback.html:117
+msgid "₹30,000 per kW for systems up to 2 kW"
+msgstr ""
+
+#: templates/feedback.html:118
+msgid "₹78,000 total subsidy for 3 kW systems"
+msgstr ""
+
+#: templates/feedback.html:119
+msgid "Covers 40 percent of installation cost"
+msgstr ""
+
+#: templates/feedback.html:123 templates/feedback.html:199
+msgid "Learn More"
+msgstr ""
+
+#: templates/feedback.html:143
+msgid "City Gas Distribution (PNG) Network Expansion"
+msgstr ""
+
+#: templates/feedback.html:145
+msgid ""
+"Available in Select\n"
+"                                                        Districts"
+msgstr ""
+
+#: templates/feedback.html:149
+msgid ""
+"Piped Natural Gas (PNG) connection for cleaner and more\n"
+"                                                    economical cooking "
+"fuel."
+msgstr ""
+
+#: templates/feedback.html:153
+msgid "Cleaner than LPG with lower emissions"
+msgstr ""
+
+#: templates/feedback.html:154
+msgid "No cylinder handling required"
+msgstr ""
+
+#: templates/feedback.html:155
+msgid "Available in: Thiruvananthapuram, Ernakulam, Alappuzha"
+msgstr ""
+
+#: templates/feedback.html:157
+msgid ""
+"Potential central government subsidy schemes under\n"
+"                                                        planning"
+msgstr ""
+
+#: templates/feedback.html:162
+msgid ""
+"Check\n"
+"                                                    Availability"
+msgstr ""
+
+#: templates/feedback.html:183
+msgid "Pradhan Mantri Ujjwala Yojana"
+msgstr ""
+
+#: templates/feedback.html:184
+msgid "₹300/Cylinder Subsidy"
+msgstr ""
+
+#: templates/feedback.html:188
+msgid ""
+"Subsidized LPG connections and refills for women from\n"
+"                                                    low-income households."
+msgstr ""
+
+#: templates/feedback.html:192
+msgid "₹300 subsidy per 14.2 kg LPG cylinder"
+msgstr ""
+
+#: templates/feedback.html:193
+msgid "Up to 12 refills per year"
+msgstr ""
+
+#: templates/feedback.html:194
+msgid "Free LPG connection for eligible households"
+msgstr ""
+
+#: templates/feedback.html:195
+msgid "Priority for Below Poverty Line (BPL) families"
+msgstr ""
+
+#: templates/feedback.html:217
+msgid "Additional Comments"
+msgstr ""
+
+#: templates/feedback.html:219
+msgid "Share any thoughts, questions, or suggestions (Optional)"
+msgstr ""
+
+#: templates/feedback.html:222
+msgid "Your feedback helps us improve..."
+msgstr ""
+
+#: templates/feedback.html:223
+msgid "Your feedback is valuable and helps us improve the platform"
+msgstr ""
+
+#: templates/feedback.html:231
+msgid "Submit"
+msgstr ""
+
+#: templates/feedback_success.html:3
+msgid "Thank You"
+msgstr ""
+
+#: templates/feedback_success.html:18
+msgid "Thank You!"
+msgstr ""
+
+#: templates/feedback_success.html:20
+msgid "Your feedback and scheme preferences have been submitted successfully."
+msgstr ""
+
+#: templates/feedback_success.html:25
+msgid "What Happens Next?"
+msgstr ""
+
+#: templates/feedback_success.html:28
+msgid ""
+"Government authorities will contact you regarding your selected\n"
+"                            schemes"
+msgstr ""
+
+#: templates/feedback_success.html:31
+msgid "Your anonymized data helps improve clean cooking policies in Keralam"
+msgstr ""
+
+#: templates/feedback_success.html:33
+msgid "You can start a new analysis to explore more scenarios"
+msgstr ""
+
+#: templates/feedback_success.html:40
+msgid "Start New Analysis"
+msgstr ""
+
+#: templates/feedback_success.html:51
+msgid ""
+"Schemes You\n"
+"                    Selected"
+msgstr ""
+
+#: templates/feedback_success.html:58
+msgid "PM Surya Ghar Solar"
+msgstr ""
+
+#: templates/feedback_success.html:59
+msgid "Solar Subsidy Scheme"
+msgstr ""
+
+#: templates/feedback_success.html:67
+msgid "PNG Connection"
+msgstr ""
+
+#: templates/feedback_success.html:68
+msgid "City Gas Distribution"
+msgstr ""
+
+#: templates/feedback_success.html:76
+msgid "PM Ujjwala Yojana"
+msgstr ""
+
+#: templates/feedback_success.html:77
+msgid "LPG Subsidy"
+msgstr ""
+
+#: templates/household_profile.html:3 templates/household_profile.html:6
+#: templates/household_profile.html:13
+msgid "Household Profile"
+msgstr ""
+
+#: templates/household_profile.html:26
+msgid "Personal Information"
+msgstr ""
+
+#: templates/household_profile.html:31
+msgid "Full Name"
+msgstr ""
+
+#: templates/household_profile.html:33
+msgid "Your Name"
+msgstr ""
+
+#: templates/household_profile.html:39
+msgid "Your Email Address"
+msgstr ""
+
+#: templates/household_profile.html:41
+msgid "Please enter a valid email address"
+msgstr ""
+
+#: templates/household_profile.html:57
+msgid "Please enter a valid phone number"
+msgstr ""
+
+#: templates/household_profile.html:67
+msgid "Household Details"
+msgstr ""
+
+#: templates/household_profile.html:72
+msgid "Number of members"
+msgstr ""
+
+#: templates/household_profile.html:76
+msgid "Total number of residents"
+msgstr ""
+
+#: templates/household_profile.html:77
+msgid "Please enter household size"
+msgstr ""
+
+#: templates/household_profile.html:84
+msgid "Select District"
+msgstr ""
+
+#: templates/household_profile.html:93
+msgid "Please select your district"
+msgstr ""
+
+#: templates/household_profile.html:97
+msgid "Area classification"
+msgstr ""
+
+#: templates/household_profile.html:99
+msgid "Select Classification"
+msgstr ""
+
+#: templates/household_profile.html:109
+msgid "Monthly Household Income"
+msgstr ""
+
+#: templates/household_profile.html:112
+msgid "Example: 50,000"
+msgstr ""
+
+#: templates/household_profile.html:113 templates/household_profile.html:115
+msgid "Used for financial feasibility analysis"
+msgstr ""
+
+#: templates/household_profile.html:116
+msgid "Select Monthly Income"
+msgstr ""
+
+#: templates/household_profile.html:117
+msgid "Less than 50,000"
+msgstr ""
+
+#: templates/household_profile.html:118
+msgid "50,000 - 70,000"
+msgstr ""
+
+#: templates/household_profile.html:119
+msgid "70,000 - 1,00,000"
+msgstr ""
+
+#: templates/household_profile.html:120
+msgid "1,00,000 - 1,50,000"
+msgstr ""
+
+#: templates/household_profile.html:121
+msgid "Above 1,50,000"
+msgstr ""
+
+#: templates/household_profile.html:127
+#, fuzzy
+msgid "Monthly Household Income Range"
+msgstr "Monthly Cost"
+
+#: templates/household_profile.html:132
+msgid "From"
+msgstr ""
+
+#: templates/household_profile.html:133
+msgid "Enter the lower value of the income range"
+msgstr ""
+
+#: templates/household_profile.html:139
+msgid "To"
+msgstr ""
+
+#: templates/household_profile.html:140
+msgid "Enter the upper value of the income range"
+msgstr ""
+
+#: templates/household_profile.html:153 templates/household_profile.html:255
+msgid "Economic Parameters"
+msgstr ""
+
+#: templates/household_profile.html:158
+msgid "Electricity Tariff"
+msgstr ""
+
+#: templates/household_profile.html:162 templates/household_profile.html:265
+msgid "Current applicable tariff rate"
+msgstr ""
+
+#: templates/household_profile.html:167
+msgid "LPG Subsidy Status"
+msgstr ""
+
+#: templates/household_profile.html:169
+msgid "Select Status"
+msgstr ""
+
+#: templates/household_profile.html:170
+msgid "Non-Subsidized"
+msgstr ""
+
+#: templates/household_profile.html:171
+msgid "Subsidized"
+msgstr ""
+
+#: templates/household_profile.html:173
+msgid "Please select LPG subsidy status"
+msgstr ""
+
+#: templates/household_profile.html:177
+msgid "Financing Interest Rate"
+msgstr ""
+
+#: templates/household_profile.html:181
+msgid "Assumed interest rate for capital investment"
+msgstr ""
+
+#: templates/household_profile.html:182
+msgid "Please enter loan interest rate"
+msgstr ""
+
+#: templates/household_profile.html:186
+msgid "Loan Tenure"
+msgstr ""
+
+#: templates/household_profile.html:186
+msgid "Years"
+msgstr ""
+
+#: templates/household_profile.html:189
+msgid "Select Tenure"
+msgstr ""
+
+#: templates/household_profile.html:196
+msgid "Please select loan tenure"
+msgstr ""
+
+#: templates/household_profile.html:199
+msgid "Primary Optimization Goal"
+msgstr ""
+
+#: templates/household_profile.html:201
+msgid "Balanced Approach"
+msgstr ""
+
+#: templates/household_profile.html:202
+msgid "Cost Minimization"
+msgstr ""
+
+#: templates/household_profile.html:203
+msgid "Health & Safety"
+msgstr ""
+
+#: templates/household_profile.html:204
+msgid "Environmental Impact"
+msgstr ""
+
+#: templates/household_profile.html:206
+msgid ""
+"Determines how the final recommendation is weighted across\n"
+"                                cost,\n"
+"                                health, and sustainability factors."
+msgstr ""
+
+#: templates/household_profile.html:209
+msgid "Please select your main priority"
+msgstr ""
+
+#: templates/household_profile.html:219
+msgid "Solar Rooftop"
+msgstr ""
+
+#: templates/household_profile.html:224
+msgid ""
+"Are you willing to consider solar\n"
+"                                rooftop?"
+msgstr ""
+
+#: templates/household_profile.html:227
+msgid "Select an option"
+msgstr ""
+
+#: templates/household_profile.html:233
+msgid "Please select your willingness for solar rooftop"
+msgstr ""
+
+#: templates/household_profile.html:238
+msgid "Available rooftop area"
+msgstr ""
+
+#: templates/household_profile.html:243
+msgid "Enter area"
+msgstr ""
+
+#: templates/household_profile.html:246
+msgid "Minimum 10 m² required for solar installation"
+msgstr ""
+
+#: templates/household_profile.html:261
+msgid "Electricity tariff"
+msgstr ""
+
+#: templates/household_profile.html:412
+msgid "energy efficiency gain from economies of scale"
+msgstr ""
+
+#: templates/index.html:3
+#, fuzzy
+msgid "Keralam Clean Cooking Tool - Home"
+msgstr "Keralam Cooking Energy Analysis Tool"
+
+#: templates/index.html:15
+#, fuzzy
+msgid "Clean Cooking"
+msgstr "Keralam Cooking Energy Analysis Tool"
+
+#: templates/index.html:21
+msgid ""
+"A research-driven analytical tool that identifies the most efficient "
+"cooking-energy solutions for\n"
+"            diverse use cases in Keralam."
+msgstr ""
+
+#: templates/index.html:27
+msgid "Start Analysing"
+msgstr ""
+
+#: templates/index.html:34
+msgid "Districts Analysed"
+msgstr ""
+
+#: templates/index.html:39
+msgid "Clean-fuel Options Modelled"
+msgstr ""
+
+#: templates/index.html:44
+msgid "Evidence-based Methodology"
+msgstr ""
+
+#: templates/index.html:50
+msgid "How it Works"
+msgstr ""
+
+#: templates/info.html:3
+msgid "Information & Methodology"
+msgstr ""
+
+#: templates/info.html:11
+msgid "About the Platform"
+msgstr ""
+
+#: templates/info.html:12
+msgid "Platform overview is designed, validated, and kept up to date."
+msgstr ""
+
+#: templates/info.html:18
+msgid "Key Features"
+msgstr ""
+
+#: templates/info.html:28
+msgid "Flexible assessment options"
+msgstr ""
+
+#: templates/info.html:29
+msgid ""
+"Use meal data or totals inputs or summarize\n"
+"                                        existing fuel "
+"consumption—whichever fits your data best."
+msgstr ""
+
+#: templates/info.html:32
+msgid "Granular dish-level energy modeling"
+msgstr ""
+
+#: templates/info.html:34
+msgid "Historical consumption analysis"
+msgstr ""
+
+#: templates/info.html:36
+msgid "Multi-fuel scenario comparison"
+msgstr ""
+
+#: templates/info.html:48
+msgid "Health risk evaluation"
+msgstr ""
+
+#: templates/info.html:49
+msgid ""
+"WHO-based health risk analysis guidance and\n"
+"                                        highlights vulnerable groups."
+msgstr ""
+
+#: templates/info.html:52
+msgid "WHO air quality benchmarking"
+msgstr ""
+
+#: templates/info.html:54
+msgid "Peak exposure modeling"
+msgstr ""
+
+#: templates/info.html:55
+msgid "Vulnerable group protection"
+msgstr ""
+
+#: templates/info.html:66
+msgid "Environmental impact"
+msgstr ""
+
+#: templates/info.html:67
+msgid ""
+"Lifecycle carbon accounting across all fuel\n"
+"                                        options."
+msgstr ""
+
+#: templates/info.html:70
+msgid "CO₂ emissions quantification"
+msgstr ""
+
+#: templates/info.html:72
+msgid "Sustainability grading system"
+msgstr ""
+
+#: templates/info.html:74
+msgid "Social cost of carbon"
+msgstr ""
+
+#: templates/info.html:85
+msgid "Strategic recommendations"
+msgstr ""
+
+#: templates/info.html:86
+msgid ""
+"Clean cooking recommendations transition\n"
+"                                        strategies."
+msgstr ""
+
+#: templates/info.html:89
+msgid "Multi-criteria decision analysis"
+msgstr ""
+
+#: templates/info.html:91
+msgid "ROI & Payback calculation"
+msgstr ""
+
+#: templates/info.html:92
+msgid "Feasibility assessment"
+msgstr ""
+
+#: templates/info.html:104
+msgid ""
+"Research-Validated\n"
+"                        Methodology"
+msgstr ""
+
+#: templates/info.html:110
+msgid "Energy Calculations"
+msgstr ""
+
+#: templates/info.html:112
+msgid ""
+"Ministry of\n"
+"                                    Petroleum & Natural Gas formulas"
+msgstr ""
+
+#: templates/info.html:114
+msgid ""
+"Gas utilities\n"
+"                                    slab structure"
+msgstr ""
+
+#: templates/info.html:116
+msgid ""
+"Thermal\n"
+"                                    efficiency standards"
+msgstr ""
+
+#: templates/info.html:118
+msgid ""
+"Economies of\n"
+"                                    scale for larger households"
+msgstr ""
+
+#: templates/info.html:123
+msgid "Economic Analysis"
+msgstr ""
+
+#: templates/info.html:125
+msgid ""
+"RBI interest\n"
+"                                    rates and inflation"
+msgstr ""
+
+#: templates/info.html:127
+msgid ""
+"NPV and\n"
+"                                    payback calculations"
+msgstr ""
+
+#: templates/info.html:129
+msgid ""
+"Solar\n"
+"                                    investment analysis"
+msgstr ""
+
+#: templates/info.html:131
+msgid ""
+"EMI and\n"
+"                                    financing options"
+msgstr ""
+
+#: templates/info.html:141
+msgid "Data Privacy Commitment"
+msgstr ""
+
+#: templates/info.html:142
+msgid ""
+"Anonymized data only; secure storage to\n"
+"                                    strengthen\n"
+"                                    cooking energy policies in Keralam. "
+"Personal details are optional and stored\n"
+"                                    securely."
+msgstr ""
+
+#: templates/info.html:155
+msgid "Support & Resources"
+msgstr ""
+
+#: templates/info.html:163
+msgid "Need Help?"
+msgstr ""
+
+#: templates/info.html:164
+msgid ""
+"Platform support available the tool or understanding\n"
+"                                    your\n"
+"                                    results."
+msgstr ""
+
+#: templates/info.html:173
+msgid "Download PDF report of your analysis results."
+msgstr ""
+
+#: templates/info.html:181
+msgid ""
+"Share results with family or energy\n"
+"                                    consultants."
+msgstr ""
+
+#: templates/kitchen_profile.html:3 templates/kitchen_profile.html:6
+#: templates/kitchen_profile.html:7 templates/kitchen_profile.html:17
+#: templates/kitchen_profile.html:27
+msgid "Kitchen & Health Details"
+msgstr ""
+
+#: templates/kitchen_profile.html:19 templates/kitchen_profile.html:31
+msgid ""
+"Describe your kitchen details and health considerations for accurate "
+"analysis."
+msgstr ""
+
+#: templates/kitchen_profile.html:45
+msgid "Kitchen details"
+msgstr ""
+
+#: templates/kitchen_profile.html:94
+msgid ""
+"No. of members sensitive to\n"
+"                                    smoke"
+msgstr ""
+
+#: templates/kitchen_profile.html:98
+msgid "Children <5 years or elderly >65 years"
+msgstr ""
+
+#: templates/kitchen_profile.html:99
+msgid "Please enter number of sensitive members"
+msgstr ""
+
+#: templates/kitchen_profile.html:100
+msgid "Residents requiring higher air quality standards"
+msgstr ""
+
+#: templates/kitchen_profile.html:110
+msgid "Budget & Renewable Preferences"
+msgstr ""
+
+#: templates/kitchen_profile.html:115
+msgid "Investment priority"
+msgstr ""
+
+#: templates/kitchen_profile.html:119
+msgid "Minimise Upfront Cost"
+msgstr ""
+
+#: templates/kitchen_profile.html:121
+msgid "Maximise Long-term Savings"
+msgstr ""
+
+#: templates/kitchen_profile.html:122
+msgid "Maximise Environmental Benefit"
+msgstr ""
+
+#~ msgid "Analysis Results"
+#~ msgstr ""
+
+#~ msgid "Keralam Cooking Energy Analysis Tool"
+#~ msgstr ""
+
+#~ msgid "Step 4 of 4"
+#~ msgstr ""
+
+#~ msgid "Analysis Complete"
+#~ msgstr ""
+
+#~ msgid "Comprehensive Energy Analysis Results"
+#~ msgstr "Comprehensive Energy Analysis Results"
+
+#~ msgid "Personalized recommendations for your household"
+#~ msgstr "Personalized recommendations for your household"
+
+#~ msgid "Your Current Energy Consumption"
+#~ msgstr "Your Current Energy Consumption"
+
+#~ msgid "Monthly Energy (kWh)"
+#~ msgstr "Monthly Energy (kWh)"
+
+#~ msgid "Daily Energy (kWh)"
+#~ msgstr ""
+
+#~ msgid "Monthly Cost"
+#~ msgstr ""
+
+#~ msgid "of income"
+#~ msgstr ""
+
+#~ msgid "Annual CO₂ (kg)"
+#~ msgstr ""
+
+#~ msgid "Environmental grade"
+#~ msgstr ""
+
+#~ msgid "Health Impact Assessment"
+#~ msgstr ""
+
+#~ msgid "Low Risk"
+#~ msgstr ""
+
+#~ msgid "Moderate Risk"
+#~ msgstr ""
+
+#~ msgid "High Risk"
+#~ msgstr ""
+
+#~ msgid "Very High Risk"
+#~ msgstr ""
+
+#~ msgid "Health Risk Level"
+#~ msgstr ""
+
+#~ msgid "Peak PM2.5 (μg/m³)"
+#~ msgstr ""
+
+#~ msgid "WHO Safe Level"
+#~ msgstr ""
+
+#~ msgid "Above WHO Guidelines"
+#~ msgstr ""
+
+#~ msgid "Health Risk Score"
+#~ msgstr ""
+
+#~ msgid "Health Advisory:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Your current cooking setup exposes you"
+#~ " to PM2.5 levels above WHO "
+#~ "guidelines. Consider cleaner cooking "
+#~ "alternatives, especially if you have "
+#~ "children or elderly family members."
+#~ msgstr ""
+
+#~ msgid "Monthly Cost Comparison"
+#~ msgstr ""
+
+#~ msgid "Annual CO₂ Emissions Comparison"
+#~ msgstr ""
+
+#~ msgid "Health Risk Score Comparison"
+#~ msgstr ""
+
+#~ msgid "Multi-Criteria Performance"
+#~ msgstr ""
+
+#~ msgid "Detailed Energy Source Comparison"
+#~ msgstr ""
+
+#~ msgid "Energy Source"
+#~ msgstr ""
+
+#~ msgid "Annual CO₂"
+#~ msgstr ""
+
+#~ msgid "Health Risk"
+#~ msgstr ""
+
+#~ msgid "Efficiency"
+#~ msgstr ""
+
+#~ msgid "Grade"
+#~ msgstr ""
+
+#~ msgid "Status"
+#~ msgstr ""
+
+#~ msgid "Your Current Setup"
+#~ msgstr ""
+
+#~ msgid "Current"
+#~ msgstr ""
+
+#~ msgid "Saves"
+#~ msgstr ""
+
+#~ msgid "Costs"
+#~ msgstr ""
+
+#~ msgid "more"
+#~ msgstr ""
+
+#~ msgid "Similar cost"
+#~ msgstr ""
+
+#~ msgid "Personalized Recommendations"
+#~ msgstr ""
+
+#~ msgid "Top Recommendation"
+#~ msgstr ""
+
+#~ msgid "Alternative"
+#~ msgstr ""
+
+#~ msgid "Score"
+#~ msgstr ""
+
+#~ msgid "Financial Impact"
+#~ msgstr ""
+
+#~ msgid "month"
+#~ msgstr ""
+
+#~ msgid "Annual savings"
+#~ msgstr ""
+
+#~ msgid "Consider long-term benefits"
+#~ msgstr ""
+
+#~ msgid "Similar monthly cost"
+#~ msgstr ""
+
+#~ msgid "Capital investment"
+#~ msgstr ""
+
+#~ msgid "Health & Environment"
+#~ msgstr ""
+
+#~ msgid "Reduces CO₂ by"
+#~ msgstr ""
+
+#~ msgid "year"
+#~ msgstr ""
+
+#~ msgid "Improves health safety"
+#~ msgstr ""
+
+#~ msgid "Bonus"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Generate your own clean energy, reduce"
+#~ " grid dependence, and potentially earn "
+#~ "from excess generation!"
+#~ msgstr ""
+
+#~ msgid "Warning"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Severe health risks, especially for "
+#~ "women and children. Not recommended."
+#~ msgstr ""
+
+#~ msgid "Note"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Check PNG availability in your area. "
+#~ "Contact your local gas utility for "
+#~ "connection."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Requires organic waste supply and "
+#~ "regular maintenance. Ideal for rural "
+#~ "areas with livestock."
+#~ msgstr ""
+
+#~ msgid "Action Center"
+#~ msgstr ""
+
+#~ msgid "Download Report"
+#~ msgstr ""
+
+#~ msgid "Share Results"
+#~ msgstr ""
+
+#~ msgid "Edit Inputs"
+#~ msgstr ""
+
+#~ msgid "New Analysis"
+#~ msgstr ""
+
+#~ msgid "Next Steps:"
+#~ msgstr ""
+
+#~ msgid "Contact local suppliers for price quotes on recommended solutions"
+#~ msgstr ""
+
+#~ msgid "Consult with energy professionals for installation planning"
+#~ msgstr ""
+
+#~ msgid "Check government subsidy schemes for clean cooking solutions"
+#~ msgstr ""
+
+#~ msgid "Monitor your energy consumption and costs over time"
+#~ msgstr ""
+
+#~ msgid "Contributing to Clean Cooking Research"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Your anonymized data helps improve "
+#~ "cooking energy policies in Keralam. This"
+#~ " analysis is based on research-"
+#~ "validated methodologies and supports "
+#~ "sustainable energy transition initiatives."
+#~ msgstr ""
+
+#~ msgid "Analysis ID:"
+#~ msgstr ""
+
+#~ msgid "Generated:"
+#~ msgstr ""
+
+#~ msgid "Monthly Cost (₹)"
+#~ msgstr ""
+
+#~ msgid "Reduces by"
+#~ msgstr ""
+
+#~ msgid "Cost Efficiency"
+#~ msgstr ""
+
+#~ msgid "Low Emissions"
+#~ msgstr ""
+
+#~ msgid "Health Safety"
+#~ msgstr ""
+
+#~ msgid "Overall Rating"
+#~ msgstr ""
+
+#~ msgid "Keralam Cooking Energy Tool"
+#~ msgstr ""
+
+#~ msgid "Step 1 of 4"
+#~ msgstr ""
+
+#~ msgid "Research-Based Analysis"
+#~ msgstr ""
+
+#~ msgid "Data Sources:"
+#~ msgstr ""
+
+#~ msgid "Ministry of Petroleum & Natural Gas"
+#~ msgstr ""
+
+#~ msgid "Keralam State Electricity Board"
+#~ msgstr ""
+
+#~ msgid "World Health Organization"
+#~ msgstr ""
+
+#~ msgid "Central Electricity Authority"
+#~ msgstr ""
+
+#~ msgid "Methodology:"
+#~ msgstr ""
+
+#~ msgid "WHO Air Quality Standards"
+#~ msgstr ""
+
+#~ msgid "IPCC Emission Guidelines"
+#~ msgstr ""
+
+#~ msgid "BEE Efficiency Standards"
+#~ msgstr ""
+
+#~ msgid "RBI Economic Parameters"
+#~ msgstr ""
+
+#~ msgid "Version 3.1 - Enhanced Multi-fuel Support"
+#~ msgstr ""
+
+#~ msgid "Vasudha Foundation"
+#~ msgstr ""
+
+#~ msgid "Energy Consumption Calculation"
+#~ msgstr ""
+
+#~ msgid "Step 3 of 4"
+#~ msgstr ""
+
+#~ msgid "Calculate your cooking energy consumption using one of two methods"
+#~ msgstr ""
+
+#~ msgid "Choose Calculation Method"
+#~ msgstr ""
+
+#~ msgid "Dish-based Calculation"
+#~ msgstr ""
+
+#~ msgid "Select the dishes you regularly cook and specify energy sources"
+#~ msgstr ""
+
+#~ msgid "Use this method"
+#~ msgstr ""
+
+#~ msgid "Consumption-based Calculation"
+#~ msgstr ""
+
+#~ msgid "Based on your current cooking fuel usage and bills"
+#~ msgstr ""
+
+#~ msgid "Dish Selection & Fuel Usage"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Select the dishes you regularly cook "
+#~ "and specify which energy sources you "
+#~ "use for each category."
+#~ msgstr ""
+
+#~ msgid "Current Cooking Fuels Used"
+#~ msgstr ""
+
+#~ msgid "Select all fuels currently used for cooking"
+#~ msgstr ""
+
+#~ msgid "Breakfast"
+#~ msgstr ""
+
+#~ msgid "Breakfast Type"
+#~ msgstr ""
+
+#~ msgid "Normal"
+#~ msgstr ""
+
+#~ msgid "Heavy"
+#~ msgstr ""
+
+#~ msgid "Light"
+#~ msgstr ""
+
+#~ msgid "Select Dishes"
+#~ msgstr ""
+
+#~ msgid "Lunch"
+#~ msgstr ""
+
+#~ msgid "Lunch Type"
+#~ msgstr ""
+
+#~ msgid "Dinner"
+#~ msgstr ""
+
+#~ msgid "Dinner Type"
+#~ msgstr ""
+
+#~ msgid "Snacks"
+#~ msgstr ""
+
+#~ msgid "Select Snacks"
+#~ msgstr ""
+
+#~ msgid "Selected Dishes Summary"
+#~ msgstr ""
+
+#~ msgid "Category"
+#~ msgstr ""
+
+#~ msgid "Dish"
+#~ msgstr ""
+
+#~ msgid "Fuel"
+#~ msgstr ""
+
+#~ msgid "Current Energy Consumption"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Tell us about your current cooking "
+#~ "fuel consumption to calculate your "
+#~ "energy usage."
+#~ msgstr ""
+
+#~ msgid "What is your primary cooking fuel?"
+#~ msgstr ""
+
+#~ msgid "Select your main cooking fuel"
+#~ msgstr ""
+
+#~ msgid "LPG"
+#~ msgstr ""
+
+#~ msgid "Liquefied Petroleum Gas"
+#~ msgstr ""
+
+#~ msgid "PNG"
+#~ msgstr ""
+
+#~ msgid "Piped Natural Gas"
+#~ msgstr ""
+
+#~ msgid "Grid electricity"
+#~ msgstr ""
+
+#~ msgid "Traditional Solid Biomass"
+#~ msgstr ""
+
+#~ msgid "Mixed usage"
+#~ msgstr ""
+
+#~ msgid "Please select your primary fuel"
+#~ msgstr ""
+
+#~ msgid "LPG Consumption Details"
+#~ msgstr ""
+
+#~ msgid "Cylinder Size"
+#~ msgstr ""
+
+#~ msgid "Domestic"
+#~ msgstr ""
+
+#~ msgid "Commercial"
+#~ msgstr ""
+
+#~ msgid "Small"
+#~ msgstr ""
+
+#~ msgid "Cylinder Lasts (Days)"
+#~ msgstr ""
+
+#~ msgid "How many days does one cylinder last"
+#~ msgstr ""
+
+#~ msgid "Cylinder Price"
+#~ msgstr ""
+
+#~ msgid "Price you pay for one cylinder"
+#~ msgstr ""
+
+#~ msgid "LPG Consumption Analysis"
+#~ msgstr ""
+
+#~ msgid "kWh per cylinder"
+#~ msgstr ""
+
+#~ msgid "Monthly energy (kWh)"
+#~ msgstr ""
+
+#~ msgid "Cylinders/month"
+#~ msgstr ""
+
+#~ msgid "Monthly cost (₹)"
+#~ msgstr ""
+
+#~ msgid "PNG Consumption Details"
+#~ msgstr ""
+
+#~ msgid "How would you like to provide PNG data?"
+#~ msgstr ""
+
+#~ msgid "Monthly bill amount"
+#~ msgstr ""
+
+#~ msgid "Monthly consumption (SCM)"
+#~ msgstr ""
+
+#~ msgid "Daily average"
+#~ msgstr ""
+
+#~ msgid "Monthly PNG Bill"
+#~ msgstr ""
+
+#~ msgid "Enter your typical monthly PNG bill amount"
+#~ msgstr ""
+
+#~ msgid "Monthly PNG Consumption"
+#~ msgstr ""
+
+#~ msgid "Standard Cubic Meters per month"
+#~ msgstr ""
+
+#~ msgid "Daily Average Consumption"
+#~ msgstr ""
+
+#~ msgid "Daily average consumption"
+#~ msgstr ""
+
+#~ msgid "PNG Consumption Analysis"
+#~ msgstr ""
+
+#~ msgid "Monthly SCM"
+#~ msgstr ""
+
+#~ msgid "Monthly bill (₹)"
+#~ msgstr ""
+
+#~ msgid "Avg rate (₹/SCM)"
+#~ msgstr ""
+
+#~ msgid "Electricity Consumption for Cooking"
+#~ msgstr ""
+
+#~ msgid "Monthly Electricity for Cooking"
+#~ msgstr ""
+
+#~ msgid "Check electricity bill or estimate based on appliance usage"
+#~ msgstr ""
+
+#~ msgid "Electricity Consumption Analysis"
+#~ msgstr ""
+
+#~ msgid "Cooking energy (kWh)"
+#~ msgstr ""
+
+#~ msgid "Biomass Consumption Details"
+#~ msgstr ""
+
+#~ msgid "Type of biomass"
+#~ msgstr ""
+
+#~ msgid "Firewood"
+#~ msgstr ""
+
+#~ msgid "Agricultural waste"
+#~ msgstr ""
+
+#~ msgid "Cow dung cake"
+#~ msgstr ""
+
+#~ msgid "Mixed"
+#~ msgstr ""
+
+#~ msgid "Monthly consumption"
+#~ msgstr ""
+
+#~ msgid "Estimate monthly biomass consumption in kg"
+#~ msgstr ""
+
+#~ msgid "Warning:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Traditional biomass cooking has severe "
+#~ "health and environmental impacts!"
+#~ msgstr ""
+
+#~ msgid "Energy Consumption Summary"
+#~ msgstr ""
+
+#~ msgid "% of Income"
+#~ msgstr ""
+
+#~ msgid "Back: Kitchen Profile"
+#~ msgstr ""
+
+#~ msgid "Calculate & Analyze"
+#~ msgstr ""
+
+#~ msgid "Please select primary fuel"
+#~ msgstr ""
+
+#~ msgid "Calculating your energy consumption..."
+#~ msgstr ""
+
+#~ msgid "Household Profile"
+#~ msgstr ""
+
+#~ msgid "Tell us about your household to get personalized recommendations"
+#~ msgstr ""
+
+#~ msgid "Personal Information"
+#~ msgstr ""
+
+#~ msgid "Optional"
+#~ msgstr ""
+
+#~ msgid "Name"
+#~ msgstr ""
+
+#~ msgid "Your name for personalized analysis"
+#~ msgstr ""
+
+#~ msgid "Email"
+#~ msgstr ""
+
+#~ msgid "Email for follow-up (optional)"
+#~ msgstr ""
+
+#~ msgid "Please enter a valid email address"
+#~ msgstr ""
+
+#~ msgid "Phone Number"
+#~ msgstr ""
+
+#~ msgid "Phone number for contact (optional)"
+#~ msgstr ""
+
+#~ msgid "Household Details"
+#~ msgstr ""
+
+#~ msgid "Household Size"
+#~ msgstr ""
+
+#~ msgid "Number of people in household"
+#~ msgstr ""
+
+#~ msgid "Please enter household size"
+#~ msgstr ""
+
+#~ msgid "District"
+#~ msgstr ""
+
+#~ msgid "Select your district"
+#~ msgstr ""
+
+#~ msgid "Thiruvananthapuram"
+#~ msgstr ""
+
+#~ msgid "Kollam"
+#~ msgstr ""
+
+#~ msgid "Pathanamthitta"
+#~ msgstr ""
+
+#~ msgid "Alappuzha"
+#~ msgstr ""
+
+#~ msgid "Kottayam"
+#~ msgstr ""
+
+#~ msgid "Idukki"
+#~ msgstr ""
+
+#~ msgid "Ernakulam"
+#~ msgstr ""
+
+#~ msgid "Thrissur"
+#~ msgstr ""
+
+#~ msgid "Palakkad"
+#~ msgstr ""
+
+#~ msgid "Malappuram"
+#~ msgstr ""
+
+#~ msgid "Kozhikode"
+#~ msgstr ""
+
+#~ msgid "Wayanad"
+#~ msgstr ""
+
+#~ msgid "Kannur"
+#~ msgstr ""
+
+#~ msgid "Kasaragod"
+#~ msgstr ""
+
+#~ msgid "Please select your district"
+#~ msgstr ""
+
+#~ msgid "Area Type"
+#~ msgstr ""
+
+#~ msgid "Select area type"
+#~ msgstr ""
+
+#~ msgid "Urban"
+#~ msgstr ""
+
+#~ msgid "Municipal areas"
+#~ msgstr ""
+
+#~ msgid "Rural"
+#~ msgstr ""
+
+#~ msgid "Panchayat areas"
+#~ msgstr ""
+
+#~ msgid "Please select area type"
+#~ msgstr ""
+
+#~ msgid "Monthly Household Income"
+#~ msgstr ""
+
+#~ msgid "Gross monthly household income"
+#~ msgstr ""
+
+#~ msgid "Please enter monthly income"
+#~ msgstr ""
+
+#~ msgid "Economic Parameters"
+#~ msgstr ""
+
+#~ msgid "Electricity Tariff"
+#~ msgstr ""
+
+#~ msgid "Your current electricity tariff rate"
+#~ msgstr ""
+
+#~ msgid "Please enter electricity tariff"
+#~ msgstr ""
+
+#~ msgid "LPG Subsidy Eligibility"
+#~ msgstr ""
+
+#~ msgid "Select subsidy status"
+#~ msgstr ""
+
+#~ msgid "No"
+#~ msgstr ""
+
+#~ msgid "Market rate"
+#~ msgstr ""
+
+#~ msgid "Yes"
+#~ msgstr ""
+
+#~ msgid "Government subsidy"
+#~ msgstr ""
+
+#~ msgid "Please select LPG subsidy status"
+#~ msgstr ""
+
+#~ msgid "Loan Interest Rate"
+#~ msgstr ""
+
+#~ msgid "Interest rate for financing energy solutions"
+#~ msgstr ""
+
+#~ msgid "Please enter loan interest rate"
+#~ msgstr ""
+
+#~ msgid "Loan Tenure"
+#~ msgstr ""
+
+#~ msgid "Years"
+#~ msgstr ""
+
+#~ msgid "Select loan tenure"
+#~ msgstr ""
+
+#~ msgid "years"
+#~ msgstr ""
+
+#~ msgid "Please select loan tenure"
+#~ msgstr ""
+
+#~ msgid "Back to Home"
+#~ msgstr ""
+
+#~ msgid "Next: Kitchen Profile"
+#~ msgstr ""
+
+#~ msgid "energy efficiency gain from economies of scale"
+#~ msgstr ""
+
+#~ msgid "Income Category"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Research-based analysis for optimal "
+#~ "cooking energy solutions tailored for "
+#~ "Keralam households"
+#~ msgstr ""
+
+#~ msgid "Start Analysis"
+#~ msgstr ""
+
+#~ msgid "Health Impact"
+#~ msgstr ""
+
+#~ msgid "Assessment"
+#~ msgstr ""
+
+#~ msgid "Environmental"
+#~ msgstr ""
+
+#~ msgid "Analysis"
+#~ msgstr ""
+
+#~ msgid "Economic"
+#~ msgstr ""
+
+#~ msgid "Comparison"
+#~ msgstr ""
+
+#~ msgid "Solar"
+#~ msgstr ""
+
+#~ msgid "Feasibility"
+#~ msgstr ""
+
+#~ msgid "Two Calculation Methods"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Choose between dish-based calculation "
+#~ "(select dishes you cook) or "
+#~ "consumption-based calculation (based on "
+#~ "your current fuel usage)."
+#~ msgstr ""
+
+#~ msgid "Dish-based energy calculation"
+#~ msgstr ""
+
+#~ msgid "Current consumption analysis"
+#~ msgstr ""
+
+#~ msgid "Multi-fuel support"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Comprehensive health risk analysis based "
+#~ "on WHO PM2.5 guidelines, kitchen layout,"
+#~ " and ventilation quality."
+#~ msgstr ""
+
+#~ msgid "WHO air quality standards"
+#~ msgstr ""
+
+#~ msgid "Peak exposure calculation"
+#~ msgstr ""
+
+#~ msgid "Vulnerable member protection"
+#~ msgstr ""
+
+#~ msgid "Environmental Analysis"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Calculate your carbon footprint and "
+#~ "environmental impact using IPCC emission "
+#~ "factors and CEA guidelines."
+#~ msgstr ""
+
+#~ msgid "CO₂ emissions tracking"
+#~ msgstr ""
+
+#~ msgid "Environmental grading"
+#~ msgstr ""
+
+#~ msgid "Social cost calculation"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Get customized energy solutions based on"
+#~ " your household profile, budget "
+#~ "preferences, and local conditions."
+#~ msgstr ""
+
+#~ msgid "Multi-criteria scoring"
+#~ msgstr ""
+
+#~ msgid "Budget-aware suggestions"
+#~ msgstr ""
+
+#~ msgid "Local feasibility check"
+#~ msgstr ""
+
+#~ msgid "Research-Validated Methodology"
+#~ msgstr ""
+
+#~ msgid "Energy Calculations"
+#~ msgstr ""
+
+#~ msgid "Ministry of Petroleum & Natural Gas formulas"
+#~ msgstr ""
+
+#~ msgid "Gas utilities slab structure"
+#~ msgstr ""
+
+#~ msgid "Thermal efficiency standards"
+#~ msgstr ""
+
+#~ msgid "Economies of scale for larger households"
+#~ msgstr ""
+
+#~ msgid "Economic Analysis"
+#~ msgstr ""
+
+#~ msgid "RBI interest rates and inflation"
+#~ msgstr ""
+
+#~ msgid "NPV and payback calculations"
+#~ msgstr ""
+
+#~ msgid "Solar investment analysis"
+#~ msgstr ""
+
+#~ msgid "EMI and financing options"
+#~ msgstr ""
+
+#~ msgid "Data Privacy:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This tool collects anonymized data for"
+#~ " research purposes to improve cooking "
+#~ "energy policies in Keralam. All personal"
+#~ " information is optional and securely "
+#~ "stored."
+#~ msgstr ""
+
+#~ msgid "Simple 4-Step Process"
+#~ msgstr ""
+
+#~ msgid "Basic information about your family and location"
+#~ msgstr ""
+
+#~ msgid "Kitchen & Health"
+#~ msgstr ""
+
+#~ msgid "Kitchen layout, ventilation, and health considerations"
+#~ msgstr ""
+
+#~ msgid "Energy Calculation"
+#~ msgstr ""
+
+#~ msgid "Current cooking energy consumption analysis"
+#~ msgstr ""
+
+#~ msgid "Results & Analysis"
+#~ msgstr ""
+
+#~ msgid "Comprehensive analysis and personalized recommendations"
+#~ msgstr ""
+
+#~ msgid "Begin Your Analysis"
+#~ msgstr ""
+
+#~ msgid "Need Help?"
+#~ msgstr ""
+
+#~ msgid "Get support with using the tool or understanding your results."
+#~ msgstr ""
+
+#~ msgid "Help Center"
+#~ msgstr ""
+
+#~ msgid "Get a detailed PDF report of your analysis results."
+#~ msgstr ""
+
+#~ msgid "Sample Report"
+#~ msgstr ""
+
+#~ msgid "Share your analysis with family or energy consultants."
+#~ msgstr ""
+
+#~ msgid "Learn More"
+#~ msgstr ""
+
+#~ msgid "Kitchen & Health Profile"
+#~ msgstr ""
+
+#~ msgid "Step 2 of 4"
+#~ msgstr ""
+
+#~ msgid "Help us understand your kitchen setup and health considerations"
+#~ msgstr ""
+
+#~ msgid "Kitchen Layout & Ventilation"
+#~ msgstr ""
+
+#~ msgid "Kitchen Type"
+#~ msgstr ""
+
+#~ msgid "Select kitchen type"
+#~ msgstr ""
+
+#~ msgid "Outdoor Kitchen"
+#~ msgstr ""
+
+#~ msgid "pollution reduction"
+#~ msgstr ""
+
+#~ msgid "Separate Room"
+#~ msgstr ""
+
+#~ msgid "Semi-Open Kitchen"
+#~ msgstr ""
+
+#~ msgid "Open Kitchen"
+#~ msgstr ""
+
+#~ msgid "Please select kitchen type"
+#~ msgstr ""
+
+#~ msgid "Kitchen layout affects indoor air pollution exposure"
+#~ msgstr ""
+
+#~ msgid "Ventilation Quality"
+#~ msgstr ""
+
+#~ msgid "Select ventilation quality"
+#~ msgstr ""
+
+#~ msgid "Excellent"
+#~ msgstr ""
+
+#~ msgid "Chimney/exhaust fan"
+#~ msgstr ""
+
+#~ msgid "Good"
+#~ msgstr ""
+
+#~ msgid "Good airflow"
+#~ msgstr ""
+
+#~ msgid "Average"
+#~ msgstr ""
+
+#~ msgid "Natural ventilation"
+#~ msgstr ""
+
+#~ msgid "Poor"
+#~ msgstr ""
+
+#~ msgid "Limited airflow"
+#~ msgstr ""
+
+#~ msgid "Please select ventilation quality"
+#~ msgstr ""
+
+#~ msgid "Quality of kitchen ventilation system"
+#~ msgstr ""
+
+#~ msgid "Health Impact Preview"
+#~ msgstr ""
+
+#~ msgid "Cooking Habits"
+#~ msgstr ""
+
+#~ msgid "Daily Cooking Hours"
+#~ msgstr ""
+
+#~ msgid "Average hours spent cooking daily"
+#~ msgstr ""
+
+#~ msgid "Please enter daily cooking hours"
+#~ msgstr ""
+
+#~ msgid "Include all meal preparation time"
+#~ msgstr ""
+
+#~ msgid "Sensitive Members"
+#~ msgstr ""
+
+#~ msgid "Children <5 years or elderly >65 years"
+#~ msgstr ""
+
+#~ msgid "Please enter number of sensitive members"
+#~ msgstr ""
+
+#~ msgid "Children under 5 or elderly over 65 years"
+#~ msgstr ""
+
+#~ msgid "Solar & Budget Preferences"
+#~ msgstr ""
+
+#~ msgid "Available Roof Area"
+#~ msgstr ""
+
+#~ msgid "sq.m"
+#~ msgstr ""
+
+#~ msgid "Usable roof area for solar installation"
+#~ msgstr ""
+
+#~ msgid "Please enter available roof area"
+#~ msgstr ""
+
+#~ msgid "Budget Priority"
+#~ msgstr ""
+
+#~ msgid "Select budget priority"
+#~ msgstr ""
+
+#~ msgid "Low upfront cost"
+#~ msgstr ""
+
+#~ msgid "Balanced approach"
+#~ msgstr ""
+
+#~ msgid "Long-term savings"
+#~ msgstr ""
+
+#~ msgid "Environmental priority"
+#~ msgstr ""
+
+#~ msgid "Please select budget preference"
+#~ msgstr ""
+
+#~ msgid "Your primary financial consideration"
+#~ msgstr ""
+
+#~ msgid "Health Risk Assessment Preview"
+#~ msgstr ""
+
+#~ msgid "Current Risk Level"
+#~ msgstr ""
+
+#~ msgid "Risk Score"
+#~ msgstr ""
+
+#~ msgid "Note:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This is a preliminary assessment. Final"
+#~ " analysis will include specific fuel "
+#~ "types."
+#~ msgstr ""
+
+#~ msgid "Back: Household"
+#~ msgstr ""
+
+#~ msgid "Next: Energy Calculation"
+#~ msgstr ""
+
+#~ msgid "pollution exposure reduction"
+#~ msgstr ""
+
+#~ msgid "Kitchen layout"
+#~ msgstr ""
+
+#~ msgid "Ventilation"
+#~ msgstr ""
+
+#~ msgid "Solar potential"
+#~ msgstr ""
+
+#~ msgid "Limited solar potential"
+#~ msgstr "Limited solar potential"
+
+#~ msgid "Select Breakfast Dishes"
+#~ msgstr ""
+
+#~ msgid "Select Fuel for Each Dish"
+#~ msgstr ""
+
+#~ msgid "Select Lunch Dishes"
+#~ msgstr ""
+
+#~ msgid "Select Dinner Dishes"
+#~ msgstr ""
+
+#~ msgid "Percent of Income"
+#~ msgstr ""
+
+#~ msgid "System size is estimated with a 20% buffer for optimal performance."
+#~ msgstr "System size is estimated with a 20% buffer for optimal performance."
+
+#~ msgid "Thank you for your feedback! Your preferences have been saved."
+#~ msgstr ""
+
+#~ msgid "Quick Summary"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Your anonymized data helps improve "
+#~ "cooking energy policies in Keralam. This"
+#~ " analysis is\n"
+#~ "                        based on research-"
+#~ "validated methodologies and supports "
+#~ "sustainable energy transition\n"
+#~ "                        initiatives."
+#~ msgstr ""
+
+#~ msgid "Select Analysis Type"
+#~ msgstr ""
+
+#~ msgid "Select the pathway that best describes your cooking needs."
+#~ msgstr ""
+
+#~ msgid "Household cooking"
+#~ msgstr ""
+
+#~ msgid "Commercial cooking"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "(For schools, hotels, factories, and community\n"
+#~ "                        kitchens.)"
+#~ msgstr ""
+
+#~ msgid "Vasudha Foundation & EMC Keralam"
+#~ msgstr ""
+
+#~ msgid "Advancing clean cooking for Keralam."
+#~ msgstr ""
+
+#~ msgid "Information & About"
+#~ msgstr ""
+
+#~ msgid "Describe your kitchen setup so we can tailor the commercial analysis."
+#~ msgstr ""
+
+#~ msgid "Kitchen ventilation scenario"
+#~ msgstr ""
+
+#~ msgid "Impacts health risk and efficiency assumptions"
+#~ msgstr ""
+
+#~ msgid "Cooking patterns"
+#~ msgstr ""
+
+#~ msgid "Daily cooking duration"
+#~ msgstr ""
+
+#~ msgid "hours"
+#~ msgstr ""
+
+#~ msgid "Kitchen staff exposed"
+#~ msgstr ""
+
+#~ msgid "Energy & budget preferences"
+#~ msgstr ""
+
+#~ msgid "Electricity rate"
+#~ msgstr ""
+
+#~ msgid "Please enter tariff"
+#~ msgstr ""
+
+#~ msgid "Select priority"
+#~ msgstr ""
+
+#~ msgid "Minimize upfront cost"
+#~ msgstr ""
+
+#~ msgid "Maximize long-term savings"
+#~ msgstr ""
+
+#~ msgid "Maximize environmental benefit"
+#~ msgstr ""
+
+#~ msgid "Primary driver for financial decisions"
+#~ msgstr ""
+
+#~ msgid "Back: Institution"
+#~ msgstr ""
+
+#~ msgid "Analysis Method"
+#~ msgstr "Analysis Complete"
+
+#~ msgid "Data Collection"
+#~ msgstr ""
+
+#~ msgid "Results & Insights"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Institutional Energy\n"
+#~ "                        Assessment"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Analyze cooking energy consumption and "
+#~ "discover cost-effective clean fuel "
+#~ "alternatives"
+#~ msgstr ""
+
+#~ msgid "Select Institute Type"
+#~ msgstr ""
+
+#~ msgid "Choose your facility category"
+#~ msgstr ""
+
+#~ msgid "Tell us about your institution"
+#~ msgstr ""
+
+#~ msgid "Where is your facility located?"
+#~ msgstr ""
+
+#~ msgid "Operations"
+#~ msgstr ""
+
+#~ msgid "Daily operations information"
+#~ msgstr ""
+
+#~ msgid "Days Per Month"
+#~ msgstr ""
+
+#~ msgid "Energy & Budget"
+#~ msgstr ""
+
+#~ msgid "Optional: helps optimize recommendations"
+#~ msgstr ""
+
+#~ msgid "Electricity Rate (₹/kWh)"
+#~ msgstr ""
+
+#~ msgid "Solar Interest"
+#~ msgstr "Solar + BESS"
+
+#~ msgid "Not Interested"
+#~ msgstr ""
+
+#~ msgid "Roof Area (sq.ft)"
+#~ msgstr ""
+
+#~ msgid "Budget"
+#~ msgstr ""
+
+#~ msgid "Continue to Analysis"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Enter cooking energy data with either"
+#~ " detailed menu inputs or existing\n"
+#~ "                    consumption records."
+#~ msgstr ""
+
+#~ msgid "Choose your calculation approach"
+#~ msgstr ""
+
+#~ msgid "Dish-Based Modeling"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Detailed meal analysis based on specific dish\n"
+#~ "                                    preparation\n"
+#~ "                                    patterns"
+#~ msgstr ""
+
+#~ msgid "Use dish-by-dish inputs"
+#~ msgstr ""
+
+#~ msgid "Consumption-Based Modeling"
+#~ msgstr ""
+
+#~ msgid "Analysis based on aggregate fuel consumption data"
+#~ msgstr ""
+
+#~ msgid "Use consumption data"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Select the dishes you regularly cook "
+#~ "and specify which energy sources you "
+#~ "use for each\n"
+#~ "                        category."
+#~ msgstr ""
+
+#~ msgid "Lunch Type "
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Enter your current cooking fuel "
+#~ "consumption so we can estimate energy"
+#~ " use."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "LPG Consumption\n"
+#~ "                            Details"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "PNG Consumption\n"
+#~ "                            Details"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Electricity\n"
+#~ "                            Consumption for Cooking"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Monthly Electricity for\n"
+#~ "                                    Cooking"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Check electricity bill or estimate based on appliance\n"
+#~ "                                    usage"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Biomass Consumption\n"
+#~ "                            Details"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Traditional biomass cooking has severe health and\n"
+#~ "                            environmental impacts!"
+#~ msgstr ""
+
+#~ msgid "Back: Household Details"
+#~ msgstr ""
+
+#~ msgid "Step 5 of 5"
+#~ msgstr "Step 4 of 4"
+
+#~ msgid ""
+#~ "Explore government schemes that can help"
+#~ " you transition to clean cooking"
+#~ msgstr ""
+
+#~ msgid "Select the schemes you're interested in learning more about:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Allow\n"
+#~ "                                            Concerned "
+#~ "Authorities to Contact Me"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "I permit government authorities and scheme coordinators to contact me\n"
+#~ "                                            via phone "
+#~ "or email regarding the selected subsidy"
+#~ " schemes and assistance\n"
+#~ "                                            programs."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Additional Comments or Feedback\n"
+#~ "                            (Optional)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Share any thoughts, questions, or "
+#~ "suggestions about the analysis or "
+#~ "schemes..."
+#~ msgstr ""
+
+#~ msgid "Thank You"
+#~ msgstr ""
+
+#~ msgid "Feedback Submitted Successfully"
+#~ msgstr ""
+
+#~ msgid "Thank You!"
+#~ msgstr ""
+
+#~ msgid "Your feedback and scheme preferences have been submitted successfully."
+#~ msgstr ""
+
+#~ msgid "What Happens Next?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Government authorities will contact you regarding your selected\n"
+#~ "                            schemes"
+#~ msgstr ""
+
+#~ msgid "Your anonymized data helps improve clean cooking policies in Keralam"
+#~ msgstr ""
+
+#~ msgid "You can start a new analysis to explore more scenarios"
+#~ msgstr ""
+
+#~ msgid "Schemes You Selected"
+#~ msgstr ""
+
+#~ msgid "PM Surya Ghar Solar"
+#~ msgstr ""
+
+#~ msgid "PNG Connection"
+#~ msgstr ""
+
+#~ msgid "PM Ujjwala Yojana"
+#~ msgstr ""
+
+#~ msgid "Start New Analysis"
+#~ msgstr ""
+
+#~ msgid "Your Email id"
+#~ msgstr ""
+
+#~ msgid "Number of persions in Household"
+#~ msgstr ""
+
+#~ msgid "Please enter Number of persions in Household"
+#~ msgstr ""
+
+#~ msgid "Area Classification"
+#~ msgstr ""
+
+#~ msgid "Select Monthly Income"
+#~ msgstr "Monthly Cost"
+
+#~ msgid "Less than 50k"
+#~ msgstr ""
+
+#~ msgid "50k - 70k"
+#~ msgstr ""
+
+#~ msgid "70k - 100k"
+#~ msgstr ""
+
+#~ msgid "100k - 150k"
+#~ msgstr ""
+
+#~ msgid "Above 150k"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Determines how the final recommendation is weighted across\n"
+#~ "                                    cost,\n"
+#~ "                                    health, and sustainability factors."
+#~ msgstr ""
+
+#~ msgid "Keralam Clean Cooking Insights"
+#~ msgstr ""
+
+#~ msgid "Accelerate Keralam's Clean Cooking Transition"
+#~ msgstr ""
+
+#~ msgid "A clean cooking energy analysis platform for Keralam."
+#~ msgstr "Keralam Cooking Energy Analysis Tool"
+
+#~ msgid "How the Tool Works"
+#~ msgstr ""
+
+#~ msgid "Districts analysed"
+#~ msgstr ""
+
+#~ msgid "Clean fuel options modelled"
+#~ msgstr ""
+
+#~ msgid "Evidence-based methodology"
+#~ msgstr ""
+
+#~ msgid "Keralam Clean Cooking Insights Platform illustration"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Stylised map of Keralam with icons "
+#~ "for LPG, biogas, induction and solar "
+#~ "cooking\n"
+#~ "                            solutions."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Describe your Kitchen details and health considerations for accurate\n"
+#~ "                    analysis."
+#~ msgstr ""
+
+#~ msgid "Sensitive to Smoke"
+#~ msgstr ""
+
+#~ msgid "Budget & renewable preferences"
+#~ msgstr ""
+
+#~ msgid "Household Assessments"
+#~ msgstr ""
+
+#~ msgid "Records currently stored incooking_webapp.db"
+#~ msgstr ""
+
+#~ msgid "Refresh Data"
+#~ msgstr ""
+
+#~ msgid "Back to Assessment"
+#~ msgstr ""
+
+#~ msgid "Loading households..."
+#~ msgstr ""
+
+#~ msgid "No household records found"
+#~ msgstr ""
+
+#~ msgid "No household data has been stored in the database yet."
+#~ msgstr ""
+
+#~ msgid "Total Households:"
+#~ msgstr ""
+
+#~ msgid "No Name"
+#~ msgstr ""
+
+#~ msgid "ID:"
+#~ msgstr ""
+
+#~ msgid "Email:"
+#~ msgstr ""
+
+#~ msgid "Not provided"
+#~ msgstr ""
+
+#~ msgid "District:"
+#~ msgstr ""
+
+#~ msgid "Area Type:"
+#~ msgstr ""
+
+#~ msgid "Household Size:"
+#~ msgstr ""
+
+#~ msgid "Created:"
+#~ msgstr ""
+
+#~ msgid "Monthly Energy:"
+#~ msgstr "Monthly Energy (kWh)"
+
+#~ msgid "Monthly Cost:"
+#~ msgstr "Monthly Cost"
+
+#~ msgid "View Details"
+#~ msgstr ""
+
+#~ msgid "Load & Analyze"
+#~ msgstr ""
+
+#~ msgid "Error Loading Data"
+#~ msgstr ""
+
+#~ msgid "Failed to load household data:"
+#~ msgstr ""
+
+#~ msgid "Current Usage"
+#~ msgstr ""
+
+#~ msgid "Health & Safety Evaluation"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Your current cooking setup exposes you"
+#~ " to PM2.5 levels above WHO "
+#~ "guidelines. Consider\n"
+#~ "                        cleaner cooking "
+#~ "alternatives, especially if you have "
+#~ "children or elderly family members."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Scores on 0–100 scale; lower indicates\n"
+#~ "                            safer indoor air exposure."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Balanced view across cost efficiency,\n"
+#~ "                            emissions, health "
+#~ "safety, and overall rating."
+#~ msgstr ""
+
+#~ msgid "Strategic Recommendations"
+#~ msgstr ""
+
+#~ msgid "Next Steps & Actions"
+#~ msgstr ""
+
+#~ msgid "New Delhi | Thiruvananthapuram"
+#~ msgstr ""
+
+#~ msgid "Meal-wise Energy Breakdown"
+#~ msgstr ""
+
+#~ msgid "Thermal Efficiency"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Your current cooking setup exposes you"
+#~ " to PM2.5 levels above WHO "
+#~ "guidelines. Consider cleaner\n"
+#~ "                    cooking alternatives, especially"
+#~ " if you have children or elderly "
+#~ "family members."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Lower bars indicate lower monthly operating\n"
+#~ "                        expense (₹/month)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Values shown as kg CO₂ per year; lower is\n"
+#~ "                        better."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Scores on 0–100 scale; lower indicates safer\n"
+#~ "                        indoor air exposure."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Balanced view across cost efficiency, emissions,\n"
+#~ "                        health safety, and overall rating."
+#~ msgstr ""
+
+#~ msgid "Minimum 100 sq.ft required"
+#~ msgstr ""
+
+#~ msgid "Daily energy (kWh)"
+#~ msgstr "Daily Energy (kWh)"
+
+#~ msgid "Government Subsidy Schemes"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Select the schemes you're interested in\n"
+#~ "                            learning more about"
+#~ msgstr ""
+
+#~ msgid "Minimum 10 sqm required for solar installation"
+#~ msgstr ""
+
+#~ msgid "% of Total"
+#~ msgstr ""
+
+#~ msgid "Covers 40% of installation cost"
+#~ msgstr ""
+

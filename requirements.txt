@@ -1,0 +1,30 @@
+# Build tools
+pip>=22.0.0
+setuptools>=65.0.0
+wheel>=0.37.0
+
+# Core web
+Flask==3.1.0
+Werkzeug==3.1.3
+Jinja2==3.1.6
+Flask-Babel==4.0.0
+Babel==2.15.0
+
+# Server
+gunicorn==21.2.0
+
+# Data & files
+pandas==2.2.3
+numpy==1.26.4
+openpyxl==3.1.5
+
+# Visualization / PDF
+matplotlib==3.10.1
+reportlab==4.4.0
+Pillow==11.1.0
+
+# Config
+python-dotenv==1.1.0
+
+# Security
+Flask-WTF==1.2.2

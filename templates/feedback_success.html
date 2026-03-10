@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Thank You') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+
+{% block progress_bar %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center g-3 g-md-4">
+    <div class="{% if schemes_selected %}col-lg-7{% else %}col-lg-8{% endif %}">
+        <div class="card shadow-green fade-in-up text-center h-100">
+            <div class="card-body p-3 p-md-5">
+                <!-- Success Icon -->
+                <div class="mb-3">
+                    <i class="bi bi-check-circle text-success icon-giant"></i>
+                </div>
+
+                <!-- Thank You Message -->
+                <h2 class="text-success mb-2">{{ _('Thank You!') }}</h2>
+                <p class="text-muted mb-3 fs-5">
+                    {{ _('Your feedback and scheme preferences have been submitted successfully.') }}
+                </p>
+
+                <!-- Confirmation Details -->
+                <div class="alert alert-success text-start mb-3">
+                    <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>{{ _('What Happens Next?') }}</h6>
+                    <ul class="mb-0">
+                        {% if allow_contact %}
+                        <li class="small">{{ _('Government authorities will contact you regarding your selected
+                            schemes') }}</li>
+                        {% endif %}
+                        <li class="small">{{ _('Your anonymized data helps improve clean cooking policies in Keralam')
+                            }}
+                        </li>
+                        <li class="small">{{ _('You can start a new analysis to explore more scenarios') }}</li>
+                    </ul>
+                </div>
+
+                <!-- New Analysis Button -->
+                <a href="{{ url_for('index') }}" class="btn btn-success btn-lg px-4 px-md-5 mt-2"
+                    onclick="clearAllAutosaveData()">
+                    <i class="bi bi-arrow-repeat me-2"></i>{{ _('Start New Analysis') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scheme Summary (Right Column) -->
+    {% if schemes_selected %}
+    <div class="col-lg-5">
+        <div class="card shadow-green fade-in-up h-100">
+            <div class="card-body p-3 p-md-4">
+                <h4 class="card-title text-primary-green mb-3"><i class="bi bi-list-check me-2"></i>{{ _('Schemes You
+                    Selected') }}</h4>
+                <div class="d-flex flex-column gap-2 text-start">
+                    {% if solar_scheme %}
+                    <div class="p-2 border rounded bg-light d-flex align-items-center transition-hover">
+                        <i class="bi bi-sun text-warning fs-3 me-3"></i>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ _('PM Surya Ghar Solar') }}</h6>
+                            <small class="text-muted">{{ _('Solar Subsidy Scheme') }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if png_scheme %}
+                    <div class="p-2 border rounded bg-light d-flex align-items-center transition-hover">
+                        <i class="bi bi-fire text-info fs-3 me-3"></i>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ _('PNG Connection') }}</h6>
+                            <small class="text-muted">{{ _('City Gas Distribution') }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if ujjwala_scheme %}
+                    <div class="p-2 border rounded bg-light d-flex align-items-center transition-hover">
+                        <i class="bi bi-house-heart text-danger fs-3 me-3"></i>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ _('PM Ujjwala Yojana') }}</h6>
+                            <small class="text-muted">{{ _('LPG Subsidy') }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Clear all autosave data from localStorage
+    function clearAllAutosaveData() {
+        localStorage.removeItem('household_form_autosave');
+        localStorage.removeItem('energy_form_autosave');
+        localStorage.removeItem('kitchen_form_autosave');
+    }
+
+    // Add fade-in animation
+    document.addEventListener('DOMContentLoaded', function () {
+        const card = document.querySelector('.fade-in-up');
+        if (card) {
+            card.style.animationDelay = '0.2s';
+        }
+    });
+</script>
+
+
+{% endblock %}

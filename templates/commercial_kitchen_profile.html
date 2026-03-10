@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Kitchen & Facility Profile') }} - {{ _('Keralam Clean Cooking Platform') }}{% endblock %}
+
+{% set progress = 50 %}
+{% set progress_text %}{{ _('Step 2 of 4') }} - {{ _('Kitchen & Facility Profile') }}{% endset %}
+{% set progress_label %}{{ _('Kitchen & Facility Profile') }}{% endset %}
+{% set current_step = 2 %}
+{% set total_steps = 4 %}
+
+{% block content %}
+<script>
+    console.debug("DEBUG: Commercial Kitchen Profile Context", {
+        scenarios: {{ scenarios| tojson }},
+        default_electricity_rate: {{ default_electricity_rate|default(0) }}
+    });
+</script>
+<div class="container my-2.5 py-3 analysis-container-custom">
+    <div class="text-center mb-2.5">
+        <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial Cooking') }}</p>
+        <h3 class="fw-bold text-primary-green mb-1">
+            <img src="{{ url_for('static', filename='icons/house-heart1.svg') }}" alt="{{ _('Kitchen Icon') }}"
+                class="me-2 icon-xxl align-middle">{{ _('Kitchen & Facility Profile') }}
+        </h3>
+        <p class="mb-0 text-muted">{{ _('Describe your kitchen setup for accurate commercial analysis') }}</p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-10">
+            <form id="kitchenForm" class="needs-validation" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <!-- Kitchen Scenario -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary-green mb-4">
+                            <i class="bi bi-layout-wtf me-2"></i>{{ _('Kitchen Details') }}
+                        </h4>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="kitchen_scenario" class="form-label">
+                                    {{ _('Kitchen Ventilation Scenario') }} *
+                                </label>
+                                <select class="form-select" id="kitchen_scenario" name="kitchen_scenario" required>
+                                    <option value="">{{ _('Select scenario') }}</option>
+                                    {% for scenario in scenarios %}
+                                    <option value="{{ scenario.scenario_name }}">
+                                        {{ localize_db_label(scenario.scenario_name, scenario.scenario_name_ml) }} - {{
+                                        _(scenario.health_risk_category) }} ({{
+                                        "%.0f"|format((scenario.combined_factor|default(0)) * 100)
+                                        }}% {{ _('exposure') }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">{{ _('Please select a kitchen scenario') }}</div>
+                                <div class="form-text">{{ _('Affects health impact calculation') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cooking Patterns -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary-green mb-4">
+                            <i class="bi bi-clock me-2"></i>{{ _('Cooking Patterns') }}
+                        </h4>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="cooking_hours_daily" class="form-label">
+                                    {{ _('Daily Cooking Duration') }} ({{ _('Hours') }}) *
+                                </label>
+                                <input type="number" class="form-control" id="cooking_hours_daily"
+                                    name="cooking_hours_daily" min="2.0" max="16.0" value="6.0" step="0.5" required
+                                    data-bs-toggle="tooltip" title="{{ _('Total daily active cooking time') }}">
+                                <div class="invalid-feedback">{{ _('Please enter daily cooking hours') }}</div>
+                                <div class="form-text">{{ _('Aggregate time for all meal preparations') }}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="staff_exposed" class="form-label">
+                                    {{ _('Kitchen Staff Exposed') }} *
+                                </label>
+                                <input type="number" class="form-control" id="staff_exposed" name="staff_exposed"
+                                    min="1" max="50" value="2" step="1" required data-bs-toggle="tooltip"
+                                    title="{{ _('Workers regularly in the cooking area') }}">
+                                <div class="invalid-feedback">{{ _('Please enter staff count') }}</div>
+                                <div class="form-text">{{ _('Number of workers in the cooking area') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Energy & Budget -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary-green mb-4">
+                            <i class="bi bi-sun me-2"></i>{{ _('Budget & Energy Preferences') }}
+                        </h4>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="electricity_tariff" class="form-label">
+                                    {{ _('Electricity Rate') }} (₹/kWh) *
+                                </label>
+                                <input type="number" class="form-control" id="electricity_tariff"
+                                    name="electricity_tariff" min="0.5" max="20.0"
+                                    value="{{ default_electricity_rate or 9.50 }}" step="0.10" required
+                                    data-bs-toggle="tooltip" title="{{ _('Use the tariff from your latest bill') }}">
+                                <div class="invalid-feedback">{{ _('Please enter electricity tariff') }}</div>
+                                <div class="form-text">{{ _('Commercial tariff used for grid comparisons') }}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="budget_preference" class="form-label">
+                                    {{ _('Investment Priority') }} *
+                                </label>
+                                <select class="form-select" id="budget_preference" name="budget_preference" required>
+                                    <option value="">{{ _('Select Priority') }}</option>
+                                    <option value="Low upfront cost">{{ _('Minimize Upfront Cost') }}</option>
+                                    <option value="Balanced approach">{{ _('Balanced ROI') }}</option>
+                                    <option value="Long-term savings">{{ _('Maximize Long-term Savings') }}</option>
+                                    <option value="Environmental priority">{{ _('Maximize Environmental Benefit') }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">{{ _('Please select budget preference') }}</div>
+                                <div class="form-text">{{ _('Primary driver for financial decision making') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Navigation -->
+                <div class="d-flex justify-content-between">
+                    <a class="btn btn-nav-back" href="{{ url_for('commercial_selection') }}">
+                        <i class="bi bi-arrow-left me-2"></i>{{ _('Back') }}
+                    </a>
+                    <button type="submit" class="btn btn-nav-next" id="submitBtn">
+                        {{ _('Next') }} <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('kitchenForm');
+        const submitBtn = document.getElementById('submitBtn');
+        console.debug('DEBUG: commercial_kitchen_profile loaded', {
+            defaultElectricityRate: {{ default_electricity_rate | default(9.5) }},
+        scenariosCount: {{ scenarios| length if scenarios is defined else 0 }}
+        });
+
+    // Form submission
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+        }
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>{{ _("Processing") }}...';
+
+        console.log('DEBUG: Submitting kitchen profile data', data);
+
+        fetch("{{ url_for('commercial_submit_kitchen') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': form.querySelector('input[name="csrf_token"]')?.value || ''
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    window.location.href = result.redirect || "{{ url_for('commercial_energy_calculation') }}";
+                } else {
+                    alert(result.message || '{{ _("Failed to save data") }}');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '{{ _("Next") }} <i class="bi bi-arrow-right ms-2"></i>';
+                }
+            })
+            .catch(() => {
+                alert('{{ _("Network error occurred") }}');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '{{ _("Next") }} <i class="bi bi-arrow-right ms-2"></i>';
+            });
+    });
+    });
+</script>
+{% endblock %}

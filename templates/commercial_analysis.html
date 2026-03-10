@@ -1,0 +1,1343 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Commercial Analysis Results') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock
+%}
+
+{% set progress = 100 %}
+{% set progress_text %}{{ _('Step 4 of 4') }} - {{ _('Analysis Complete') }}{% endset %}
+{% set progress_label %}{{ _('Analysis Complete') }}{% endset %}
+{% set current_step = 4 %}
+{% set total_steps = 4 %}
+
+{% block content %}
+{% macro risk_text(risk_value) -%}
+{% set risk = risk_value or 'moderate' -%}
+{% if risk == 'low' -%}
+{{ _('Low') }}
+{% elif risk == 'moderate' -%}
+{{ _('Moderate') }}
+{% elif risk == 'high' -%}
+{{ _('High') }}
+{% else -%}
+{{ _('Very High') }}
+{% endif -%}
+{%- endmacro %}
+<script>
+    console.debug("DEBUG: Commercial Analysis Payload", {
+        monthly_energy_kwh: {{ analysis.current.monthly_energy_kwh |default(0) }},
+        monthly_cost: {{ analysis.current.monthly_cost |default(0) }},
+        annual_emissions: {{ analysis.current.annual_emissions |default(0) }},
+        fuel_details: {{ analysis.current.fuel_details | tojson }},
+        alternatives_count: {{ analysis.alternatives | length }},
+        recommendations: {{ analysis.recommendations | tojson }}
+    });
+</script>
+<div class="container my-2.5 py-3 analysis-container-custom">
+    <div class="text-center mb-2.5">
+        <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial Cooking') }}</p>
+        <h3 class="fw-bold text-primary-green mb-1">
+            <i class="bi bi-graph-up me-2"></i>{{ _('Commercial Cooking Analysis Report') }}
+        </h3>
+        <p class="mb-0 text-muted">{{ _('Assessment with key recommendations') }}</p>
+        <p class="mb-0 text-muted"><small>{{ _('Institution Type') }}: {{
+                analysis.current.fuel_details.institution_type }}</small></p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-10" id="analysis-container" data-analysis-type="commercial">
+            <!-- Institution Profile Summary -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-building me-2"></i>{{ _('Institution
+                        Profile') }}</h4>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-muted small">{{ _('Institution Type') }}</div>
+                            <div class="fw-bold">{{ analysis.current.fuel_details.institution_type }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-muted small">{{ _('Daily Servings') }}</div>
+                            <div class="fw-bold">{{ analysis.current.fuel_details.servings_per_day }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-muted small">{{ _('Working Days/Month') }}</div>
+                            <div class="fw-bold">{{ analysis.current.fuel_details.working_days }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-muted small">{{ _('Calculation Method') }}</div>
+                            <div class="fw-bold text-capitalize">{{
+                                analysis.current.fuel_details.calculation_method|replace('_', ' ') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected Dishes (Dish-Based Method Only) -->
+            {% if analysis.current.fuel_details.calculation_method == 'dish_based' and
+            analysis.current.fuel_details.selected_dishes %}
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-card-checklist me-2"></i>{{
+                        _('Selected Dishes') }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Category') }}</th>
+                                    <th>{{ _('Dish Name') }}</th>
+                                    <th>{{ _('Fuel Type') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dish_info in analysis.current.fuel_details.selected_dishes %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">{{ dish_info.category }}</span></td>
+                                    <td>{{ dish_info.dish }}</td>
+                                    <td>
+                                        {% if dish_info.fuel == 'LPG' %}
+                                        <span class="badge bg-warning text-dark">{{ _('LPG') }}</span>
+                                        {% elif dish_info.fuel == 'PNG' %}
+                                        <span class="badge bg-info">{{ _('PNG') }}</span>
+                                        {% elif dish_info.fuel == 'Grid Electricity' %}
+                                        <span class="badge bg-primary">{{ _('Grid Electricity') }}</span>
+                                        {% elif dish_info.fuel == 'Biogas' %}
+                                        <span class="badge bg-success">{{ _('Biogas') }}</span>
+                                        {% elif dish_info.fuel == 'Biomass' %}
+                                        <span class="badge bg-secondary">{{ _('Biomass') }}</span>
+                                        {% else %}
+                                        {{ dish_info.fuel }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Current Consumption Summary -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-speedometer2 me-2"></i>{{ _('Current
+                        Usage') }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Fuel') }}</th>
+                                    <th>{{ _('Quantity') }}</th>
+                                    <th>{{ _('Consumption') }} ({{ _('Joules') }})</th>
+                                    <th>{{ _('Monthly Cost') }} (₹)</th>
+                                    <th>{{ _('Annual Emission') }} (kg CO₂)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set fuels = analysis.current.fuel_details.fuel_breakdown if
+                                analysis.current.fuel_details.fuel_breakdown is defined else
+                                analysis.current.fuel_details
+                                %}
+                                {% for fuel, details in fuels.items() %}
+                                {% if details is mapping %}
+                                <tr>
+                                    <td class="py-3 px-4">
+                                        <div class="font-medium text-gray-900">{{ fuel }}</div>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {% if details.quantity is defined %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.quantity) }} {{ details.unit
+                                            }}
+                                        </div>
+                                        {% elif details.monthly_kwh is defined %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.monthly_kwh) }} kWh</div>
+                                        {% elif details.monthly_scm is defined %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.monthly_scm) }} SCM</div>
+                                        {% elif details.monthly_kg is defined %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.monthly_kg) }} kg</div>
+                                        {% elif details.monthly_m3 is defined %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.monthly_m3) }} m³</div>
+                                        {% else %}
+                                        <div class="text-gray-500">-</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {% if details.energy_delivered is defined and details.energy_delivered > 0 %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.energy_delivered * 3.6) }}
+                                            MJ
+                                        </div>
+                                        {% else %}
+                                        <div class="text-gray-500">-</div>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="py-3 px-4">
+                                        {% if details.monthly_cost is defined %}
+                                        <div class="text-gray-900">₹{{ "%.2f"|format(details.monthly_cost) }}</div>
+                                        {% else %}
+                                        <div class="text-gray-500">-</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {% if details.annual_emissions is defined %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.annual_emissions) }} kg
+                                        </div>
+                                        {% if details.emission_source is defined and details.emission_source %}
+                                        <div class="text-muted small">{{ _('Source:') }} {{ details.emission_source }}
+                                        </div>
+                                        {% endif %}
+                                        {% else %}
+                                        <div class="text-gray-500">-</div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-gray-50 font-semibold">
+                                <tr>
+                                    <td class="py-3 px-4" colspan="2">{{ _('Total') }}</td>
+                                    <td class="py-3 px-4">{{ "%.2f"|format(analysis.current.monthly_energy_kwh * 3.6) }}
+                                        MJ
+                                    </td>
+                                    <td class="py-3 px-4">₹{{ "%.2f"|format(analysis.current.monthly_cost) }}</td>
+                                    <td class="py-3 px-4">{{ "%.2f"|format(analysis.current.annual_emissions) }} kg</td>
+                                </tr>
+                                <!-- Per Serving Metrics -->
+                                {% if analysis.current.cost_per_serving is defined %}
+                                <tr class="table-info">
+                                    <td class="py-3 px-4" colspan="2"><strong>{{ _('Per Serving Metrics') }}</strong>
+                                    </td>
+                                    <td class="py-3 px-4"><strong>{{
+                                            "%.3f"|format(analysis.current.energy_per_serving_kwh)
+                                            }} kWh</strong></td>
+                                    <td class="py-3 px-4"><strong>₹{{ "%.2f"|format(analysis.current.cost_per_serving)
+                                            }}</strong></td>
+                                    <td class="py-3 px-4"></td>
+                                </tr>
+                                {% endif %}
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meal-wise Breakdown (Only for Dish-Based) -->
+            {% if analysis.current.fuel_details.meal_breakdown %}
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-pie-chart me-2"></i>{{ _('Meal-wise
+                        Energy Breakdown') }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Meal') }}</th>
+                                    <th>{{ _('Energy') }} (kWh)</th>
+                                    <th>{{ _('Cost') }} (₹)</th>
+                                    <th>{{ _('Percent of Total') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for meal, data in analysis.current.fuel_details.meal_breakdown.items() %}
+                                <tr>
+                                    <td>{{ meal }}</td>
+                                    <td>{{ "%.2f"|format(data.energy_kwh) }}</td>
+                                    <td>₹{{ "%.2f"|format(data.cost) }}</td>
+                                    <td>{{ "%.1f"|format(data.percentage) }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Detailed Comparison Table -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-1">
+                        <i class="bi bi-table me-2"></i>
+                        {{ _('Cooking with an energy source') }}
+                    </h4>
+                    <p class="text-muted small mb-4">
+                        {{ _('Comparative Cost and Emission Estimates') }}
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table comparison-table" id="comparisonTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ _('Energy Source') }}</th>
+                                    <th scope="col" class="sortable" data-sort-key="monthly_cost">{{ _('Monthly Cost')
+                                        }} <i class="bi bi-arrow-down-up"></i></th>
+                                    <th scope="col" class="sortable" data-sort-key="annual_co2">{{ _('Annual CO₂') }} <i
+                                            class="bi bi-arrow-down-up"></i></th>
+                                    <th scope="col" class="sortable" data-sort-key="efficiency">{{ _('Thermal
+                                        Efficiency')
+                                        }} <i class="bi bi-arrow-down-up"></i></th>
+                                    <th scope="col" class="sortable" data-sort-key="health_risk">{{ _('Health Risk') }}
+                                        <i class="bi bi-arrow-down-up"></i>
+                                    </th>
+                                    <th scope="col">{{ _('Status') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-info">
+                                    <td><strong>{{ _('Your Current Setup') }}</strong></td>
+                                    <td><strong>₹{{ "%.0f"|format(analysis.current.monthly_cost|default(0)) }}</strong>
+                                    </td>
+                                    <td><strong>{{ "%.0f"|format(analysis.current.annual_emissions|default(0)) }}
+                                            kg</strong></td>
+                                    <td><strong>{{ "%.1f"|format(analysis.current.overall_thermal_efficiency|default(0))
+                                            }}%</strong></td>
+                                    <td>
+                                        {% set current_risk = (analysis.health_impact.health_risk_category or
+                                        'moderate') %}
+                                        <span
+                                            class="badge bg-{{ 'success' if current_risk == 'low' else 'warning' if current_risk == 'moderate' else 'danger' }}"
+                                            data-risk-rank="{{ 1 if current_risk == 'low' else 2 if current_risk == 'moderate' else 3 if current_risk == 'high' else 4 }}">
+                                            {{ risk_text(current_risk) }}
+                                        </span>
+                                    </td>
+                                    <td><span class="badge bg-primary">{{ _('Current') }}</span></td>
+                                </tr>
+                                {% for fuel, data in analysis.alternatives.items() %}
+                                <tr>
+                                    <td>
+                                        {{ _(fuel) }}
+                                        {% if fuel == 'Solar rooftop' or fuel == 'Solar + BESS' %}
+                                        <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                                            title="{{ _('Emissions shown are lifecycle emissions from manufacturing and installation, not from daily use. During operation, this energy source produces zero direct emissions.') }}"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>₹{{ "%.0f"|format(data.monthly_cost|default(0)) }}</td>
+                                    <td>{{ "%.0f"|format(data.annual_co2|default(0)) }} kg</td>
+                                    <td>{{ "%.0f"|format(data.efficiency|default(0)) }}%</td>
+                                    <td>
+                                        {% set alt_risk = (data.health_risk_category or 'moderate') %}
+                                        <span
+                                            class="badge bg-{{ 'success' if alt_risk == 'low' else 'warning' if alt_risk == 'moderate' else 'danger' }}"
+                                            data-risk-rank="{{ 1 if alt_risk == 'low' else 2 if alt_risk == 'moderate' else 3 if alt_risk == 'high' else 4 }}">
+                                            {{ risk_text(alt_risk) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% set cost_diff = (data.monthly_cost|default(0)) -
+                                        (analysis.current.monthly_cost|default(0)) %}
+                                        {% set emission_diff = (data.annual_co2|default(0)) -
+                                        (analysis.current.annual_emissions|default(0)) %}
+                                        <div class="small">
+                                            <div
+                                                class="{{ 'text-success' if cost_diff < 0 else 'text-danger' if cost_diff > 0 else 'text-muted' }}">
+                                                <i
+                                                    class="bi bi-{{ 'arrow-down' if cost_diff < 0 else 'arrow-up' if cost_diff > 0 else 'dash' }}"></i>
+                                                {{ _('Cost') }}:
+                                                {% if cost_diff < 0 %} ₹{{ "%.0f" |format(-cost_diff) }} {{ _('less') }}
+                                                    {% elif cost_diff> 0 %}
+                                                    ₹{{ "%.0f"|format(cost_diff) }} {{ _('more') }}
+                                                    {% else %}
+                                                    {{ _('Same') }}
+                                                    {% endif %}
+                                            </div>
+                                            <div
+                                                class="{{ 'text-success' if emission_diff < 0 else 'text-danger' if emission_diff > 0 else 'text-muted' }}">
+                                                <i
+                                                    class="bi bi-{{ 'arrow-down' if emission_diff < 0 else 'arrow-up' if emission_diff > 0 else 'dash' }}"></i>
+                                                {{ _('CO₂') }}:
+                                                {% if emission_diff < 0 %} {{ "%.0f" |format(-emission_diff) }} kg {{
+                                                    _('less') }} {% elif emission_diff> 0 %}
+                                                    {{ "%.0f"|format(emission_diff) }} kg {{ _('more') }}
+                                                    {% else %}
+                                                    {{ _('Same') }}
+                                                    {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Solar + BESS Specifications -->
+            {% if analysis.alternatives['Solar + BESS'] and analysis.alternatives['Solar + BESS'].bess_system %}
+            {% set bess = analysis.alternatives['Solar + BESS'].bess_system %}
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-sun me-2"></i>{{ _('Technical
+                        Specifications: Solar +
+                        BESS') }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-clean-cooking table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">{{ _('Specification') }}</th>
+                                    <th scope="col">{{ _('Value') }}</th>
+                                    <th scope="col">{{ _('Description') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>{{ _('Solar PV System Size') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.solar_capacity_kw) }} kW</td>
+                                    <td>{{ _('Capacity required based on daily load') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{{ _('Battery Storage') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.battery_capacity_kwh) }} kWh</td>
+                                    <td>{{ bess.battery_units }} {{ _('Units') }} × 2kWh {{ _('Modules') }} (LiFePO4)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{{ _('Roof Area Required') }}</strong></td>
+                                    <td>{{ "%.0f"|format(bess.solar_capacity_kw * 10) }} m²</td>
+                                    <td>{{ _('Approx') }} 10m²/kW</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{{ _('Daily Generation') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.daily_solar_generation) }} kWh</td>
+                                    <td>{{ _('Based on Keralam GHI') }} (5.5 kWh/m²/day)</td>
+                                </tr>
+                                {% if bess.grid_backup and bess.grid_backup.needed_kwh_daily > 0.1 %}
+                                <tr class="table-warning">
+                                    <td><strong>{{ _('Grid Backup Needed') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.grid_backup.needed_kwh_daily) }} kWh</td>
+                                    <td>{{ "%.0f"|format(bess.grid_backup.percentage) }}% {{ _('of daily energy drawn
+                                        from grid due to area limit') }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td><strong>{{ _('Total Upfront Cost') }}</strong></td>
+                                    <td>₹{{ "%.0f"|format(bess.total_capital_cost|default(0)) }}</td>
+                                    <td>{{ _('Solar Panels + Inverter + Batteries + Installation') }}</td>
+                                </tr>
+                                {% if analysis.alternatives['Solar + BESS'].levelized_costs %}
+                                {% set solar_alt = analysis.alternatives['Solar + BESS'] %}
+                                <tr>
+                                    <td><strong>{{ _('Monthly EMI / Cost') }}</strong></td>
+                                    <td>₹{{ "%.0f"|format(solar_alt.levelized_monthly_cost|default(0)) }}</td>
+                                    <td>{{ _('Levelized cost over 25 years') }} ({{ _('Loan') }}: {{
+                                        "%.0f"|format(solar_alt.levelized_costs.loan_tenure_years) }} {{ _('years') }} @
+                                        7.0%)</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Strategic Recommendations -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-lightbulb me-2"></i>{{ _('Strategic
+                        Recommendations') }}</h4>
+                    {% if analysis.alternatives %}
+                    {# Find best cost option #}
+                    {% set best_cost_fuel = namespace(name='', cost=999999, data={}) %}
+                    {% for fuel, data in analysis.alternatives.items() %}
+                    {% if data.monthly_cost < best_cost_fuel.cost %} {% set best_cost_fuel.name=fuel %} {% set
+                        best_cost_fuel.cost=data.monthly_cost %} {% set best_cost_fuel.data=data %} {% endif %} {%
+                        endfor %} {# Find best emission option #} {% set best_emission_fuel=namespace(name='' ,
+                        emission=999999, data={}) %} {% for fuel, data in analysis.alternatives.items() %} {% if
+                        data.annual_co2 < best_emission_fuel.emission %} {% set best_emission_fuel.name=fuel %} {% set
+                        best_emission_fuel.emission=data.annual_co2 %} {% set best_emission_fuel.data=data %} {% endif
+                        %} {% endfor %} <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="33%" class="text-center">
+                                        <i class="bi bi-currency-rupee"></i> {{ _('Cost Effective') }}
+                                    </th>
+                                    <th width="33%" class="text-center">
+                                        <i class="bi bi-tree-fill"></i> {{ _('Environmentally Friendly') }}
+                                    </th>
+                                    <th width="34%" class="text-center">
+                                        <i class="bi bi-award-fill"></i> {{ _('Top Rated') }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <!-- Cost Effective Column -->
+                                    <td class="p-3">
+                                        <div class="text-center mb-3">
+                                            <h5 class="text-primary mb-0">{{ _(best_cost_fuel.name) }}</h5>
+                                        </div>
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr>
+                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
+                                                <td class="text-end">₹{{
+                                                    "%.0f"|format(best_cost_fuel.data.monthly_cost|default(0)) }}</td>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <td><strong>{{ _('You Save') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    ₹{{ "%.0f"|format((analysis.current.monthly_cost|default(0)) -
+                                                    (best_cost_fuel.data.monthly_cost|default(0))) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Annual CO₂') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_cost_fuel.data.annual_co2|default(0)) }} kg</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Efficiency') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_cost_fuel.data.efficiency|default(0)) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Health Risk') }}:</strong></td>
+                                                <td class="text-end">
+                                                    {% set best_cost_risk = (best_cost_fuel.data.health_risk_category or
+                                                    'moderate') %}
+                                                    <span
+                                                        class="badge bg-{{ 'success' if best_cost_risk == 'low' else 'warning' if best_cost_risk == 'moderate' else 'danger' }}">
+                                                        {{ risk_text(best_cost_risk) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+
+                                    <!-- Low Emission Column -->
+                                    <td class="p-3">
+                                        <div class="text-center mb-3">
+                                            <h5 class="text-success mb-0">{{ _(best_emission_fuel.name) }}</h5>
+                                        </div>
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr>
+                                                <td><strong>{{ _('Annual CO₂') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_emission_fuel.data.annual_co2|default(0)) }} kg
+                                                </td>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <td><strong>{{ _('You Reduce') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    {{ "%.0f"|format((analysis.current.annual_emissions|default(0)) -
+                                                    (best_emission_fuel.data.annual_co2|default(0))) }} kg CO₂
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
+                                                <td class="text-end">₹{{
+                                                    "%.0f"|format(best_emission_fuel.data.monthly_cost|default(0)) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Efficiency') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_emission_fuel.data.efficiency|default(0)) }}%
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Health Risk') }}:</strong></td>
+                                                <td class="text-end">
+                                                    {% set best_emission_risk =
+                                                    (best_emission_fuel.data.health_risk_category or 'moderate') %}
+                                                    <span
+                                                        class="badge bg-{{ 'success' if best_emission_risk == 'low' else 'warning' if best_emission_risk == 'moderate' else 'danger' }}">
+                                                        {{ risk_text(best_emission_risk) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+
+                                    <!-- Top Rated Column -->
+                                    <td class="p-3">
+                                        {% if analysis.recommendations and analysis.recommendations|length > 0 %}
+                                        {% set top_fuel = analysis.recommendations[0][0] %}
+                                        {% set top_score = analysis.recommendations[0][1] %}
+                                        {% set top_data = analysis.recommendations[0][2] %}
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h5 class="text-warning mb-0">
+                                                🏆 {{ _(top_fuel) }}
+                                            </h5>
+                                            <span class="badge bg-warning text-dark ms-2 fs-075">
+                                                {{ _('Score') }}: {{ "%.1f"|format(top_score|default(0)) }}/100
+                                            </span>
+                                        </div>
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr>
+                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
+                                                <td class="text-end">₹{{
+                                                    "%.0f"|format(top_data.monthly_cost|default(0)) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Annual CO₂') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(top_data.annual_co2|default(0)) }} kg</td>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <td><strong>{{ _('Balance') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    {{ _('Best Overall') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Efficiency') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(top_data.efficiency|default(0)) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Health Risk') }}:</strong></td>
+                                                <td class="text-end">
+                                                    {% set top_risk = (top_data.health_risk_category or 'moderate') %}
+                                                    <span
+                                                        class="badge bg-{{ 'success' if top_risk == 'low' else 'warning' if top_risk == 'moderate' else 'danger' }}">
+                                                        {{ risk_text(top_risk) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        {% else %}
+                                        <div class="text-muted text-center">{{ _('No rating available') }}</div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">{{ _('No alternative recommendations available.') }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Comparative Analysis Charts -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="chart-title mb-0">{{ _('Monthly OpEx Comparison') }}</h6>
+                            <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
+                        </div>
+                        <canvas id="costChart" height="300"
+                            aria-label="{{ _('Bar chart comparing monthly operating costs across fuels') }}"></canvas>
+                        <div class="chart-footnote small text-muted">{{ _('Lower bars indicate lower monthly operating
+                            expense (₹/month).') }}</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="chart-title mb-0">{{ _('Annual Carbon Footprint Comparison') }}</h6>
+                            <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
+                        </div>
+                        <canvas id="emissionsChart" height="300"
+                            aria-label="{{ _('Bar chart comparing annual CO₂ emissions across fuels') }}"></canvas>
+                        <div class="chart-footnote small text-muted">{{ _('Values shown as kg CO₂ per year; lower is
+                            better.') }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="chart-title mb-0">{{ _('Health Risk Score Comparison') }}</h6>
+                            <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
+                        </div>
+                        <canvas id="healthChart" height="300"
+                            aria-label="{{ _('Bar chart comparing health risk scores across fuels') }}"></canvas>
+                        <div class="chart-footnote small text-muted">{{ _('Scores on 0–100 scale; lower indicates safer
+                            indoor air exposure.') }}</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="chart-title mb-0">{{ _('Multi-Criteria Performance') }}</h6>
+                            <span class="badge bg-light text-dark">{{ _('Top options overview') }}</span>
+                        </div>
+                        <canvas id="radarChart" height="300"
+                            aria-label="{{ _('Radar chart summarizing cost, emissions, health, and overall performance for top fuels') }}"></canvas>
+                        <div class="chart-footnote small text-muted">{{ _('Balanced view across cost efficiency,
+                            emissions,
+                            health safety, and overall rating.') }}</div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <!-- Health Impact Assessment -->
+        <div class="card shadow-green fade-in-up mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-primary-green mb-4"><i class="bi bi-heart-pulse me-2"></i>{{ _('Health &
+                    Safety Evaluation') }}</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div
+                            class="metric-card {{ 'health-risk-' + (analysis.health_impact.health_risk_category or 'moderate') }}">
+                            <div class="metric-value">
+                                {% if (analysis.health_impact.health_risk_category or 'moderate') == 'low' %}
+                                🟢 {{ _('Low Risk') }}
+                                {% elif (analysis.health_impact.health_risk_category or 'moderate') == 'moderate' %}
+                                🟡 {{ _('Moderate Risk') }}
+                                {% elif (analysis.health_impact.health_risk_category or 'moderate') == 'high' %}
+                                🟠 {{ _('High Risk') }}
+                                {% else %}
+                                🔴 {{ _('Very High Risk') }}
+                                {% endif %}
+                            </div>
+                            <div class="metric-label">{{ _('Health Risk Level') }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">{{ "%.1f"|format(analysis.health_impact.pm25_peak|default(0))
+                                }}
+                            </div>
+                            <div class="metric-label">{{ _('Peak PM2.5 (μg/m³)') }}</div>
+                            <div class="metric-change">
+                                {% if (analysis.health_impact.pm25_peak|default(0)) < 25 %} <span class="text-success">
+                                    {{ _('WHO Safe Level') }}</span>
+                                    {% else %}
+                                    <span class="text-danger">{{ _('Above WHO Guidelines') }}</span>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">{{
+                                "%.0f"|format(analysis.health_impact.health_risk_score|default(0)) }}</div>
+                            <div class="metric-label">{{ _('Health Risk Index') }}</div>
+                            <div class="metric-change">
+                                {% if (analysis.health_impact.health_risk_score|default(0)) < 30 %} <span
+                                    class="text-success">{{ _('Lower is better') }}</span>
+                                    {% else %}
+                                    <span class="text-danger">{{ _('Higher is worse') }}</span>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if (analysis.health_impact.pm25_peak|default(0)) > 25 %}
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>{{ _('Health Advisory:') }}</strong>
+                    {{ _('Your current cooking setup exposes you to PM2.5 levels above WHO guidelines. Consider
+                    cleaner
+                    cooking alternatives, especially if you have children or elderly family members.') }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Action Center -->
+        <div class="card shadow-green fade-in-up mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-primary-green mb-4"><i class="bi bi-gear me-2"></i>{{ _('Next Steps &
+                    Actions') }}</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-success w-100" onclick="downloadReport('commercial')">
+                            <i class="bi bi-download me-2"></i>{{ _('Download Report') }}
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-outline-success w-100" onclick="shareResults()">
+                            <i class="bi bi-share me-2"></i>{{ _('Share Results') }}
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-outline-success w-100"
+                            onclick="window.location.href='{{ url_for('feedback') }}';">
+                            <i class="bi bi-arrow-right me-2"></i>{{ _('Next Step') }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-12">
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>{{ _('Next Steps:') }}</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>{{ _('Contact local suppliers for price quotes on recommended solutions') }}</li>
+                                <li>{{ _('Consult with energy professionals for installation planning') }}</li>
+                                <li>{{ _('Check government subsidy schemes for clean cooking solutions') }}</li>
+                                <li>{{ _('Monitor your energy consumption and costs over time') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Information -->
+        <div class="card shadow-green fade-in-up">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="card-title text-primary-green mb-2">{{ _('Contributing to Clean Cooking Research') }}
+                        </h4>
+                        <p class="mb-0 small text-muted">
+                            {{ _('Your data supports Keralam cooking energy policy') }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <p class="mb-0 small text-muted">
+                            {{ _('Analysis ID:') }} {{ (session.analysis_id | default('N/A'))[:8] }}...<br>
+                            {{ _('Generated:') }} {{ moment().format('YYYY-MM-DD HH:mm') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <div class="text-muted small">{{ _('Environmental Grade') }}</div>
+                        <div class="fw-bold fs-5 text-success">{{ analysis.current.environmental_grade|default('N/A') }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-muted small">{{ _('Health Risk Score') }}</div>
+                        <div class="fw-bold">{{ "%.2f"|format(analysis.health_impact.health_risk_score|default(0)) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- end container -->
+
+    {% endblock %}
+
+    {% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.debug('DEBUG: commercial_analysis loaded', {
+                analysisType: 'commercial',
+                fuelDetails: {{ analysis.current.fuel_details | tojson | safe }}
+        });
+        // Initialize Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // Add staggered animations
+        const cards = document.querySelectorAll('.fade-in-up');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+
+        // Scroll to recommendations on page load
+        window.addEventListener('load', function () {
+            // Smooth scroll to recommendations after a delay
+            setTimeout(() => {
+                const recommendations = document.querySelector('.recommendation-card');
+                if (recommendations) {
+                    recommendations.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }, 1000);
+        });
+
+
+        // Enhanced chart animations with safer initialization
+        function initializeCharts() {
+            // Destroy existing charts before creating new ones
+            destroyExistingCharts();
+
+            // Add loading state to chart containers
+            addLoadingState();
+
+            // Set Chart.js global defaults
+            Chart.defaults.font.family = 'Poppins, sans-serif';
+            Chart.defaults.font.size = 12;
+            Chart.defaults.color = '#6c757d';
+            Chart.defaults.responsive = true;
+            Chart.defaults.maintainAspectRatio = false;
+            Chart.defaults.animation = {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            };
+
+            // Initialize all charts
+            const chartPromises = [
+                fetch('/api/chart_data').then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+            ];
+
+            Promise.all(chartPromises)
+                .then(([data]) => {
+                    handleChartDataSuccess(data);
+                })
+                .catch(error => {
+                    console.error('Error loading chart data:', error);
+                    removeLoadingState();
+                    showChartError('{{ _("Network error: Unable to load chart data") }}');
+                });
+        }
+
+        function handleChartDataSuccess(data) {
+            removeLoadingState();
+
+            if (data.error) {
+                console.error('Chart data error:', data.error);
+                showChartError('{{ _("Failed to load chart data") }}');
+                return;
+            }
+
+            const hasCost = data.cost_comparison && Array.isArray(data.cost_comparison.data) && data.cost_comparison.data.length;
+            const hasEmissions = data.emissions_comparison && Array.isArray(data.emissions_comparison.data) && data.emissions_comparison.data.length;
+            const hasHealth = data.health_comparison && Array.isArray(data.health_comparison.data) && data.health_comparison.data.length;
+
+            if (!(hasCost && hasEmissions && hasHealth)) {
+                showChartError('{{ _("No chart data available for this analysis.") }}');
+                return;
+            }
+
+            setTimeout(() => createEnhancedCostChart(data.cost_comparison), 100);
+            setTimeout(() => createEnhancedEmissionsChart(data.emissions_comparison), 200);
+            setTimeout(() => createEnhancedHealthChart(data.health_comparison), 300);
+            setTimeout(() => createEnhancedRadarChart(data), 400);
+        }
+
+        // Add loading state to chart containers
+        function addLoadingState() {
+            const containers = document.querySelectorAll('.chart-container');
+            containers.forEach(container => {
+                container.classList.add('loading');
+                const canvas = container.querySelector('canvas');
+                if (canvas) {
+                    canvas.style.opacity = '0.3';
+                    canvas.setAttribute('aria-busy', 'true');
+                }
+            });
+        }
+
+        // Remove loading state from chart containers
+        function removeLoadingState() {
+            const containers = document.querySelectorAll('.chart-container');
+            containers.forEach(container => {
+                container.classList.remove('loading');
+                const canvas = container.querySelector('canvas');
+                if (canvas) {
+                    canvas.style.opacity = '1';
+                    canvas.removeAttribute('aria-busy');
+                }
+            });
+        }
+
+        // Show error message in chart containers
+        function showChartError(message) {
+            const containers = document.querySelectorAll('.chart-container');
+            containers.forEach(container => {
+                // remove existing errors
+                container.querySelectorAll('.chart-error').forEach(node => node.remove());
+
+                const canvas = container.querySelector('canvas');
+                if (canvas) {
+                    canvas.style.display = 'none';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'chart-error';
+                    errorDiv.innerHTML = `
+                <div class="error-container-dashed">
+                    <i class="bi bi-exclamation-triangle icon-medium mb-2"></i>
+                    <p class="m-0 fw-bold">${message}</p>
+                    <button onclick="initializeCharts()" class="btn btn-outline-success btn-sm mt-2">
+                        <i class="bi bi-arrow-clockwise"></i> {{ _('Retry') }}
+                    </button>
+                </div>
+            `;
+                    container.appendChild(errorDiv);
+                }
+            });
+        }
+
+        // Function to destroy existing chart instances
+        function destroyExistingCharts() {
+            Object.keys(chartInstances).forEach(chartId => {
+                if (chartInstances[chartId]) {
+                    chartInstances[chartId].destroy();
+                    delete chartInstances[chartId];
+                }
+            });
+        }
+
+        function createEnhancedCostChart(data) {
+            const ctx = document.getElementById('costChart');
+            if (!ctx) return;
+
+            chartInstances['costChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels.map(label => label.replace(' ', '\n')),
+                    datasets: [{
+                        label: '{{ _("Monthly Cost (₹)") }}',
+                        data: data.data,
+                        backgroundColor: data.data.map((value, index) => {
+                            if (index === 0) return '#0A4F3C'; // Current baseline
+                            return value < data.data[0] ? '#0EA44B' : '#EF4444';
+                        }),
+                        borderColor: data.data.map((value, index) => {
+                            if (index === 0) return '#0A4F3C';
+                            return value < data.data[0] ? '#0C8A3F' : '#C53030';
+                        }),
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const value = context.parsed.y;
+                                    const savings = data.data[0] - value;
+                                    let label = `₹${value.toLocaleString()}`;
+                                    if (context.dataIndex > 0) {
+                                        if (savings > 0) {
+                                            label += ` ({{ _("Saves") }} ₹${savings.toLocaleString()})`;
+                                        } else if (savings < 0) {
+                                            label += ` ({{ _("Costs") }} ₹${Math.abs(savings).toLocaleString()} {{ _("more") }})`;
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return '₹' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45
+                            }
+                        }
+                    },
+                    animation: {
+                        delay: (context) => context.dataIndex * 200,
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        // Table sorting and summary
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('comparisonTable');
+            if (!table) return;
+
+            const tbody = table.querySelector('tbody');
+            const headers = table.querySelectorAll('.sortable');
+
+            headers.forEach(header => {
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', () => {
+                    const key = header.dataset.sortKey;
+                    const rows = Array.from(tbody.querySelectorAll('tr')).filter(r => !r.classList.contains('table-info'));
+
+                    const currentDir = header.dataset.sortDir === 'asc' ? 'desc' : 'asc';
+                    headers.forEach(h => h.removeAttribute('data-sort-dir'));
+                    header.dataset.sortDir = currentDir;
+
+                    rows.sort((a, b) => {
+                        const aVal = getNumericValue(a, key);
+                        const bVal = getNumericValue(b, key);
+                        return currentDir === 'asc' ? aVal - bVal : bVal - aVal;
+                    });
+
+                    rows.forEach(row => tbody.appendChild(row));
+                    updateSummaryRow(tbody);
+                });
+            });
+
+            updateSummaryRow(tbody);
+        });
+
+        function getNumericValue(row, key) {
+            switch (key) {
+                case 'monthly_cost':
+                    return parseFloat(row.children[1].innerText.replace(/[₹,]/g, '')) || 0;
+                case 'annual_co2':
+                    return parseFloat(row.children[2].innerText.replace(/[^0-9.-]/g, '')) || 0;
+                case 'health_risk':
+                    return parseInt(row.children[4].querySelector('[data-risk-rank]')?.dataset.riskRank || '999', 10);
+                case 'efficiency':
+                    return parseFloat(row.children[3].innerText.replace(/[^0-9.-]/g, '')) || 0;
+                default:
+                    return 0;
+            }
+        }
+
+        function updateSummaryRow(tbody) {
+            const rows = Array.from(tbody.querySelectorAll('tr')).filter(r => !r.classList.contains('table-info'));
+            if (!rows.length) return;
+
+            const costs = rows.map(r => parseFloat(r.children[1].innerText.replace(/[₹,]/g, '')) || 0);
+            const emissions = rows.map(r => parseFloat(r.children[2].innerText.replace(/[^0-9.-]/g, '')) || 0);
+            const grades = rows.map(r => (r.children[5].innerText || '').trim());
+
+            const minCost = Math.min(...costs);
+            const minEmission = Math.min(...emissions);
+            const bestGrade = grades.sort()[0] || '';
+
+            const summaryCost = document.getElementById('summaryCost');
+            const summaryHealth = document.getElementById('summaryHealth');
+            const summaryGrade = document.getElementById('summaryGrade');
+
+            if (summaryCost) summaryCost.innerText = `{{ _('Lowest OpEx') }}: ₹${minCost.toLocaleString()}`;
+            if (summaryHealth) summaryHealth.innerText = `{{ _('Lowest CO₂') }}: ${minEmission.toLocaleString()} kg/yr`;
+            if (summaryGrade) summaryGrade.innerText = `{{ _('Best grade') }}: ${bestGrade}`;
+        }
+        function createEnhancedEmissionsChart(data) {
+            const ctx = document.getElementById('emissionsChart');
+            if (!ctx) return;
+
+            chartInstances['emissionsChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels.map(label => label.replace(' ', '\n')),
+                    datasets: [{
+                        label: '{{ _("Annual CO₂ (kg)") }}',
+                        data: data.data,
+                        backgroundColor: data.data.map(value => getBandColor(value, emissionsBands)),
+                        borderColor: data.data.map(value => getBandColor(value, emissionsBands)),
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const value = context.parsed.y;
+                                    const reduction = data.data[0] - value;
+                                    let label = `${value.toLocaleString()} kg CO₂`;
+                                    if (context.dataIndex > 0 && reduction > 0) {
+                                        label += ` ({{ _("Reduces by") }} ${reduction.toLocaleString()} kg)`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return value.toLocaleString() + ' kg';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45
+                            }
+                        }
+                    },
+                    animation: {
+                        delay: (context) => context.dataIndex * 200,
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        function createEnhancedHealthChart(data) {
+            const ctx = document.getElementById('healthChart');
+            if (!ctx) return;
+
+            chartInstances['healthChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels.map(label => label.replace(' ', '\n')),
+                    datasets: [{
+                        label: '{{ _("Health Risk Score") }}',
+                        data: data.data,
+                        backgroundColor: data.data.map(value => getBandColor(value, healthBands)),
+                        borderColor: data.data.map(value => getBandColor(value, healthBands)),
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const value = context.parsed.y;
+                                    let risk = '{{ _("Very High Risk") }}';
+                                    if (value < 30) risk = '{{ _("Low Risk") }}';
+                                    else if (value < 50) risk = '{{ _("Moderate Risk") }}';
+                                    else if (value < 70) risk = '{{ _("High Risk") }}';
+
+                                    return `${value.toFixed(1)}/100 (${risk})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '/100';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45
+                            }
+                        }
+                    },
+                    animation: {
+                        delay: (context) => context.dataIndex * 200,
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        function createEnhancedRadarChart(data) {
+            const ctx = document.getElementById('radarChart');
+            if (!ctx) return;
+
+            // Take top 4 alternatives for radar chart
+            const topAlternatives = data.cost_comparison.labels.slice(0, 4);
+
+            chartInstances['radarChart'] = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        '{{ _("Cost Efficiency") }}',
+                        '{{ _("Low Emissions") }}',
+                        '{{ _("Health Safety") }}',
+                        '{{ _("Overall Rating") }}'
+                    ],
+                    datasets: topAlternatives.map((label, index) => {
+                        // Normalize scores to 0-100 scale
+                        const maxCost = Math.max(...data.cost_comparison.data);
+                        const maxEmissions = Math.max(...data.emissions_comparison.data);
+
+                        const costScore = Math.max(0, 100 - (data.cost_comparison.data[index] / maxCost * 100));
+                        const emissionScore = Math.max(0, 100 - (data.emissions_comparison.data[index] / maxEmissions * 100));
+                        const healthScore = Math.max(0, 100 - data.health_comparison.data[index]);
+                        const overallScore = (costScore + emissionScore + healthScore) / 3;
+
+                        return {
+                            label: label,
+                            data: [costScore, emissionScore, healthScore, overallScore],
+                            borderColor: getColorForIndex(index),
+                            backgroundColor: getColorForIndex(index, 0.12),
+                            pointBackgroundColor: getColorForIndex(index),
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: getColorForIndex(index),
+                            borderWidth: 2
+                        };
+                    })
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                display: false
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        function getColorForIndex(index, alpha = 1) {
+            const colors = [
+                `rgba(10, 79, 60, ${alpha})`,   // Deep green
+                `rgba(14, 164, 75, ${alpha})`,  // Primary green
+                `rgba(95, 211, 155, ${alpha})`, // Mint
+                `rgba(255, 158, 11, ${alpha})`, // Amber
+                `rgba(239, 68, 68, ${alpha})`,  // Red
+                `rgba(89, 140, 248, ${alpha})`  // Blue accent
+            ];
+            return colors[index % colors.length];
+        }
+
+        // Utility to color bars by value bands
+        function getBandColor(value, bands) {
+            for (const band of bands) {
+                if (value <= band.max) return band.color;
+            }
+            return bands[bands.length - 1]?.color || '#0EA44B';
+        }
+
+        const emissionsBands = [
+            { max: 200, color: '#0EA44B' },
+            { max: 500, color: '#5FD39B' },
+            { max: 1000, color: '#F59E0B' },
+            { max: Infinity, color: '#EF4444' }
+        ];
+
+        const healthBands = [
+            { max: 30, color: '#0EA44B' },
+            { max: 50, color: '#F59E0B' },
+            { max: 70, color: '#F97316' },
+            { max: Infinity, color: '#EF4444' }
+        ];
+    </script>
+    {% endblock %}

@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Household Profile') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+
+{% set progress = 25 %}
+{% set progress_text %}{{ _('Step 1 of 4') }} - {{ _('Household Profile') }}{% endset %}
+
+{% block content %}
+<!-- Custom styles moved to style.css -->
+<div class="container my-2.5 py-3 analysis-container-custom">
+    <div class="text-center mb-2.5">
+        <h3 class="fw-bold text-primary-green mb-1.5">
+            {{ _('Household Profile') }}
+        </h3>
+    </div>
+    <div class="row justify-content-center g-4">
+
+
+        <!-- Form -->
+        <form id="householdForm" class="needs-validation" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <!-- Personal Information -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4">
+                        <i class="bi bi-person me-2"></i>{{ _('Personal Information') }}
+                    </h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">{{ _('Full Name') }} *</label>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                placeholder="{{ _('Your Name') }}" value="{{ household_data.name | default('') }}">
+                            <div class="invalid-feedback">{{ _('Please enter your name') }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">{{ _('Email Address') }} *</label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                placeholder="{{ _('Your Email Address') }}"
+                                value="{{ household_data.email | default('') }}">
+                            <div class="invalid-feedback">{{ _('Please enter a valid email address') }}</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="phone" class="form-label">{{ _('Contact Number') }}</label>
+                            <div class="input-group">
+                                <select class="form-select mw-150" id="country_code" name="country_code">
+                                    <option value="+91" data-country="IN" selected>+91 ({{ _('India') }})</option>
+                                    <option value="+971" data-country="AE">+971 ({{ _('UAE') }})</option>
+                                    <option value="+94" data-country="LK">+94 ({{ _('Sri Lanka') }})</option>
+                                    <option value="+44" data-country="GB">+44 ({{ _('UK') }})</option>
+                                    <option value="+1" data-country="US">+1 ({{ _('USA') }})</option>
+                                </select>
+                                <input type="tel" class="form-control" placeholder="{{ _('Phone Number') }}"
+                                    pattern="[0-9]{10}" id="phone" name="phone"
+                                    value="{{ household_data.phone | default('') }}">
+                            </div>
+                            <div class="invalid-feedback">{{ _('Please enter a valid phone number') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Household Details -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4">
+                        <i class="bi bi-house-door me-2"></i>{{ _('Household Details') }}
+                    </h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="household_size" class="form-label">{{ _('Number of members') }}
+                                *</label>
+                            <input type="number" class="form-control" id="household_size" name="household_size" min="1"
+                                max="20" value="{{ household_data.household_size | default(4) }}" required
+                                data-bs-toggle="tooltip" title="{{ _('Total number of residents') }}">
+                            <div class="invalid-feedback">{{ _('Please enter household size') }}</div>
+                            <div id="efficiency-info" class="form-text text-success"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="district" class="form-label">{{ _('District') }} *</label>
+                            <select class="form-select" id="district" name="district" required>
+                                <option value="">{{ _('Select District') }}</option>
+                                <!-- Districts loaded from database via context processor -->
+                                {% for dist in district_options %}
+                                <option value="{{ dist.value }}" {% if (household_data.district |
+                                    default(''))==dist.value %}selected{% endif %}>
+                                    {{ localize_db_label(dist.label_en, dist.label_ml) }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">{{ _('Please select your district') }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="area_type" class="form-label">{{ _('Area classification') }} *</label>
+                            <select class="form-select" id="area_type" name="area_type" required>
+                                <option value="">{{ _('Select Classification') }}</option>
+                                <option value="Urban" {% if (household_data.area_type | default(''))=='Urban'
+                                    %}selected{% endif %}>{{ _('Urban') }} ({{ _('Municipal/Corporation') }})</option>
+                                <option value="Rural" {% if (household_data.area_type | default(''))=='Rural'
+                                    %}selected{% endif %}>{{ _('Rural') }} ({{ _('Panchayat/Village') }})</option>
+                            </select>
+                            <div class="invalid-feedback">{{ _('Please select area type') }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="monthly_income" class="form-label">{{ _('Monthly Household Income') }}
+                                (₹)</label>
+                            <!-- <input type="number" class="form-control" id="monthly_income" name="monthly_income" min="0"
+                                max="1000000" step="1000" placeholder="{{ _('Example: 50,000') }}"
+                                data-bs-toggle="tooltip" title="{{ _('Used for financial feasibility analysis') }}"> -->
+                            <select class="form-control" id="monthly_income" name="monthly_income"
+                                data-bs-toggle="tooltip" title="{{ _('Used for financial feasibility analysis') }}">
+                                <option value="" disabled selected>{{ _('Select Monthly Income') }}</option>
+                                <option value="50000">{{ _('Less than 50,000') }}</option>
+                                <option value="60000">{{ _('50,000 - 70,000') }}</option>
+                                <option value="85000">{{ _('70,000 - 1,00,000') }}</option>
+                                <option value="125000">{{ _('1,00,000 - 1,50,000') }}</option>
+                                <option value="150000">{{ _('Above 1,50,000') }}</option>
+                            </select>
+                            <input type="hidden" id="monthly_income_value" name="monthly_income_value">
+                        </div>
+                        <!-- <div class="col-md-6"> -->
+                        <!-- <label for="income_range" class="form-label">
+                            {{ _('Monthly Household Income Range') }} (₹)
+                        </label> -->
+
+                        <!-- <div class="d-flex align-items-center gap-2">
+                            <input type="number" class="form-control" id="income_min" name="income_min" min="0"
+                                max="1000000" step="1000" placeholder="{{ _('From') }}" data-bs-toggle="tooltip"
+                                title="{{ _('Enter the lower value of the income range') }}"
+                                value="{{ household_data.income_min | default('') }}">
+
+                            <span class="fw-bold">to</span>
+
+                            <input type="number" class="form-control" id="income_max" name="income_max" min="0"
+                                max="1000000" step="1000" placeholder="{{ _('To') }}" data-bs-toggle="tooltip"
+                                title="{{ _('Enter the upper value of the income range') }}"
+                                value="{{ household_data.income_max | default('') }}">
+                        </div> -->
+                        <!-- </div> -->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Economic Parameters -->
+            <!-- <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary-green mb-4">
+                        <i class="bi bi-graph-up me-2"></i>{{ _('Economic Parameters') }}
+                    </h5>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="electricity_tariff" class="form-label">{{ _('Electricity Tariff') }} (₹/kWh)
+                                *</label>
+                            <input type="number" class="form-control" id="electricity_tariff" name="electricity_tariff"
+                                min="2.0" max="15.0" value="6.5" step="0.1" required data-bs-toggle="tooltip"
+                                title="{{ _('Current applicable tariff rate') }}">
+                            <div class="invalid-feedback">{{ _('Please enter electricity tariff') }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="lpg_subsidy" class="form-label">{{ _('LPG Subsidy Status') }} *</label>
+                            <select class="form-select" id="lpg_subsidy" name="lpg_subsidy" required>
+                                <option value="">{{ _('Select Status') }}</option>
+                                <option value="No">{{ _('Non-Subsidized') }}</option>
+                                <option value="Yes">{{ _('Subsidized') }}</option>
+                            </select>
+                            <div class="invalid-feedback">{{ _('Please select LPG subsidy status') }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="loan_interest_rate" class="form-label">{{ _('Financing Interest Rate') }} (%)
+                                *</label>
+                            <input type="number" class="form-control" id="loan_interest_rate" name="loan_interest_rate"
+                                min="5" max="20" value="9" step="1" required data-bs-toggle="tooltip"
+                                title="{{ _('Assumed interest rate for capital investment') }}">
+                            <div class="invalid-feedback">{{ _('Please enter loan interest rate') }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="loan_tenure" class="form-label">{{ _('Loan Tenure') }} ({{ _('Years') }})
+                                *</label>
+                            <select class="form-select" id="loan_tenure" name="loan_tenure" required>
+                                <option value="">{{ _('Select Tenure') }}</option>
+                                <option value="3">3 {{ _('years') }}</option>
+                                <option value="5" selected>5 {{ _('years') }}</option>
+                                <option value="7">7 {{ _('years') }}</option>
+                                <option value="10">10 {{ _('years') }}</option>
+                                <option value="25">25 {{ _('years') }}</option>
+                            </select>
+                            <div class="invalid-feedback">{{ _('Please select loan tenure') }}</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="main_priority" class="form-label">{{ _('Primary Optimization Goal') }} *</label>
+                            <select class="form-select" id="main_priority" name="main_priority" required>
+                                <option value="balanced" selected>{{ _('Balanced Approach') }}</option>
+                                <option value="cost">{{ _('Cost Minimization') }}</option>
+                                <option value="health">{{ _('Health & Safety') }}</option>
+                                <option value="environment">{{ _('Environmental Impact') }}</option>
+                            </select>
+                            <div class="form-text">{{ _('Determines how the final recommendation is weighted across
+                                cost,
+                                health, and sustainability factors.') }}</div>
+                            <div class="invalid-feedback">{{ _('Please select your main priority') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Solar Rooftop Interest -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4">
+                        <i class="bi bi-sun me-2"></i>{{ _('Solar Rooftop') }}
+                    </h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="solar_willingness" class="form-label">{{ _('Are you willing to consider solar
+                                rooftop?') }} *</label>
+                            <select class="form-select" id="solar_willingness" name="solar_willingness" required>
+                                <option value="">{{ _('Select an option') }}</option>
+                                <option value="Yes" {% if (household_data.solar_willingness | default(''))=='Yes'
+                                    %}selected{% endif %}>{{ _('Yes') }}</option>
+                                <option value="No" {% if (household_data.solar_willingness | default(''))=='No'
+                                    %}selected{% endif %}>{{ _('No') }}</option>
+                            </select>
+                            <div class="invalid-feedback">{{ _('Please select your willingness for solar rooftop') }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 d-none" id="solar_area_container">
+                            <label for="solar_rooftop_area" class="form-label">{{ _('Available rooftop area') }}</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="solar_rooftop_area"
+                                    name="solar_rooftop_area" min="10" max="500" step="1"
+                                    value="{{ household_data.solar_rooftop_area | default(50) }}"
+                                    placeholder="{{ _('Enter area') }}">
+                                <span class="input-group-text">m²</span>
+                            </div>
+                            <div class="form-text">{{ _('Minimum 10 m² required for solar installation') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4">
+                        <i class="bi bi-graph-up me-2"></i>{{ _('Economic Parameters') }}
+                    </h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="electricity_tariff" class="form-label">
+                                {{ _('Electricity tariff') }} (₹/kWh) *
+                            </label>
+                            <input type="number" class="form-control" id="electricity_tariff" name="electricity_tariff"
+                                min="2.0" max="15.0" value="6.5" step="0.1" required data-bs-toggle="tooltip"
+                                title="{{ _('Current applicable tariff rate') }}">
+                            <div class="invalid-feedback">{{ _('Please enter electricity tariff') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Navigation -->
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('index') }}" class="btn btn-nav-back">
+                    <i class="bi bi-arrow-left me-2"></i>{{ _('Back') }}
+                </a>
+                <button type="submit" class="btn btn-nav-next">
+                    {{ _('Next') }} <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Prevent form resubmission popup on page refresh
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('householdForm');
+        const householdSizeInput = document.getElementById('household_size');
+        const solarWillingnessSelect = document.getElementById('solar_willingness');
+        const solarAreaContainer = document.getElementById('solar_area_container');
+        const solarAreaInput = document.getElementById('solar_rooftop_area');
+
+        // Autosave form data to localStorage
+        function saveFormData() {
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            localStorage.setItem('household_form_autosave', JSON.stringify(data));
+        }
+
+        // Restore form data from localStorage
+        function restoreFormData() {
+            const saved = localStorage.getItem('household_form_autosave');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const input = form.elements[key];
+                    if (input) {
+                        if (input.type === 'radio' || input.type === 'checkbox') {
+                            if (input.value === data[key]) {
+                                input.checked = true;
+                            }
+                        } else {
+                            input.value = data[key];
+                        }
+                    }
+                });
+                toggleSolarArea(); // Update visibility after restore
+            }
+        }
+
+        // Clear autosave data
+        function clearAutosave() {
+            localStorage.removeItem('household_form_autosave');
+        }
+
+        // Restore data on page load
+        restoreFormData();
+
+        // Save data on every input change
+        form.addEventListener('input', saveFormData);
+        form.addEventListener('change', saveFormData);
+
+        // Show/hide solar area input based on willingness
+        function toggleSolarArea() {
+            const willingness = solarWillingnessSelect.value;
+            if (willingness === 'Yes') {
+                solarAreaContainer.classList.remove('d-none');
+                solarAreaInput.required = true;
+            } else {
+                solarAreaContainer.classList.add('d-none');
+                solarAreaInput.required = false;
+                solarAreaInput.value = 50; // Reset to default
+            }
+        }
+
+        // Initialize solar area visibility on page load
+        toggleSolarArea();
+
+        solarWillingnessSelect.addEventListener('change', toggleSolarArea);
+
+        // Update efficiency info when household size changes
+        householdSizeInput.addEventListener('input', function () {
+            updateEfficiencyInfo(parseInt(this.value));
+        });
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!form.checkValidity()) {
+                e.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Clear autosave data after successful form submission
+            clearAutosave();
+
+            goToNextStep('/submit_household', data);
+        });
+
+        // Initialize
+        updateEfficiencyInfo(4);
+    });
+
+    document.getElementById("monthly_income").addEventListener("change", function () {
+        document.getElementById("monthly_income_value").value = this.value;
+    });
+
+    function updateEfficiencyInfo(householdSize) {
+        const efficiencyInfo = document.getElementById('efficiency-info');
+        let efficiencyGain = 0;
+
+        if (householdSize <= 2) {
+            efficiencyGain = 0;
+        } else if (householdSize <= 4) {
+            efficiencyGain = 15;
+        } else if (householdSize <= 6) {
+            efficiencyGain = 25;
+        } else if (householdSize <= 8) {
+            efficiencyGain = 30;
+        } else {
+            efficiencyGain = 35;
+        }
+
+        if (efficiencyGain > 0) {
+            efficiencyInfo.innerHTML = `<i class="bi bi-lightbulb text-success me-1"></i>${efficiencyGain}% {{ _('energy efficiency gain from economies of scale') }}`;
+        } else {
+            efficiencyInfo.innerHTML = '';
+        }
+    }
+
+
+</script>
+{% endblock %}

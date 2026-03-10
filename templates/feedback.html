@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Feedback & Schemes') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+
+{% block progress_bar %}{% endblock %}
+
+{% block content %}
+<script>
+    console.debug("DEBUG: Feedback Context", {
+        user_name: {{ user_name| tojson }},
+        user_email: {{ user_email| tojson }},
+        user_phone: {{ user_phone| tojson }},
+        is_commercial: {{ is_commercial| tojson }}
+    });
+</script>
+<div class="container my-2.5 py-3 analysis-container-custom">
+    <div class="text-center mb-4">
+        <h3 class="fw-bold text-primary-green mb-2">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ _('Analysis Complete!') }}
+        </h3>
+        <p class="text-muted mb-0">{{ _('Explore government schemes that can help you transition to clean-cooking
+            Government schemes') }}
+        </p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-10">
+            <form id="feedbackForm" method="POST" action="{{ url_for('submit_feedback') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <!-- Contact Permission -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <div class="form-check p-3 bg-light rounded">
+                            <input class="form-check-input" type="checkbox" value="1" id="allow_contact"
+                                name="allow_authority_contact">
+                            <label class="form-check-label" for="allow_contact">
+                                <strong class="text-primary-green">
+                                    <i class="bi bi-person-check-fill me-2"></i>{{ _('Allow Concerned Authorities to
+                                    Contact Me to Consent') }}
+                                </strong>
+                                <p class="mb-0 text-muted small mt-2">
+                                    {{ _('I permit government authorities and scheme coordinators to contact me via
+                                    phone or email regarding the selected subsidy schemes and assistance programmes
+                                    ') }}
+                                </p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- User Verification Section -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary-green mb-4"><i class="bi bi-person-check me-2"></i>{{
+                            _('Verify Your Information') }}</h4>
+                        <p class="text-muted mb-4">{{ _('Please verify or update your contact information') }}</p>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="name" class="form-label">
+                                    <i class="bi bi-person me-2 text-success"></i>{{ _('Name') }} <span
+                                        class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ user_name }}"
+                                    required>
+                                <div class="invalid-feedback">{{ _('Please enter your name') }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope me-2 text-success"></i>{{ _('Email Address') }} <span
+                                        class="text-danger">*</span>
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{ user_email }}" required>
+                                <div class="invalid-feedback">{{ _('Please enter a valid email') }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="phone" class="form-label">
+                                    <i class="bi bi-telephone me-2 text-success"></i>{{ _('Phone Number') }} <span
+                                        class="text-danger">*</span>
+                                </label>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="{{ user_phone }}"
+                                    required pattern="[0-9]{10}">
+                                <div class="invalid-feedback">{{ _('Please enter a valid 10-digit phone number') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Government Schemes Section -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary-green mb-1"><i class="bi bi-award me-2"></i>{{ _('Government
+                            Subsidy Schemes') }}</h4>
+                        <p class="text-muted small mb-4">{{ _("Select the schemes you're interested in learning more
+                            about") }}</p>
+
+                        <!-- Scheme 1: PM Surya Ghar Solar Subsidy -->
+                        <div class="card scheme-card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input class="form-check-input mt-1" type="checkbox" value="1" id="solar_scheme"
+                                        name="solar_scheme_interested">
+                                    <label class="form-check-label w-100" for="solar_scheme">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h4 class="mb-2 text-primary-green">
+                                                    <i class="bi bi-sun-fill me-2 text-warning"></i>
+                                                    <strong>{{ _('PM Surya Ghar: Muft Bijli Yojana') }}</strong>
+                                                    <span class="badge bg-warning text-dark ms-2">{{ _('Up to ₹78,000
+                                                        Subsidy') }}</span>
+                                                </h4>
+                                                <p class="mb-2 text-muted small">
+                                                    {{ _('Get subsidy for rooftop solar panel installation. Provides up
+                                                    to 300 units of free electricity per month.') }}
+                                                </p>
+                                                <ul class="small mb-3 text-muted">
+                                                    <li>{{ _('₹30,000 per kW for systems up to 2 kW') }}</li>
+                                                    <li>{{ _('₹78,000 total subsidy for 3 kW systems') }}</li>
+                                                    <li>{{ _('Covers 40 percent of installation cost') }}</li>
+                                                </ul>
+                                                <a href="https://pmsuryaghar.gov.in" target="_blank"
+                                                    class="btn btn-sm btn-outline-success">
+                                                    <i class="bi bi-box-arrow-up-right me-1"></i>{{ _('Learn More') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scheme 2: PNG Connection -->
+                        <div class="card scheme-card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input class="form-check-input mt-1" type="checkbox" value="1" id="png_scheme"
+                                        name="png_scheme_interested">
+                                    <label class="form-check-label w-100" for="png_scheme">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h4 class="mb-2 text-primary-green">
+                                                    <i class="bi bi-fire me-2 text-info"></i>
+                                                    <strong>{{ _('City Gas Distribution (PNG) Network Expansion')
+                                                        }}</strong>
+                                                    <span class="badge bg-info text-dark ms-2">{{ _('Available in Select
+                                                        Districts') }}</span>
+                                                </h4>
+                                                <p class="mb-2 text-muted small">
+                                                    {{ _('Piped Natural Gas (PNG) connection for cleaner and more
+                                                    economical cooking fuel.') }}
+                                                </p>
+                                                <ul class="small mb-3 text-muted">
+                                                    <li>{{ _('Cleaner than LPG with lower emissions') }}</li>
+                                                    <li>{{ _('No cylinder handling required') }}</li>
+                                                    <li>{{ _('Available in: Thiruvananthapuram, Ernakulam, Alappuzha')
+                                                        }}</li>
+                                                    <li>{{ _('Potential central government subsidy schemes under
+                                                        planning') }}</li>
+                                                </ul>
+                                                <a href="https://www.oil-gas.nic.in/cgd" target="_blank"
+                                                    class="btn btn-sm btn-outline-success">
+                                                    <i class="bi bi-box-arrow-up-right me-1"></i>{{ _('Check
+                                                    Availability') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scheme 3: PM Ujjwala Yojana -->
+                        <div class="card scheme-card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input class="form-check-input mt-1" type="checkbox" value="1" id="ujjwala_scheme"
+                                        name="ujjwala_scheme_interested">
+                                    <label class="form-check-label w-100" for="ujjwala_scheme">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h4 class="mb-2 text-primary-green">
+                                                    <i class="bi bi-house-heart-fill me-2 text-danger"></i>
+                                                    <strong>{{ _('Pradhan Mantri Ujjwala Yojana') }}</strong>
+                                                    <span class="badge bg-danger ms-2">{{ _('₹300/Cylinder Subsidy')
+                                                        }}</span>
+                                                </h4>
+                                                <p class="mb-2 text-muted small">
+                                                    {{ _('Subsidized LPG connections and refills for women from
+                                                    low-income households.') }}
+                                                </p>
+                                                <ul class="small mb-3 text-muted">
+                                                    <li>{{ _('₹300 subsidy per 14.2 kg LPG cylinder') }}</li>
+                                                    <li>{{ _('Up to 12 refills per year') }}</li>
+                                                    <li>{{ _('Free LPG connection for eligible households') }}</li>
+                                                    <li>{{ _('Priority for Below Poverty Line (BPL) families') }}</li>
+                                                </ul>
+                                                <a href="https://www.pmuy.gov.in" target="_blank"
+                                                    class="btn btn-sm btn-outline-success">
+                                                    <i class="bi bi-box-arrow-up-right me-1"></i>{{ _('Learn More') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <!-- Optional Feedback -->
+                <div class="card shadow-green fade-in-up mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary-green mb-4"><i class="bi bi-chat-text me-2"></i>{{
+                            _('Additional Comments') }}</h4>
+                        <label for="feedback_text" class="form-label">
+                            {{ _('Share any thoughts, questions, or suggestions (Optional)') }}
+                        </label>
+                        <textarea class="form-control" id="feedback_text" name="feedback_text" rows="4"
+                            placeholder="{{ _('Your feedback helps us improve...') }}"></textarea>
+                        <div class="form-text">{{ _('Your feedback is valuable and helps us improve the platform') }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm">
+                        <i class="bi bi-check-circle-fill me-2"></i>{{ _('Submit') }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add staggered fade-in animations
+        const cards = document.querySelectorAll('.fade-in-up');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Form validation
+        const form = document.getElementById('feedbackForm');
+        form.addEventListener('submit', function (e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+
+        // Phone number formatting
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', function (e) {
+            // Remove non-numeric characters
+            this.value = this.value.replace(/\D/g, '');
+            // Limit to 10 digits
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
+
+        // Enhanced checkbox interaction for scheme cards
+        const schemeCheckboxes = document.querySelectorAll('.scheme-card .form-check-input');
+        schemeCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const card = this.closest('.scheme-card');
+                if (this.checked) {
+                    card.style.borderLeft = '4px solid var(--primary-green)';
+                    card.style.backgroundColor = 'rgba(76, 175, 80, 0.03)';
+                } else {
+                    card.style.borderLeft = '';
+                    card.style.backgroundColor = '';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

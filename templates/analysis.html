@@ -1,0 +1,573 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Analysis Results') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+
+{% set progress = 100 %}
+{% set progress_text %}{{ _('Step 4 of 4') }} - {{ _('Analysis Complete') }}{% endset %}
+{% set progress_label %}{{ _('Analysis Complete') }}{% endset %}
+{% set current_step = 4 %}
+{% set total_steps = 4 %}
+
+{% block content %}
+{% macro risk_text(risk_value) -%}
+{% set risk = risk_value or 'moderate' -%}
+{% if risk == 'low' -%}
+{{ _('Low') }}
+{% elif risk == 'moderate' -%}
+{{ _('Moderate') }}
+{% elif risk == 'high' -%}
+{{ _('High') }}
+{% else -%}
+{{ _('Very High') }}
+{% endif -%}
+{%- endmacro %}
+<div class="container my-2.5 py-3 analysis-container-custom">
+    <div class="text-center mb-2">
+        <h3 class="fw-bold text-primary-green mb-1">
+            <i class="bi bi-graph-up me-2"></i>{{ _('Clean Cooking Analysis Report') }}
+        </h3>
+        <p class="mb-3">{{ _('Assessment with key recommendations') }}</p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-10" id="analysis-container" data-analysis-type="residential">
+
+            <!-- Current Consumption Summary -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-speedometer2 me-2"></i>{{ _('Current
+                        Usage') }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Fuel') }}</th>
+                                    <th>{{ _('Quantity') }}</th>
+                                    <th>{{ _('Consumption') }} ({{ _('Joules') }})</th>
+                                    <th>{{ _('Monthly Cost') }} (₹)</th>
+                                    <th>{{ _('Annual Emission') }} (kg CO₂)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set fuels = analysis.current.fuel_details.fuel_breakdown if
+                                analysis.current.fuel_details.fuel_breakdown is defined else
+                                analysis.current.fuel_details %}
+                                {% for fuel, details in fuels.items() %}
+                                {% if details is mapping %}
+                                <tr>
+                                    <td class="py-3 px-4">
+                                        <div class="font-medium text-gray-900">{{ fuel }}</div>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.quantity) }} {{ details.unit
+                                            }}</div>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {% if details.energy_delivered > 0 %}
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.energy_delivered * 3.6) }}
+                                            MJ</div>
+                                        {% else %}
+                                        <div class="text-gray-500">-</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <div class="text-gray-900">₹{{ "%.2f"|format(details.monthly_cost) }}</div>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <div class="text-gray-900">{{ "%.2f"|format(details.annual_emissions) }} kg
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-gray-50 font-semibold">
+                                <tr>
+                                    <td class="py-3 px-4" colspan="2">{{ _('Total') }}</td>
+                                    <td class="py-3 px-4">{{ "%.2f"|format(analysis.current.monthly_energy_kwh * 3.6) }}
+                                        MJ</td>
+                                    <td class="py-3 px-4">₹{{ "%.2f"|format(analysis.current.monthly_cost) }}</td>
+                                    <td class="py-3 px-4">{{ "%.2f"|format(analysis.current.annual_emissions) }} kg</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Comparison Table -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-1">
+                        <i class="bi bi-table me-2"></i>{{ _('Cooking with an energy source') }}
+                    </h4>
+                    <p class="text-muted small mb-4">{{ _('Comparative Cost and Emission Estimates') }}</p>
+                    <div class="table-responsive">
+                        <table class="table comparison-table" id="comparisonTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ _('Energy Source') }}</th>
+                                    <th scope="col" class="sortable" data-sort-key="monthly_cost">{{ _('Monthly Cost')
+                                        }} <i class="bi bi-arrow-down-up"></i></th>
+                                    <th scope="col" class="sortable" data-sort-key="annual_co2">{{ _('Annual CO₂') }} <i
+                                            class="bi bi-arrow-down-up"></i></th>
+                                    <th scope="col" class="sortable" data-sort-key="efficiency">{{ _('Thermal
+                                        Efficiency') }} <i class="bi bi-arrow-down-up"></i></th>
+                                    <th scope="col" class="sortable" data-sort-key="health_risk">{{ _('Health Risk') }}
+                                        <i class="bi bi-arrow-down-up"></i>
+                                    </th>
+                                    <th scope="col">{{ _('Status') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-info">
+                                    <td><strong>{{ _('Your Current Setup') }}</strong></td>
+                                    <td><strong>₹{{ "%.0f"|format(analysis.current.monthly_cost|default(0)) }}</strong>
+                                    </td>
+                                    <td><strong>{{ "%.0f"|format(analysis.current.annual_emissions|default(0)) }}
+                                            kg</strong></td>
+                                    <td><strong>{{ "%.1f"|format(analysis.current.overall_thermal_efficiency|default(0))
+                                            }}%</strong></td>
+                                    <td>
+                                        {% set current_risk = (analysis.health_impact.health_risk_category or
+                                        'moderate') %}
+                                        <span
+                                            class="badge bg-{{ 'success' if current_risk == 'low' else 'warning' if current_risk == 'moderate' else 'danger' }}"
+                                            data-risk-rank="{{ 1 if current_risk == 'low' else 2 if current_risk == 'moderate' else 3 if current_risk == 'high' else 4 }}">
+                                            {{ risk_text(current_risk) }}
+                                        </span>
+                                    </td>
+                                    <td><span class="badge bg-primary">{{ _('Current') }}</span></td>
+                                </tr>
+                                {% for fuel, data in analysis.alternatives.items() %}
+                                <tr>
+                                    <td>
+                                        {{ _(fuel) }}
+                                        {% if fuel == 'Solar rooftop' or fuel == 'Solar + BESS' %}
+                                        <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                                            title="{{ _('Emissions shown are lifecycle emissions from manufacturing and installation, not from daily use. During operation, this energy source produces zero direct emissions.') }}"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>₹{{ "%.0f"|format(data.monthly_cost|default(0)) }}</td>
+                                    <td>{{ "%.0f"|format(data.annual_co2|default(0)) }} kg</td>
+                                    <td>{{ "%.0f"|format(data.efficiency|default(0)) }}%</td>
+                                    <td>
+                                        {% set alt_risk = (data.health_risk_category or 'moderate') %}
+                                        <span
+                                            class="badge bg-{{ 'success' if alt_risk == 'low' else 'warning' if alt_risk == 'moderate' else 'danger' }}"
+                                            data-risk-rank="{{ 1 if alt_risk == 'low' else 2 if alt_risk == 'moderate' else 3 if alt_risk == 'high' else 4 }}">
+                                            {{ risk_text(alt_risk) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% set cost_diff = (data.monthly_cost|default(0)) -
+                                        (analysis.current.monthly_cost|default(0)) %}
+                                        {% set emission_diff = (data.annual_co2|default(0)) -
+                                        (analysis.current.annual_emissions|default(0)) %}
+                                        <div class="small">
+                                            <div
+                                                class="{{ 'text-success' if cost_diff < 0 else 'text-danger' if cost_diff > 0 else 'text-muted' }}">
+                                                <i
+                                                    class="bi bi-{{ 'arrow-down' if cost_diff < 0 else 'arrow-up' if cost_diff > 0 else 'dash' }}"></i>
+                                                {{ _('Cost') }}: {% if cost_diff < 0 %}₹{{ "%.0f" |format(-cost_diff) }}
+                                                    {{ _('less') }}{% elif cost_diff> 0 %}₹{{ "%.0f"|format(cost_diff)
+                                                    }} {{ _('more') }}{% else %}{{ _('Same') }}{% endif %}
+                                            </div>
+                                            <div
+                                                class="{{ 'text-success' if emission_diff < 0 else 'text-danger' if emission_diff > 0 else 'text-muted' }}">
+                                                <i
+                                                    class="bi bi-{{ 'arrow-down' if emission_diff < 0 else 'arrow-up' if emission_diff > 0 else 'dash' }}"></i>
+                                                {{ _('CO₂') }}: {% if emission_diff < 0 %}{{ "%.0f"
+                                                    |format(-emission_diff) }} kg {{ _('less') }}{% elif emission_diff>
+                                                    0 %}{{ "%.0f"|format(emission_diff) }} kg {{ _('more') }}{% else
+                                                    %}{{ _('Same') }}{% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Solar + BESS Specifications -->
+            {% if analysis.alternatives['Solar + BESS'] and analysis.alternatives['Solar + BESS'].bess_system %}
+            {% set bess = analysis.alternatives['Solar + BESS'].bess_system %}
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-sun me-2"></i>{{ _('Technical
+                        Specifications: Solar +
+                        BESS') }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-clean-cooking table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">{{ _('Specification') }}</th>
+                                    <th scope="col">{{ _('Value') }}</th>
+                                    <th scope="col">{{ _('Description') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>{{ _('Solar PV System Size') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.solar_capacity_kw) }} kW</td>
+                                    <td>{{ _('Capacity required based on daily load') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{{ _('Battery Storage') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.battery_capacity_kwh) }} kWh</td>
+                                    <td>{{ bess.battery_units }} {{ _('Units') }} × 1kWh {{ _('Modules') }} (LiFePO4)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{{ _('Roof Area Required') }}</strong></td>
+                                    <td>{{ "%.0f"|format(bess.solar_capacity_kw * 10) }} m²</td>
+                                    <td>{{ _('Approx') }} 10m²/kW</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{{ _('Daily Generation') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.daily_solar_generation) }} kWh</td>
+                                    <td>{{ _('Based on Keralam GHI') }} (5.5 kWh/m²/day)</td>
+                                </tr>
+                                {% if bess.grid_backup and bess.grid_backup.needed_kwh_daily > 0.1 %}
+                                <tr class="table-warning">
+                                    <td><strong>{{ _('Grid Backup Needed') }}</strong></td>
+                                    <td>{{ "%.1f"|format(bess.grid_backup.needed_kwh_daily) }} kWh</td>
+                                    <td>{{ "%.0f"|format(bess.grid_backup.percentage) }}% {{ _('of daily energy drawn
+                                        from grid due to area limit') }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td><strong>{{ _('Total Upfront Cost') }}</strong></td>
+                                    <td>₹{{ "%.0f"|format(bess.total_capital_cost|default(0)) }}</td>
+                                    <td>{{ _('Solar Panels + Inverter + Batteries + Installation') }}</td>
+                                </tr>
+                                {% if analysis.alternatives['Solar + BESS'].levelized_costs %}
+                                {% set solar_alt = analysis.alternatives['Solar + BESS'] %}
+                                <tr>
+                                    <td><strong>{{ _('Monthly EMI / Cost') }}</strong></td>
+                                    <td>₹{{ "%.0f"|format(solar_alt.levelized_monthly_cost|default(0)) }}</td>
+                                    <td>{{ _('Levelized cost over 25 years') }} ({{ _('Loan') }}: {{
+                                        "%.0f"|format(solar_alt.levelized_costs.loan_tenure_years) }} {{ _('years') }} @
+                                        7.0%)</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Strategic Recommendations -->
+            <div class="card shadow-green fade-in-up mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-lightbulb me-2"></i>{{ _('Strategic
+                        Recommendations') }}
+                    </h4>
+                    {% if analysis.alternatives %}
+                    {% set best_cost_fuel = namespace(name='', cost=999999, data={}) %}
+                    {% for fuel, data in analysis.alternatives.items() %}
+                    {% if data.monthly_cost < best_cost_fuel.cost %} {% set best_cost_fuel.name=fuel %} {% set
+                        best_cost_fuel.cost=data.monthly_cost %} {% set best_cost_fuel.data=data %} {% endif %} {%
+                        endfor %} {% set best_emission_fuel=namespace(name='' , emission=999999, data={}) %} {% for
+                        fuel, data in analysis.alternatives.items() %} {% if data.annual_co2 <
+                        best_emission_fuel.emission %} {% set best_emission_fuel.name=fuel %} {% set
+                        best_emission_fuel.emission=data.annual_co2 %} {% set best_emission_fuel.data=data %} {% endif
+                        %} {% endfor %} <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="33%" class="text-center">
+                                        <i class="bi bi-currency-rupee"></i> {{ _('Cost Effective') }}
+                                    </th>
+                                    <th width="33%" class="text-center">
+                                        <i class="bi bi-tree-fill"></i> {{ _('Environmentally Friendly') }}
+                                    </th>
+                                    <th width="34%" class="text-center">
+                                        <i class="bi bi-award-fill"></i> {{ _('Top Rated') }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3">
+                                        <div class="text-center mb-3">
+                                            <h5 class="text-primary mb-0">{{ _(best_cost_fuel.name) }}</h5>
+                                        </div>
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr>
+                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
+                                                <td class="text-end">₹{{
+                                                    "%.0f"|format(best_cost_fuel.data.monthly_cost|default(0)) }}</td>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <td><strong>{{ _('You Save') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    ₹{{ "%.0f"|format((analysis.current.monthly_cost|default(0)) -
+                                                    (best_cost_fuel.data.monthly_cost|default(0))) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Annual CO₂') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_cost_fuel.data.annual_co2|default(0)) }} kg</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Efficiency') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_cost_fuel.data.efficiency|default(0)) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Health Risk') }}:</strong></td>
+                                                <td class="text-end">
+                                                    {% set best_cost_risk = (best_cost_fuel.data.health_risk_category or
+                                                    'moderate') %}
+                                                    <span
+                                                        class="badge bg-{{ 'success' if best_cost_risk == 'low' else 'warning' if best_cost_risk == 'moderate' else 'danger' }}">
+                                                        {{ risk_text(best_cost_risk) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+
+                                    <td class="p-3">
+                                        <div class="text-center mb-3">
+                                            <h5 class="text-success mb-0">{{ _(best_emission_fuel.name) }}</h5>
+                                        </div>
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr>
+                                                <td><strong>{{ _('Annual CO₂') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_emission_fuel.data.annual_co2|default(0)) }} kg
+                                                </td>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <td><strong>{{ _('You Reduce') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    {{ "%.0f"|format((analysis.current.annual_emissions|default(0)) -
+                                                    (best_emission_fuel.data.annual_co2|default(0))) }} kg CO₂
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
+                                                <td class="text-end">₹{{
+                                                    "%.0f"|format(best_emission_fuel.data.monthly_cost|default(0)) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Efficiency') }}:</strong></td>
+                                                <td class="text-end">{{
+                                                    "%.0f"|format(best_emission_fuel.data.efficiency|default(0)) }}%
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Health Risk') }}:</strong></td>
+                                                <td class="text-end">
+                                                    {% set best_emission_risk =
+                                                    (best_emission_fuel.data.health_risk_category or 'moderate') %}
+                                                    <span
+                                                        class="badge bg-{{ 'success' if best_emission_risk == 'low' else 'warning' if best_emission_risk == 'moderate' else 'danger' }}">
+                                                        {{ risk_text(best_emission_risk) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+
+                                    <td class="p-3">
+                                        {% if analysis.recommendations and analysis.recommendations|length > 0 %}
+                                        {% set top_fuel = analysis.recommendations[0][0] %}
+                                        {% set top_score = analysis.recommendations[0][1] %}
+                                        {% set top_data = analysis.recommendations[0][2] %}
+                                        <div class="text-center mb-3">
+                                            <h5 class="text-warning mb-0">🏆 {{ _(top_fuel) }}</h5>
+                                            <span class="badge bg-warning text-dark mt-1" style="font-size: 0.75rem;">
+                                                {{ _('Score') }}: {{ "%.1f"|format(top_score|default(0)) }}/100
+                                            </span>
+                                        </div>
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr>
+                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
+                                                <td class="text-end">₹{{ "%.0f"|format(top_data.monthly_cost|default(0))
+                                                    }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Annual CO₂') }}:</strong></td>
+                                                <td class="text-end">{{ "%.0f"|format(top_data.annual_co2|default(0)) }}
+                                                    kg</td>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <td><strong>{{ _('Balance') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">{{ _('Best Overall') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Efficiency') }}:</strong></td>
+                                                <td class="text-end">{{ "%.0f"|format(top_data.efficiency|default(0))
+                                                    }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ _('Health Risk') }}:</strong></td>
+                                                <td class="text-end">
+                                                    {% set top_risk = (top_data.health_risk_category or 'moderate') %}
+                                                    <span
+                                                        class="badge bg-{{ 'success' if top_risk == 'low' else 'warning' if top_risk == 'moderate' else 'danger' }}">
+                                                        {{ risk_text(top_risk) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        {% else %}
+                                        <div class="text-muted text-center">{{ _('No rating available') }}</div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">{{ _('No alternative recommendations available.') }}</p>
+                {% endif %}
+            </div>
+            <!-- Comparative Analysis Charts -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="chart-title mb-0">{{ _('Monthly OpEx Comparison') }}</h6>
+                            <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
+                        </div>
+                        <canvas id="costChart" height="300"
+                            aria-label="{{ _('Bar chart comparing monthly operating costs across fuels') }}"></canvas>
+                        <div class="chart-footnote small text-muted mt-2">{{ _('Lower bars indicate lower monthly
+                            operating expense (₹/month).') }}</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="chart-title mb-0">{{ _('Annual Carbon Footprint Comparison') }}</h6>
+                            <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
+                        </div>
+                        <canvas id="emissionsChart" height="300"
+                            aria-label="{{ _('Bar chart comparing annual CO₂ emissions across fuels') }}"></canvas>
+                        <div class="chart-footnote small text-muted mt-2">{{ _('Values shown as kg CO₂ per year; lower
+                            is better.') }}</div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <!-- Action Center -->
+        <div class="card shadow-green fade-in-up mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-primary-green mb-4"><i class="bi bi-gear me-2"></i>{{ _('Next Steps &
+                    Actions') }}</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-success w-100" onclick="downloadReport('residential')">
+                            <i class="bi bi-download me-2"></i>{{ _('Download Report') }}
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-outline-success w-100" onclick="shareResults()">
+                            <i class="bi bi-share me-2"></i>{{ _('Share Results') }}
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-outline-success w-100"
+                            onclick="window.location.href = '{{ url_for('feedback') }}';">
+                            <i class="bi bi-arrow-right me-2"></i>{{ _('Next Step') }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-12">
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>{{ _('Next Steps:') }}</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>{{ _('Contact local suppliers for price quotes on recommended solutions') }}</li>
+                                <li>{{ _('Consult with energy professionals for installation planning') }}</li>
+                                <li>{{ _('Check government subsidy schemes for clean cooking solutions') }}</li>
+                                <li>{{ _('Monitor your energy consumption and costs over time') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Information
+        <div class="card shadow-green fade-in-up">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="card-title text-primary-green mb-2">{{ _('Contributing to Clean Cooking Research') }}
+                        </h4>
+                        <p class="mb-0 small text-muted">
+                            {{ _(' anonymised data helps strengthen cooking-energy policies in Keralam using
+                            research-backed methods that support a sustainable energy transition') }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <p class="mb-0 small text-muted">
+                            {{ _('Analysis ID:') }} {{ (session.analysis_id | default('N/A'))[:8] }}...<br>
+                            {{ _('Generated:') }} {{ moment().format('YYYY-MM-DD HH:mm') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.debug('DEBUG: analysis loaded', {
+            analysisType: 'residential',
+            fuelDetails: {{ analysis.current.fuel_details | tojson | safe }}
+        });
+
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Add staggered animations
+    const cards = document.querySelectorAll('.fade-in-up');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+    });
+
+    // Scroll to recommendations on page load
+    window.addEventListener('load', function () {
+        // Smooth scroll to recommendations after a delay
+        setTimeout(() => {
+            const recommendations = document.querySelector('.recommendation-card');
+            if (recommendations) {
+                recommendations.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }, 1000);
+    });
+</script>
+{% endblock %}
