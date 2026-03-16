@@ -42,26 +42,28 @@ def load_constants_from_db():
     global EMISSION_FACTORS, EMISSION_SOURCES, PM25_BASE_EMISSIONS, DEFAULT_EFFICIENCIES
     global KITCHEN_FACTORS, BIOGAS_ENERGY_PER_M3
 
+    all_params = db_helper.get_all_system_parameters()
+
     # System parameters
-    LPG_CALORIFIC_VALUE = db_helper.get_system_parameter('LPG_CALORIFIC_VALUE_KWH_PER_KG', 12.8)
-    LPG_CYLINDER_WEIGHT = db_helper.get_system_parameter('LPG_DOMESTIC_CYLINDER_WEIGHT_KG', 14.2)
+    LPG_CALORIFIC_VALUE = float(all_params.get('LPG_CALORIFIC_VALUE_KWH_PER_KG', 12.8))
+    LPG_CYLINDER_WEIGHT = float(all_params.get('LPG_DOMESTIC_CYLINDER_WEIGHT_KG', 14.2))
     LPG_ENERGY_PER_CYLINDER = LPG_CYLINDER_WEIGHT * LPG_CALORIFIC_VALUE
 
     # Subsidy Parameters
     # Note: Subsidy is now calculated dynamically based on income
-    SUBSIDY_INCOME_THRESHOLD = db_helper.get_system_parameter('SUBSIDY_INCOME_THRESHOLD', 50000)
+    SUBSIDY_INCOME_THRESHOLD = float(all_params.get('SUBSIDY_INCOME_THRESHOLD', 50000))
     
     # DEPRECATED: Global constant for backward compatibility
     # Actual calculation happens in residential_cooking.py / fuel_cost_standardizer.py
     LPG_SUBSIDY_AMOUNT = 0 
 
-    PNG_CALORIFIC_VALUE = db_helper.get_system_parameter('PNG_CALORIFIC_VALUE_KWH_PER_SCM', 10.2)
+    PNG_CALORIFIC_VALUE = float(all_params.get('PNG_CALORIFIC_VALUE_KWH_PER_SCM', 10.2))
 
     # Solar parameters
-    Keralam_SOLAR_GHI = db_helper.get_system_parameter('Keralam_SOLAR_GHI', 5.59)
-    SOLAR_SYSTEM_EFF = db_helper.get_system_parameter('SOLAR_SYSTEM_EFF', 0.85)
-    Keralam_WEATHER_FACTOR = db_helper.get_system_parameter('Keralam_WEATHER_FACTOR', 0.88)
-    SOLAR_DEGRADATION = db_helper.get_system_parameter('SOLAR_DEGRADATION', 0.005)
+    Keralam_SOLAR_GHI = float(all_params.get('Keralam_SOLAR_GHI', 5.59))
+    SOLAR_SYSTEM_EFF = float(all_params.get('SOLAR_SYSTEM_EFF', 0.85))
+    Keralam_WEATHER_FACTOR = float(all_params.get('Keralam_WEATHER_FACTOR', 0.88))
+    SOLAR_DEGRADATION = float(all_params.get('SOLAR_DEGRADATION', 0.005))
 
     # Get solar pricing from database
     solar_pricing = db_helper.get_solar_pricing()
@@ -80,12 +82,12 @@ def load_constants_from_db():
     BATTERY_LIFETIME_YEARS = battery_pricing['lifetime_years']
 
     # Biogas parameters
-    BIOGAS_ENERGY_PER_M3 = db_helper.get_system_parameter('BIOGAS_ENERGY_PER_M3_KWH', 5.5)
+    BIOGAS_ENERGY_PER_M3 = float(all_params.get('BIOGAS_ENERGY_PER_M3_KWH', 5.5))
 
     # Economic parameters
-    INDIA_SCC = db_helper.get_system_parameter('INDIA_SCC', 7470)
-    DEFAULT_DISCOUNT_RATE = db_helper.get_system_parameter('DEFAULT_DISCOUNT_RATE', 0.08)
-    ELECTRICITY_TARIFF_INFLATION = db_helper.get_system_parameter('ELECTRICITY_TARIFF_INFLATION', 0.05)
+    INDIA_SCC = float(all_params.get('INDIA_SCC', 7470))
+    DEFAULT_DISCOUNT_RATE = float(all_params.get('DEFAULT_DISCOUNT_RATE', 0.08))
+    ELECTRICITY_TARIFF_INFLATION = float(all_params.get('ELECTRICITY_TARIFF_INFLATION', 0.05))
 
     # Emission factors from database (all fuels including improved stoves)
     emission_data = db_helper.get_emission_factors()
@@ -510,6 +512,15 @@ def init_user_database():
             allow_authority_contact BOOLEAN DEFAULT 0,
             feedback_text TEXT,
             submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS analysis_cache (
+            cache_key   TEXT PRIMARY KEY,
+            payload     TEXT NOT NULL,
+            created_at  REAL NOT NULL DEFAULT (strftime('%s', 'now')),
+            expires_at  REAL NOT NULL
         )
     ''')
     
@@ -2820,15 +2831,16 @@ def cleanup_old_reports(max_files=10):
     try:
         reports_dir = 'reports'
         if not os.path.exists(reports_dir):
-            return
+            pass
         
         # Get all PDF files with their creation times
         pdf_files = []
-        for filename in os.listdir(reports_dir):
-            if filename.endswith('.pdf'):
-                filepath = os.path.join(reports_dir, filename)
-                if os.path.isfile(filepath):
-                    pdf_files.append((filepath, os.path.getctime(filepath)))
+        if os.path.exists(reports_dir):
+            for filename in os.listdir(reports_dir):
+                if filename.endswith('.pdf'):
+                    filepath = os.path.join(reports_dir, filename)
+                    if os.path.isfile(filepath):
+                        pdf_files.append((filepath, os.path.getctime(filepath)))
         
         # Sort by creation time (newest first)
         pdf_files.sort(key=lambda x: x[1], reverse=True)
@@ -2841,5 +2853,16 @@ def cleanup_old_reports(max_files=10):
                     get_logger().log_step(f"Cleaned up old report: {os.path.basename(filepath)}")
                 except Exception as e:
                     get_logger().log_error(f"Failed to remove {filepath}: {e}")
+
+        # Clean up expired analysis cache entries
+        try:
+            import time
+
+            conn = db_helper.get_user_connection()
+            conn.execute("DELETE FROM analysis_cache WHERE expires_at < ?", (time.time(),))
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            get_logger().log_error(f"Cache cleanup error: {e}")
     except Exception as e:
         get_logger().log_error(f"Error during cleanup: {e}")
