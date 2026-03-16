@@ -13,11 +13,51 @@ from functools import lru_cache
 # Database path
 BASE_DIR = Path(__file__).parent.parent
 DB_PATH = BASE_DIR / 'cooking_webapp.db'
+USER_DB_PATH = BASE_DIR / 'user_data.db'
 SYSTEM_PARAMETER_ALIASES = {
     'BIOMASS_ENERGY_CONTENT': 'BIOMASS_ENERGY_CONTENT_KWH_PER_KG',
     'Keralam_SOLAR_GHI': 'KERALAM_SOLAR_GHI',
     'SOLAR_SYSTEM_EFF': 'SOLAR_SYSTEM_EFFICIENCY'
 }
+
+
+@lru_cache(maxsize=8)
+def _cached_recommendation_weights(priority_profile: str = 'balanced') -> Dict[str, float]:
+    with DatabaseConnection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT * FROM recommendation_weights WHERE priority_profile = ?",
+            (priority_profile,)
+        )
+        row = cursor.fetchone()
+
+    if row:
+        return {
+            'health': row['health_weight'],
+            'environmental': row['environmental_weight'],
+            'economic': row['economic_weight'],
+            'practicality': row['practicality_weight']
+        }
+
+    return {'health': 0.3, 'environmental': 0.2, 'economic': 0.3, 'practicality': 0.2}
+
+
+@lru_cache(maxsize=16)
+def _cached_household_size_efficiency(household_size: int) -> float:
+    with DatabaseConnection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT efficiency_factor
+            FROM group_cooking_efficiency
+            WHERE group_type = ?
+            AND ? BETWEEN size_min AND size_max
+            """,
+            ('Residential', household_size)
+        )
+        row = cursor.fetchone()
+
+    return float(row['efficiency_factor']) if row else 1.00
 
 
 class DatabaseHelper:
@@ -26,6 +66,7 @@ class DatabaseHelper:
     def __init__(self, db_path=None):
         """Initialize database helper."""
         self.db_path = db_path or DB_PATH
+        self.user_db_path = USER_DB_PATH
         self._conn = None
         self._cache = {}
 
@@ -34,9 +75,33 @@ class DatabaseHelper:
         # Always create a new connection to avoid threading issues
         # SQLite connections cannot be shared across threads
         conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA busy_timeout=3000")
+        conn.execute("PRAGMA synchronous=NORMAL")
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON")
         return conn
+
+    def get_user_connection(self):
+        """Get user database connection for transient server-side cache/state."""
+        conn = sqlite3.connect(str(self.user_db_path), check_same_thread=False)
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA busy_timeout=3000")
+        conn.execute("PRAGMA synchronous=NORMAL")
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA foreign_keys = ON")
+        return conn
+
+    def _ensure_analysis_cache_table(self, conn):
+        """Ensure the server-side analysis cache table exists."""
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS analysis_cache (
+                cache_key   TEXT PRIMARY KEY,
+                payload     TEXT NOT NULL,
+                created_at  REAL NOT NULL DEFAULT (strftime('%s', 'now')),
+                expires_at  REAL NOT NULL
+            )
+        """)
 
     def close(self):
         """Close database connection."""
@@ -388,7 +453,7 @@ class DatabaseHelper:
 
     def get_household_size_efficiency(self, household_size: int) -> float:
         """Get efficiency factor based on household size (Legacy Wrapper)."""
-        return self.get_group_efficiency(household_size, 'Residential')
+        return _cached_household_size_efficiency(household_size)
 
     def get_commercial_efficiency(self, servings: int) -> float:
         """Get efficiency factor based on number of servings."""
@@ -477,20 +542,7 @@ class DatabaseHelper:
 
     def get_recommendation_weights(self, priority_profile: str = 'balanced') -> Dict[str, float]:
         """Get recommendation weights for priority profile."""
-        row = self._fetch_one(
-            "SELECT * FROM recommendation_weights WHERE priority_profile = ?",
-            (priority_profile,)
-        )
-
-        if row:
-            return {
-                'health': row['health_weight'],
-                'environmental': row['environmental_weight'],
-                'economic': row['economic_weight'],
-                'practicality': row['practicality_weight']
-            }
-        # Default weights if profile not found
-        return {'health': 0.3, 'environmental': 0.2, 'economic': 0.3, 'practicality': 0.2}
+        return _cached_recommendation_weights(priority_profile)
 
     # ========================================================================
     # CONSOLIDATED PRICING (New Generic Architecture)
@@ -683,32 +735,58 @@ class DatabaseHelper:
         else:
             return value
 
-    def get_all_system_parameters(self, category: str = None) -> Dict[str, Any]:
-        """Get all system parameters."""
-        query = "SELECT param_name, param_value, param_type FROM system_parameters WHERE valid_to IS NULL OR valid_to >= date('now')"
-        params = None
+    def get_all_system_parameters(self) -> Dict[str, Any]:
+        """Fetch all system parameters in one query. Returns {param_name: value} dict."""
+        conn = self.get_connection()
+        try:
+            cursor = conn.execute(
+                """
+                SELECT param_name, param_value
+                FROM system_parameters
+                WHERE valid_to IS NULL OR valid_to >= date('now')
+                """
+            )
+            result = {row[0]: row[1] for row in cursor.fetchall()}
 
-        if category:
-            query += " AND param_category = ?"
-            params = (category,)
+            # Preserve existing compatibility behavior for callers that use legacy aliases.
+            for alias_name, actual_name in SYSTEM_PARAMETER_ALIASES.items():
+                if alias_name not in result and actual_name in result:
+                    result[alias_name] = result[actual_name]
 
-        rows = self._fetch_all(query, params)
+            return result
+        finally:
+            conn.close()
 
-        result = {}
-        for row in rows:
-            value = row['param_value']
-            param_type = row['param_type']
+    def save_analysis_cache(self, cache_key: str, payload: dict, ttl_seconds: int = 7200):
+        import time
 
-            if param_type == 'NUMERIC':
-                value = float(value)
-            elif param_type == 'BOOLEAN':
-                value = value.lower() in ('true', '1', 'yes')
-            elif param_type == 'JSON':
-                value = json.loads(value)
+        conn = self.get_user_connection()
+        try:
+            self._ensure_analysis_cache_table(conn)
+            now = time.time()
+            conn.execute(
+                "INSERT OR REPLACE INTO analysis_cache (cache_key, payload, created_at, expires_at) VALUES (?, ?, ?, ?)",
+                (cache_key, json.dumps(payload, default=str), now, now + ttl_seconds)
+            )
+            conn.commit()
+        finally:
+            conn.close()
 
-            result[row['param_name']] = value
+    def load_analysis_cache(self, cache_key: str) -> dict | None:
+        import time
 
-        return result
+        conn = self.get_user_connection()
+        try:
+            self._ensure_analysis_cache_table(conn)
+            row = conn.execute(
+                "SELECT payload, expires_at FROM analysis_cache WHERE cache_key = ?",
+                (cache_key,)
+            ).fetchone()
+            if row and row[1] > time.time():
+                return json.loads(row[0])
+            return None
+        finally:
+            conn.close()
 
     # ========================================================================
     # DISHES
@@ -826,6 +904,9 @@ class DatabaseConnection:
 
     def __enter__(self):
         self.conn = sqlite3.connect(str(self.db_path))
+        self.conn.execute("PRAGMA journal_mode=WAL")
+        self.conn.execute("PRAGMA busy_timeout=3000")
+        self.conn.execute("PRAGMA synchronous=NORMAL")
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("PRAGMA foreign_keys = ON")
         return self.conn

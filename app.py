@@ -1,17 +1,15 @@
 
 import sys
 import os
+from functools import lru_cache
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file, flash, make_response, g
 from flask_babel import Babel, _
+from flask_compress import Compress
 from flask_wtf.csrf import CSRFProtect, CSRFError
-import pandas as pd
-import numpy as np
 import json
 import uuid
 import datetime
 import io
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
 
 # Import from new modules
 import helper
@@ -29,6 +27,7 @@ from error_handlers import (
 
 # Initialize Flask app
 app = Flask(__name__)
+Compress(app)
 app.config.from_object(get_config())
 
 # Initialize CSRF Protection
@@ -99,6 +98,7 @@ def localize_db_label(label_en, label_ml=None):
         return label_ml
     return label_en
 
+@lru_cache(maxsize=1)
 def get_district_options_with_fallback():
     """Load district options, using a static fallback when reference DB access fails."""
     try:
@@ -120,6 +120,9 @@ def clear_application_journey():
         'analysis_result',
         'residential_analysis_result',
         'commercial_analysis_result',
+        'analysis_cache_key',
+        'residential_analysis_cache_key',
+        'commercial_analysis_cache_key',
         'institution_data',
         'commercial_analysis_id',
         'feedback_submitted',
@@ -140,6 +143,39 @@ def build_analysis_result(current, alternatives, health_impact, recommendations)
         'health_impact': health_impact or {},
         'recommendations': recommendations or []
     }
+
+def save_analysis_result_to_cache(analysis_result, analysis_type):
+    """Persist large analysis payloads server-side and store only cache keys in session."""
+    if analysis_type == 'commercial':
+        entity_id = session.get('commercial_analysis_id', 'unknown')
+        specific_cache_session_key = 'commercial_analysis_cache_key'
+        legacy_session_key = 'commercial_analysis_result'
+    else:
+        entity_id = session.get('household_id', 'unknown')
+        specific_cache_session_key = 'residential_analysis_cache_key'
+        legacy_session_key = 'residential_analysis_result'
+
+    cache_key = f"analysis_{entity_id}"
+    db_helper.save_analysis_cache(cache_key, analysis_result)
+    session['analysis_cache_key'] = cache_key
+    session[specific_cache_session_key] = cache_key
+    session.pop(legacy_session_key, None)
+    session.pop('analysis_result', None)
+    return cache_key
+
+def load_analysis_result_from_cache(analysis_type=None):
+    """Load cached analysis payload using type-specific or generic cache key."""
+    cache_key = None
+
+    if analysis_type == 'commercial':
+        cache_key = session.get('commercial_analysis_cache_key')
+    elif analysis_type == 'residential':
+        cache_key = session.get('residential_analysis_cache_key')
+
+    if not cache_key:
+        cache_key = session.get('analysis_cache_key')
+
+    return db_helper.load_analysis_cache(cache_key) if cache_key else None
 
 def resolve_annual_emissions(data):
     """Read annual emissions from any supported payload shape."""
@@ -489,9 +525,14 @@ def calculate_consumption():
         form_data = request.json
     else:
         form_data = request.form
-    
-    log_request_start(request.path, request.method, dict(form_data))
-    log_session_data(session)
+
+    import os
+    if os.environ.get("FLASK_ENV", "development") != "production":
+        log_request_start(request.path, request.method, {
+            k: v for k, v in dict(form_data).items()
+            if k not in ('name', 'email', 'phone', 'password')
+        })
+        log_session_data(session)
     logger = get_logger()
     
     try:
@@ -579,11 +620,7 @@ def analysis():
     
     # Prepare complete analysis result
     analysis_result = build_analysis_result(energy_data, alternatives, health_impact, recommendations)
-    
-    # Save to specific key to avoid overwriting commercial data
-    session['residential_analysis_result'] = analysis_result
-    # Keep generic key for backward compatibility/fallback
-    session['analysis_result'] = analysis_result
+    save_analysis_result_to_cache(analysis_result, 'residential')
 
     logger = get_logger()
     logger.log_subsection("RENDER RESIDENTIAL ANALYSIS")
@@ -713,24 +750,19 @@ def download_report():
     try:
         # Determine analysis type from query param or session
         req_type = request.args.get('type')
-        
-        # Check specific session keys first
-        if req_type == 'commercial' and 'commercial_analysis_result' in session:
-            analysis_data = session['commercial_analysis_result']
+
+        if req_type == 'commercial':
+            analysis_data = load_analysis_result_from_cache('commercial')
             analysis_type = 'commercial'
-        elif req_type == 'residential' and 'residential_analysis_result' in session:
-            analysis_data = session['residential_analysis_result']
+        elif req_type == 'residential':
+            analysis_data = load_analysis_result_from_cache('residential')
             analysis_type = 'residential'
-        # Fallback to generic key if available
-        elif 'analysis_result' in session:
-            analysis_data = session['analysis_result']
-            # Try to guess type from data structure if not specified
-            if not req_type:
-                is_commercial = 'institution_data' in session
-                analysis_type = 'commercial' if is_commercial else 'residential'
-            else:
-                analysis_type = req_type
         else:
+            analysis_data = load_analysis_result_from_cache()
+            is_commercial = 'institution_data' in session
+            analysis_type = 'commercial' if is_commercial else 'residential'
+
+        if not analysis_data:
             flash(_('No analysis data available. Please complete an analysis first.'), 'error')
             return redirect(url_for('index'))
             
@@ -1080,9 +1112,7 @@ def commercial_analysis():
     
     # Prepare complete analysis result (SAME structure as residential)
     analysis_result = build_analysis_result(energy_data, alternatives, health_impact, recommendations)
-
-    session['commercial_analysis_result'] = analysis_result
-    session['analysis_result'] = analysis_result
+    save_analysis_result_to_cache(analysis_result, 'commercial')
     logger = get_logger()
     logger.log_subsection("RENDER COMMERCIAL ANALYSIS")
     logger.log_data("Energy Data", energy_data)
@@ -1108,15 +1138,12 @@ def chart_data():
     # Determine analysis type from query param
     req_type = request.args.get('type')
     
-    analysis = None
     if req_type == 'commercial':
-        analysis = session.get('commercial_analysis_result')
+        analysis = load_analysis_result_from_cache('commercial')
     elif req_type == 'residential':
-        analysis = session.get('residential_analysis_result')
-        
-    # Fallback to generic key
-    if not analysis:
-        analysis = session.get('analysis_result')
+        analysis = load_analysis_result_from_cache('residential')
+    else:
+        analysis = load_analysis_result_from_cache()
         
     if not analysis:
         return jsonify({'error': 'No analysis data available'})

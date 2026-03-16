@@ -53,7 +53,7 @@ icacls oracle_flask.key /inheritance:r /grant:r "$($env:USERNAME):(R)"
 ```bash
 # In your project folder
 git add .
-git commit -m "your change description"
+git commit -m "kseb logo added"
 git push origin main
 ```
 
@@ -150,7 +150,7 @@ crontab -e
 ---
 
 ## Connecting a Custom Domain
-
+SESSION_COOKIE_SECURE=false
 ### Step 1 — Point DNS to Oracle IP
 
 Log into your domain registrar (GoDaddy / Namecheap / Hostinger etc.) and add these DNS records:
@@ -285,3 +285,11 @@ Everything auto-starts because we ran `systemctl enable`:
 - `nginx` starts automatically
 
 No manual intervention needed after a reboot.
+
+
+
+
+SESSION_COOKIE_SECURE=false
+cd /home/ubuntu/cooking-app
+git pull https://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@github.com/vikasjyani/kerala-flask-app.git main
+sudo systemctl restart cooking-flask
