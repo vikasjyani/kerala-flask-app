@@ -289,7 +289,4 @@ No manual intervention needed after a reboot.
 
 
 
-SESSION_COOKIE_SECURE=false
-cd /home/ubuntu/cooking-app
-git pull https://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@github.com/vikasjyani/kerala-flask-app.git main
-sudo systemctl restart cooking-flask
+
