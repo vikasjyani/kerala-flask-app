@@ -772,7 +772,7 @@ class DatabaseHelper:
         finally:
             conn.close()
 
-    def load_analysis_cache(self, cache_key: str) -> dict | None:
+    def load_analysis_cache(self, cache_key: str) -> Optional[dict]:
         import time
 
         conn = self.get_user_connection()
