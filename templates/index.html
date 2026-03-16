@@ -13,7 +13,7 @@
 
     <div class="hero-image-wrapper">
         <img src="{{ url_for('static', filename='images/hero-cooking.jpg') }}" alt="{{ _('Clean Cooking') }}"
-            class="hero-image">
+            class="hero-image" fetchpriority="high" width="380" height="200" loading="eager">
     </div>
     <div class="hero-content">
         <h1 class="hero-title">{{ _('Clean Cooking Tool') }}</h1>
