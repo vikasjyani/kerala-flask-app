@@ -26,7 +26,7 @@ ENV/
 # ─── Logs ─────────────────────────────────────────────────────────────────────
 *.log
 application.log
-
+DEPLOYMENT.md
 # ─── Runtime / generated output ───────────────────────────────────────────────
 uploads/
 reports/
