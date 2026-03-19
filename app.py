@@ -468,7 +468,10 @@ def energy_calculation():
     
     # Get pricing data from database for template (avoid hardcoded JS values)
     household_data = session.get('household_data', {})
-    energy_data = session.get('energy_data', {})
+    # Only pass energy_data for pre-fill if it has a known calculation_method.
+    # Prevents dish-based values pre-filling consumption fields and vice-versa.
+    _raw_energy = session.get('energy_data', {})
+    energy_data = _raw_energy if _raw_energy.get('calculation_method') in ('consumption_based', 'dish_based') else {}
     electricity_tariff = household_data.get('electricity_tariff') or db_helper.get_system_parameter('ELECTRICITY_RESIDENTIAL_RATE', 6.50)
     png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
     if not png_price_data:
@@ -539,14 +542,18 @@ def calculate_consumption():
         calc_method = form_data.get('calculation_method')
         logger.log_input("Calculation Method", calc_method)
         
-        # Clear previous energy_data to ensure fresh calculation
-        # This prevents old fuel prices from one method affecting another
+        # Clear previous energy_data to ensure fresh calculation.
+        # Fixes: old string was 'consumption' vs stored value 'consumption_based' — always triggered.
+        # Also check top-level key first (set by engine), fall back to nested fuel_details key.
         old_energy_data = session.pop('energy_data', None)
         if old_energy_data:
-            old_method = old_energy_data.get('fuel_details', {}).get('calculation_method', 'consumption')
-            new_method = 'dish_based' if calc_method == 'dish' else 'consumption'
+            old_method = (
+                old_energy_data.get('calculation_method')
+                or old_energy_data.get('fuel_details', {}).get('calculation_method', 'consumption_based')
+            )
+            new_method = 'dish_based' if calc_method == 'dish' else 'consumption_based'
             if old_method != new_method:
-                logger.log_step(f"Cleared previous {old_method} data for new {new_method} calculation")
+                logger.log_step(f"Method switch detected: {old_method} → {new_method}. Cleared old data.")
         
         household_data = session.get('household_data', {})
         kitchen_data = session.get('kitchen_data', {})
@@ -979,7 +986,18 @@ def commercial_energy_calculation():
             logger.log_input("Calculation Method", calculation_method)
             logger.log_data("Institution Data (session)", institution_data)
             logger.log_data("Kitchen Data (session)", kitchen_data)
-            
+
+            # Clear previous commercial energy_data on method switch (mirrors residential logic).
+            old_com_data = session.pop('energy_data', None)
+            if old_com_data:
+                old_method = (
+                    old_com_data.get('calculation_method')
+                    or old_com_data.get('fuel_details', {}).get('calculation_method', 'consumption_based')
+                )
+                new_method = 'dish_based' if calculation_method == 'dish' else 'consumption_based'
+                if old_method != new_method:
+                    logger.log_step(f"Commercial method switch: {old_method} → {new_method}. Cleared old data.")
+
             # Call appropriate calculation function based on method
             if calculation_method == 'dish':
                 result = commercial_cooking.calculate_dish_based(

@@ -577,6 +577,9 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
     result['overall_thermal_efficiency'] = efficiency * 100
     
     logger.log_result("Overall Thermal Efficiency", f"{result['overall_thermal_efficiency']:.1f}%")
+    # Store calculation_method at top level for reliable method-switch detection in app.py
+    result['calculation_method'] = 'consumption_based'
+
     logger.log_success("Consumption-based calculation completed successfully")
     logger.log_step(f"Debug log saved to: {logger.get_log_path()}")
 
@@ -913,6 +916,9 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
         logger.log_success("Cooking analysis saved to database")
     else:
         logger.log_warning("No household_id - skipping database save")
+
+    # Store calculation_method at top level for reliable method-switch detection in app.py
+    result['calculation_method'] = 'dish_based'
 
     logger.log_success("Dish-based calculation completed successfully")
     logger.log_step(f"Debug log saved to: {logger.get_log_path()}")
