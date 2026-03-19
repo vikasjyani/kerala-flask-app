@@ -127,16 +127,18 @@ def clear_application_journey():
         'household_id',
         'household_data',
         'kitchen_data',
-        'energy_data',
+        'res_energy_data',       # namespaced residential energy result
         'analysis_result',
         'residential_analysis_result',
         'residential_analysis_cache_key',
         # Commercial keys
         'institution_data',
         'commercial_analysis_id',
+        'com_energy_data',       # namespaced commercial energy result
         'commercial_analysis_result',
         'commercial_analysis_cache_key',
-        # Generic / legacy keys (clean up old browser cookies)
+        # Generic / legacy keys (clean up old browser cookies that predate namespacing)
+        'energy_data',
         'analysis_cache_key',
         # Feedback (cleared after submission)
         'feedback_submitted',
@@ -171,7 +173,8 @@ def save_analysis_result_to_cache(analysis_result, analysis_type):
 
     cache_key = f"analysis_{entity_id}"
     db_helper.save_analysis_cache(cache_key, analysis_result)
-    session['analysis_cache_key'] = cache_key
+    # Write ONLY the type-specific key — never the generic 'analysis_cache_key' so that
+    # a commercial and a residential result cannot overwrite each other in the same cookie.
     session[specific_cache_session_key] = cache_key
     session.pop(legacy_session_key, None)
     session.pop('analysis_result', None)
@@ -187,7 +190,14 @@ def load_analysis_result_from_cache(analysis_type=None):
         cache_key = session.get('residential_analysis_cache_key')
 
     if not cache_key:
-        cache_key = session.get('analysis_cache_key')
+        # Fallback: derive cache key from flow_type so the generic key can no longer
+        # cause cross-flow bleed.  Old cookies that still carry 'analysis_cache_key'
+        # are NOT used here; they will be cleared by clear_application_journey().
+        flow = session.get('flow_type')
+        if flow == 'commercial':
+            cache_key = session.get('commercial_analysis_cache_key')
+        elif flow == 'residential':
+            cache_key = session.get('residential_analysis_cache_key')
 
     return db_helper.load_analysis_cache(cache_key) if cache_key else None
 
@@ -350,7 +360,7 @@ def submit_household():
         session['household_id'] = household_id
         session['household_data'] = household_data
         session.pop('kitchen_data', None)
-        session.pop('energy_data', None)
+        session.pop('res_energy_data', None)
         
         if request.is_json:
             return jsonify({'status': 'success', 'redirect': url_for('energy_calculation')})
@@ -371,7 +381,7 @@ def kitchen_profile():
     """Kitchen profile input form with scenario selection"""
     if 'household_id' not in session:
         return redirect(url_for('household_profile'))
-    if 'energy_data' not in session:
+    if 'res_energy_data' not in session:
         return redirect(url_for('energy_calculation'))
 
     if request.method == 'POST':
@@ -490,7 +500,7 @@ def energy_calculation():
     household_data = session.get('household_data', {})
     # Only pass energy_data for pre-fill if it has a known calculation_method.
     # Prevents dish-based values pre-filling consumption fields and vice-versa.
-    _raw_energy = session.get('energy_data', {})
+    _raw_energy = session.get('res_energy_data', {})
     energy_data = _raw_energy if _raw_energy.get('calculation_method') in ('consumption_based', 'dish_based') else {}
     electricity_tariff = household_data.get('electricity_tariff') or db_helper.get_system_parameter('ELECTRICITY_RESIDENTIAL_RATE', 6.50)
     png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
@@ -562,10 +572,10 @@ def calculate_consumption():
         calc_method = form_data.get('calculation_method')
         logger.log_input("Calculation Method", calc_method)
         
-        # Clear previous energy_data to ensure fresh calculation.
+        # Clear previous res_energy_data to ensure fresh calculation.
         # Fixes: old string was 'consumption' vs stored value 'consumption_based' — always triggered.
         # Also check top-level key first (set by engine), fall back to nested fuel_details key.
-        old_energy_data = session.pop('energy_data', None)
+        old_energy_data = session.pop('res_energy_data', None)
         if old_energy_data:
             old_method = (
                 old_energy_data.get('calculation_method')
@@ -597,10 +607,10 @@ def calculate_consumption():
                 flash(error_msg, 'error')
                 return redirect(url_for('energy_calculation'))
             
-        # Store result in session
-        session['energy_data'] = result
+        # Store result in session under the residential namespace key
+        session['res_energy_data'] = result
         logger.log_success("Residential calculation completed")
-        logger.log_data("Energy Data Stored in Session", result)
+        logger.log_data("Residential Energy Data Stored in Session", result)
         
         if is_json_request:
             return jsonify({'status': 'success', 'redirect': url_for('kitchen_profile')})
@@ -622,14 +632,14 @@ def calculate_consumption():
 @app.route('/analysis')
 def analysis():
     """Display analysis results"""
-    if 'energy_data' not in session:
+    if 'res_energy_data' not in session:
         return redirect(url_for('energy_calculation'))
     if 'kitchen_data' not in session:
         return redirect(url_for('kitchen_profile'))
-        
+
     household_data = session.get('household_data', {})
     kitchen_data = session.get('kitchen_data', {})
-    energy_data = session.get('energy_data', {})
+    energy_data = session.get('res_energy_data', {})
     household_id = session.get('household_id')
     
     # Calculate alternatives
@@ -796,12 +806,13 @@ def download_report():
         # Determine is_commercial for filename
         is_commercial = (analysis_type == 'commercial')
         
-        # Gather all required data
+        # Gather all required data — pick the namespaced energy key that matches this report type.
+        energy_key = 'com_energy_data' if is_commercial else 'res_energy_data'
         user_data = {
             'household_data': session.get('household_data', {}),
             'institution_data': session.get('institution_data', {}),
             'kitchen_data': session.get('kitchen_data', {}),
-            'energy_data': session.get('energy_data', {})
+            'energy_data': session.get(energy_key, {})
         }
         report_locale = get_locale()
         
@@ -1012,8 +1023,8 @@ def commercial_energy_calculation():
             logger.log_data("Institution Data (session)", institution_data)
             logger.log_data("Kitchen Data (session)", kitchen_data)
 
-            # Clear previous commercial energy_data on method switch (mirrors residential logic).
-            old_com_data = session.pop('energy_data', None)
+            # Clear previous com_energy_data on method switch (mirrors residential logic).
+            old_com_data = session.pop('com_energy_data', None)
             if old_com_data:
                 old_method = (
                     old_com_data.get('calculation_method')
@@ -1047,7 +1058,7 @@ def commercial_energy_calculation():
             if institution_id:
                 helper.save_commercial_analysis(institution_id, result)
             
-            session['energy_data'] = result
+            session['com_energy_data'] = result
             logger.log_data("Commercial Energy Result", result)
             return redirect(url_for('commercial_analysis'))
             
@@ -1131,13 +1142,13 @@ def commercial_energy_calculation():
 @app.route('/commercial_analysis')
 def commercial_analysis():
     """Display commercial cooking analysis results (matching residential pattern)"""
-    if 'energy_data' not in session:
+    if 'com_energy_data' not in session:
         # If no energy data, send user back to start the commercial flow
         return redirect(url_for('commercial_selection'))
-    
+
     institution_data = session.get('institution_data', {})
     kitchen_data = session.get('kitchen_data', {})
-    energy_data = session.get('energy_data', {})
+    energy_data = session.get('com_energy_data', {})
     institution_id = session.get('commercial_analysis_id')
     
     # Calculate alternatives (same helper as residential!)
