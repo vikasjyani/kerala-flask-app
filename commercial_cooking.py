@@ -879,9 +879,12 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
         logger.log_result("Environmental Grade", f"{grade} ({label})", f"Based on {co2_per_serving:.3f} kg/serving")
         
         logger.log_success(f"Consumption calculation complete: {monthly_energy_kwh:.2f} kWh/month, ₹{monthly_cost:.2f}/month")
-        
+
+        # Store calculation_method at top level for reliable method-switch detection in app.py
+        result['calculation_method'] = 'consumption_based'
+
         return result
-        
+
     except Exception as e:
         logger.log_error(f"Error in consumption-based calculation: {e}")
         import traceback
@@ -1177,9 +1180,12 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
             logger.log_success("Commercial analysis saved")
         
         logger.log_success("Commercial dish-based calculation completed")
-        
+
+        # Store calculation_method at top level for reliable method-switch detection in app.py
+        result['calculation_method'] = 'dish_based'
+
         return result
-        
+
     except Exception as e:
         logger.log_error(f"Error in commercial dish-based calculation: {e}")
         import traceback
