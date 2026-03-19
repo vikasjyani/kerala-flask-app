@@ -336,7 +336,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     
                     # ✅ FIX: Use working_days and calculate_co2_emissions() for consistency
                     daily_energy = domestic_energy / monthly_factor
-                    domestic_co2 = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.213), institution_data)
+                    domestic_co2 = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.24), institution_data)
                     
                     total_lpg_energy += domestic_energy
                     total_lpg_cost += domestic_cost
@@ -376,7 +376,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     
                     # ✅ FIX: Use working_days and calculate_co2_emissions() for consistency
                     daily_energy = commercial_energy / monthly_factor
-                    commercial_co2 = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.213), institution_data)
+                    commercial_co2 = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.24), institution_data)
                     
                     total_lpg_energy += commercial_energy
                     total_lpg_cost += commercial_cost
@@ -461,7 +461,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             #useful energy = delivered energy
             # Calculate emissions using standard function for consistency
             daily_energy = monthly_energy_kwh / working_days if working_days else monthly_energy_kwh / 30
-            annual_co2_kg = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('PNG', 0.2), institution_data)
+            annual_co2_kg = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('PNG', 0.21), institution_data)
             
             result['fuel_details']['PNG'] = {
                 'gross_energy_kwh': monthly_energy_kwh,
@@ -506,7 +506,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
              #useful energy = delivered energy
             # Calculate emissions using standard function for consistency
             daily_energy = monthly_kwh / working_days if working_days else monthly_kwh / 30
-            annual_co2_kg = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('Grid electricity', 0.82), institution_data)
+            annual_co2_kg = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('Grid electricity', 0.65), institution_data)
             
             result['fuel_details']['Grid electricity'] = {
                 'gross_energy_kwh': monthly_kwh,
@@ -552,7 +552,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             delivered_energy = monthly_energy_kwh_gross * efficiency
              #useful energy = delivered energy
             # Emissions from DB emission factor (kg/kWh primary)
-            emission_factor = EMISSION_FACTORS.get('Biogas', 0.27)
+            emission_factor = EMISSION_FACTORS.get('Biogas', 0.30)
             annual_co2_kg = calculate_co2_emissions(
                 monthly_energy_kwh_gross / monthly_factor,
                 emission_factor,
@@ -603,7 +603,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             monthly_cost = monthly_biomass_kg * biomass_cost_per_kg
             
             # Apply thermal efficiency (very low for traditional stoves)
-            efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.18)
+            efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
             delivered_energy = monthly_energy_kwh_gross * efficiency
              #useful energy = delivered energy
             annual_co2_kg = calculate_co2_emissions(
@@ -660,7 +660,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 delivered = lpg_energy * efficiency
                 
                 daily_energy = lpg_energy / monthly_factor
-                lpg_emissions = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.213), institution_data)
+                lpg_emissions = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.24), institution_data)
                 
                 total_energy += delivered
                 total_cost += lpg_cost
@@ -700,7 +700,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 delivered = png_energy * efficiency
                 
                 daily_energy = png_energy / monthly_factor
-                png_emissions = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('PNG', 0.2), institution_data)
+                png_emissions = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('PNG', 0.21), institution_data)
                 
                 total_energy += delivered
                 total_cost += mixed_bill
@@ -734,7 +734,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 daily_energy = mixed_kwh / monthly_factor
                 elec_emissions = calculate_co2_emissions(
                     daily_energy,
-                    EMISSION_FACTORS.get('Grid electricity', 0.82),
+                    EMISSION_FACTORS.get('Grid electricity', 0.65),
                     institution_data
                 )
                 
@@ -765,7 +765,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
                 
                 biomass_energy = mixed_kg * biomass_energy_content
-                efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.18)
+                efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
                 delivered = biomass_energy * efficiency
                 biomass_cost = mixed_kg * biomass_cost_per_kg
                 
