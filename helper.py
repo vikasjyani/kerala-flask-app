@@ -1422,15 +1422,22 @@ def calculate_health_risk_score(pm25_peak_exposure, cooking_hours, sensitive_mem
     return min(100, health_risk_score)
 
 def categorize_health_risk(score):
-    """Categorize health risk based on score - uses fixed thresholds for now."""
-    if score < 30:
+    """Categorize health risk based on score.
+
+    Cut-points are midpoints between consecutive DB base scores (10/25/45/65/85):
+      midpoints → 17.5, 35, 55, 75
+    Using integer boundaries: 17, 35, 55, 75.
+    """
+    if score <= 17:
         return "low"
-    elif score < 50:
+    elif score <= 35:
         return "moderate"
-    elif score < 70:
+    elif score <= 55:
         return "high"
-    else:
+    elif score <= 75:
         return "very_high"
+    else:
+        return "critical"
 
 def get_environmental_grade(annual_co2_kg, household_size=4):
     """
@@ -2744,15 +2751,17 @@ def generate_recommendations(alternatives, household_data, kitchen_data, energy_
     
     for fuel, data in alternatives.items():
         logger.log_subsection(f"Scoring Fuel: {fuel}")
-        # Health score
-        if data['health_risk_score'] < 30:
+        # Health score — cut-points aligned with DB base scores (10/25/45/65/85)
+        if data['health_risk_score'] <= 17:
             health_score = 100
-        elif data['health_risk_score'] < 50:
+        elif data['health_risk_score'] <= 35:
             health_score = 75
-        elif data['health_risk_score'] < 70:
+        elif data['health_risk_score'] <= 55:
             health_score = 40
+        elif data['health_risk_score'] <= 75:
+            health_score = 15
         else:
-            health_score = 10
+            health_score = 5
         
         if data['pm25_peak'] > 200:
             health_score -= 20
