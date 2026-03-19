@@ -191,6 +191,35 @@
     </script>
 
     {% block extra_js %}{% endblock %}
+
+    <!-- ── Navigation Confirmation Modal (replaces native "Leave site?" dialog) ── -->
+    <div class="modal fade" id="navConfirmModal" tabindex="-1" aria-labelledby="navConfirmModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 340px;">
+            <div class="modal-content border-0" style="border-radius: 18px; box-shadow: 0 8px 32px rgba(0,0,0,0.18);">
+                <div class="modal-body text-center p-4 pb-3">
+                    <!-- Icon -->
+                    <div class="mb-3">
+                        <div style="width:60px;height:60px;background:rgba(76,175,80,0.12);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">
+                            <i class="bi bi-arrow-left-circle" style="font-size:1.8rem;color:var(--primary-green,#4caf50);"></i>
+                        </div>
+                    </div>
+                    <!-- Title -->
+                    <h5 class="fw-bold mb-1" id="navConfirmModalLabel" style="font-size:1.1rem;">{{ _('Leave this page?') }}</h5>
+                    <p class="text-muted mb-4" style="font-size:0.85rem;">{{ _('Changes you made may not be saved.') }}</p>
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2">
+                        <button id="navConfirmLeaveBtn" type="button" class="btn btn-success fw-semibold" style="border-radius:10px;">
+                            {{ _('Leave') }}
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary fw-semibold" data-bs-dismiss="modal" style="border-radius:10px;">
+                            {{ _('Stay on page') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ── End Navigation Confirmation Modal ── -->
 </body>
 
 </html>
