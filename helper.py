@@ -1258,8 +1258,11 @@ def calculate_png_consumption_from_bill(total_bill_amount, rate_per_scm=None, di
         result = calculate_png_bill_and_consumption(scm, rate_per_scm=rate_per_scm)
         return result['total_bill']
     
-    # Binary search for consumption that matches the bill
-    low, high = 0, 200  # Max 200 SCM monthly consumption
+    # Binary search for consumption that matches the bill.
+    # Upper bound: estimate from bill ÷ rate (no fixed charges) × 2 safety factor.
+    # Min 200 SCM so residential bills always fit; no hard cap for large commercial bills.
+    estimated_max = int(total_bill_amount / max(rate_per_scm, 0.01)) + 200
+    low, high = 0.0, max(200.0, float(estimated_max))
     tolerance = 1  # ±1 rupee tolerance
     logger.log_step(f"Binary search bounds set: low={low} SCM, high={high} SCM, tolerance=₹{tolerance}")
     
@@ -2353,6 +2356,64 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
             'emission_source': EMISSION_SOURCES.get(fuel),
             'cost_components': biogas_costs,
             'monthly_m3': monthly_m3
+        }
+
+    elif fuel == 'Traditional Solid Biomass':
+        # ✅ Dedicated commercial Biomass handler — avoids residential /30 and missing institution_data
+        district = institution_data.get('district', 'Thiruvananthapuram')
+        biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
+        biomass_cost_per_kg = float(
+            biomass_price_data['unit_price']
+            if biomass_price_data and biomass_price_data.get('unit_price') is not None
+            else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
+        )
+        biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
+
+        energy_required_gross = monthly_energy_kwh / efficiency if efficiency > 0 else monthly_energy_kwh
+        monthly_kg = energy_required_gross / biomass_energy_content if biomass_energy_content > 0 else 0
+        monthly_cost = monthly_kg * biomass_cost_per_kg
+
+        # ✅ Use working_days (not hardcoded 30) and pass institution_data for correct annual days
+        daily_energy = energy_required_gross / monthly_factor
+        emission_factor = EMISSION_FACTORS.get('Traditional Solid Biomass', 0.4)
+        annual_co2 = calculate_co2_emissions(daily_energy, emission_factor, institution_data)
+
+        logger.log_data("Commercial Biomass Cost & Emission", {
+            "district": district,
+            "efficiency": efficiency,
+            "energy_required_gross_kwh": energy_required_gross,
+            "monthly_kg": monthly_kg,
+            "biomass_cost_per_kg": biomass_cost_per_kg,
+            "monthly_cost": monthly_cost,
+            "annual_co2": annual_co2,
+            "working_days": working_days
+        })
+
+        base_pm25 = PM25_BASE_EMISSIONS.get(fuel, 0.5)
+        pm25_peak = calculate_pollutant_exposure(
+            base_pm25,
+            kitchen_data.get('kitchen_type', 'Open Kitchen'),
+            kitchen_data.get('ventilation_quality', 'Average'),
+            kitchen_data.get('cooking_hours_daily', 3.0)
+        )
+        health_risk_score = calculate_health_risk_score(
+            pm25_peak,
+            kitchen_data.get('cooking_hours_daily', 3.0),
+            kitchen_data.get('sensitive_members', 1)
+        )
+
+        return {
+            'fuel': fuel,
+            'monthly_cost': monthly_cost,
+            'capital_cost': 0,
+            'efficiency': efficiency * 100,
+            'annual_co2': annual_co2,
+            'environmental_grade': get_environmental_grade(annual_co2),
+            'pm25_peak': pm25_peak,
+            'health_risk_score': health_risk_score,
+            'health_risk_category': categorize_health_risk(health_risk_score),
+            'cost_per_kwh': (monthly_cost / monthly_energy_kwh) if monthly_energy_kwh > 0 else 0,
+            'emission_source': EMISSION_SOURCES.get(fuel)
         }
 
     elif fuel == 'Solar + BESS':

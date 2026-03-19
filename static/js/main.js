@@ -660,6 +660,12 @@ function addAnimations() {
 function initializeNavigationWarnings() {
     let hasUnsavedChanges = false;
 
+    // Expose a global reset so pages that submit via form.submit() (which skips
+    // the native 'submit' event) can still clear the unsaved-changes flag.
+    window.markFormSubmitting = function () {
+        hasUnsavedChanges = false;
+    };
+
     // Track form changes
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
