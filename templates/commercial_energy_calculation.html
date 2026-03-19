@@ -623,6 +623,8 @@
         notSelected: '{{ _("Not selected") }}',
         electricity: '{{ _("Electricity") }}'
     };
+    // Current UI locale — controls whether dish names render in Malayalam or English
+    const currentLocale = '{{ get_locale() }}';
     const institutionContext = {{ institution | tojson | safe }};
     console.debug('DEBUG: Energy calculation page loaded', {
         institution: institutionContext,
@@ -743,8 +745,13 @@
             currentFuelMix
         });
 
-        // Submit form
+        // Submit form — clear unsaved-changes flag first so the browser's
+        // "Leave site?" dialog is not shown (form.submit() skips the native
+        // 'submit' event that main.js relies on to reset the flag).
         setTimeout(() => {
+            if (typeof window.markFormSubmitting === 'function') {
+                window.markFormSubmitting();
+            }
             form.submit();
         }, 100);
     }
@@ -879,7 +886,9 @@
 
             dishes.forEach(dish => {
                 const dishName = dish.dish_name || dish.Dishes;
-                const displayDishName = dish.dish_name_ml || dishName;
+                const displayDishName = (currentLocale === 'ml' && dish.dish_name_ml)
+                    ? dish.dish_name_ml
+                    : dishName;
                 const dishSlug = slugifyDish(dishName);
                 dishDisplayMap[dishName] = displayDishName;
                 const dishElement = document.createElement('div');

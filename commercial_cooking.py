@@ -7,10 +7,12 @@ import pandas as pd
 import helper
 from helper import (
     db_helper, basic_calories, calculate_co2_emissions, calculate_png_bill_and_consumption,
-    calculate_fuel_emissions_and_costs, DEFAULT_EFFICIENCIES,
-    EMISSION_FACTORS, LPG_CALORIFIC_VALUE, LPG_ENERGY_PER_CYLINDER,
+    calculate_fuel_emissions_and_costs, LPG_CALORIFIC_VALUE, LPG_ENERGY_PER_CYLINDER,
     PNG_CALORIFIC_VALUE, get_user_connection, close_user_connection
 )
+# NOTE: Do NOT import EMISSION_FACTORS or DEFAULT_EFFICIENCIES by name.
+# Always use helper.EMISSION_FACTORS and helper.DEFAULT_EFFICIENCIES so that
+# load_constants_from_db() reassignments are reflected here (name-binding safety).
 from debug_logger import get_logger
 
 # ==================================================================
@@ -336,7 +338,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     
                     # ✅ FIX: Use working_days and calculate_co2_emissions() for consistency
                     daily_energy = domestic_energy / monthly_factor
-                    domestic_co2 = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.213), institution_data)
+                    domestic_co2 = calculate_co2_emissions(daily_energy, helper.EMISSION_FACTORS.get('LPG', 0.24), institution_data)
                     
                     total_lpg_energy += domestic_energy
                     total_lpg_cost += domestic_cost
@@ -376,7 +378,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     
                     # ✅ FIX: Use working_days and calculate_co2_emissions() for consistency
                     daily_energy = commercial_energy / monthly_factor
-                    commercial_co2 = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.213), institution_data)
+                    commercial_co2 = calculate_co2_emissions(daily_energy, helper.EMISSION_FACTORS.get('LPG', 0.24), institution_data)
                     
                     total_lpg_energy += commercial_energy
                     total_lpg_cost += commercial_cost
@@ -394,7 +396,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     )
             
             # Apply thermal efficiency
-            efficiency = DEFAULT_EFFICIENCIES.get('LPG', 0.60)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)
             delivered_energy = total_lpg_energy * efficiency
             #useful enegy =delivered_energy
             monthly_energy_kwh = delivered_energy
@@ -455,13 +457,13 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 modeled_bill = monthly_cost
             
             # Apply thermal efficiency
-            efficiency = DEFAULT_EFFICIENCIES.get('PNG', 0.70)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70)
             delivered_energy = monthly_energy_kwh * efficiency
             
             #useful energy = delivered energy
             # Calculate emissions using standard function for consistency
             daily_energy = monthly_energy_kwh / working_days if working_days else monthly_energy_kwh / 30
-            annual_co2_kg = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('PNG', 0.2), institution_data)
+            annual_co2_kg = calculate_co2_emissions(daily_energy, helper.EMISSION_FACTORS.get('PNG', 0.21), institution_data)
             
             result['fuel_details']['PNG'] = {
                 'gross_energy_kwh': monthly_energy_kwh,
@@ -501,12 +503,12 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             
            
             # Electricity is already delivered energy (efficiency ~90%)
-            efficiency = DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
             delivered_energy = monthly_kwh * efficiency
              #useful energy = delivered energy
             # Calculate emissions using standard function for consistency
             daily_energy = monthly_kwh / working_days if working_days else monthly_kwh / 30
-            annual_co2_kg = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('Grid electricity', 0.82), institution_data)
+            annual_co2_kg = calculate_co2_emissions(daily_energy, helper.EMISSION_FACTORS.get('Grid electricity', 0.65), institution_data)
             
             result['fuel_details']['Grid electricity'] = {
                 'gross_energy_kwh': monthly_kwh,
@@ -548,11 +550,11 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             monthly_cost = biogas_costs['total_monthly_cost']
             
             # Apply thermal efficiency
-            efficiency = DEFAULT_EFFICIENCIES.get('Biogas', 0.55)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('Biogas', 0.55)
             delivered_energy = monthly_energy_kwh_gross * efficiency
              #useful energy = delivered energy
             # Emissions from DB emission factor (kg/kWh primary)
-            emission_factor = EMISSION_FACTORS.get('Biogas', 0.27)
+            emission_factor = helper.EMISSION_FACTORS.get('Biogas', 0.30)
             annual_co2_kg = calculate_co2_emissions(
                 monthly_energy_kwh_gross / monthly_factor,
                 emission_factor,
@@ -603,12 +605,12 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             monthly_cost = monthly_biomass_kg * biomass_cost_per_kg
             
             # Apply thermal efficiency (very low for traditional stoves)
-            efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.18)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
             delivered_energy = monthly_energy_kwh_gross * efficiency
              #useful energy = delivered energy
             annual_co2_kg = calculate_co2_emissions(
                 monthly_energy_kwh_gross / monthly_factor,
-                EMISSION_FACTORS.get('Traditional Solid Biomass', 0.4),
+                helper.EMISSION_FACTORS.get('Traditional Solid Biomass', 0.4),
                 institution_data
             )
             
@@ -656,11 +658,11 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 )
                 lpg_energy = mixed_cylinders * 19.0 * 12.8
                 lpg_cost = mixed_cylinders * cylinder_price
-                efficiency = DEFAULT_EFFICIENCIES.get('LPG', 0.60)
+                efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)
                 delivered = lpg_energy * efficiency
                 
                 daily_energy = lpg_energy / monthly_factor
-                lpg_emissions = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('LPG', 0.213), institution_data)
+                lpg_emissions = calculate_co2_emissions(daily_energy, helper.EMISSION_FACTORS.get('LPG', 0.24), institution_data)
                 
                 total_energy += delivered
                 total_cost += lpg_cost
@@ -696,11 +698,11 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 monthly_scm = png_calc.get('monthly_scm_consumption', 0)
                 png_energy = png_calc.get('monthly_energy_kwh', monthly_scm * PNG_CALORIFIC_VALUE)
                 modeled_bill = png_calc.get('total_bill', mixed_bill)
-                efficiency = DEFAULT_EFFICIENCIES.get('PNG', 0.70)
+                efficiency = helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70)
                 delivered = png_energy * efficiency
                 
                 daily_energy = png_energy / monthly_factor
-                png_emissions = calculate_co2_emissions(daily_energy, EMISSION_FACTORS.get('PNG', 0.2), institution_data)
+                png_emissions = calculate_co2_emissions(daily_energy, helper.EMISSION_FACTORS.get('PNG', 0.21), institution_data)
                 
                 total_energy += delivered
                 total_cost += mixed_bill
@@ -727,14 +729,14 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     or db_helper.get_system_parameter('ELECTRICITY_COMMERCIAL_RATE', 9.5)
                 )
                 
-                efficiency = DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
+                efficiency = helper.DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
                 delivered = mixed_kwh * efficiency
                 elec_cost = mixed_kwh * tariff
                 
                 daily_energy = mixed_kwh / monthly_factor
                 elec_emissions = calculate_co2_emissions(
                     daily_energy,
-                    EMISSION_FACTORS.get('Grid electricity', 0.82),
+                    helper.EMISSION_FACTORS.get('Grid electricity', 0.65),
                     institution_data
                 )
                 
@@ -765,13 +767,13 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
                 
                 biomass_energy = mixed_kg * biomass_energy_content
-                efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.18)
+                efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
                 delivered = biomass_energy * efficiency
                 biomass_cost = mixed_kg * biomass_cost_per_kg
                 
                 biomass_emissions = calculate_co2_emissions(
                     biomass_energy / monthly_factor,
-                    EMISSION_FACTORS.get('Traditional Solid Biomass', 0.4),
+                    helper.EMISSION_FACTORS.get('Traditional Solid Biomass', 0.4),
                     institution_data
                 )
                 
@@ -850,7 +852,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             if energy_required is None:
                 efficiency_value = details.get('thermal_efficiency')
                 if efficiency_value is None:
-                    efficiency_value = details.get('efficiency', DEFAULT_EFFICIENCIES.get(fuel_name, 0.60))
+                    efficiency_value = details.get('efficiency', helper.DEFAULT_EFFICIENCIES.get(fuel_name, 0.60))
                     if efficiency_value > 1:
                         efficiency_value = efficiency_value / 100.0
                 else:
@@ -879,9 +881,12 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
         logger.log_result("Environmental Grade", f"{grade} ({label})", f"Based on {co2_per_serving:.3f} kg/serving")
         
         logger.log_success(f"Consumption calculation complete: {monthly_energy_kwh:.2f} kWh/month, ₹{monthly_cost:.2f}/month")
-        
+
+        # Store calculation_method at top level for reliable method-switch detection in app.py
+        result['calculation_method'] = 'consumption_based'
+
         return result
-        
+
     except Exception as e:
         logger.log_error(f"Error in consumption-based calculation: {e}")
         import traceback
@@ -1027,7 +1032,7 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
             fuel_energy_dict[fuel] = fuel_energy
             
             # Get efficiency from database or defaults
-            fuel_efficiency_dict[fuel] = DEFAULT_EFFICIENCIES.get(fuel, 0.60)
+            fuel_efficiency_dict[fuel] = helper.DEFAULT_EFFICIENCIES.get(fuel, 0.60)
             
             # Calculate energy required
             efficiency = fuel_efficiency_dict[fuel]
@@ -1105,7 +1110,7 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
                     if fuel_meal_mask.any():
                         fuel_meal_energy = energy_df.loc[fuel_meal_mask, 'Final_Energy_Value'].sum()
                         # Apply fuel efficiency to get required energy
-                        efficiency = DEFAULT_EFFICIENCIES.get(fuel, 0.60)
+                        efficiency = helper.DEFAULT_EFFICIENCIES.get(fuel, 0.60)
                         required_energy = fuel_meal_energy / efficiency
                         meal_cost += required_energy * fuel_cost_per_kwh_dict.get(fuel, 8.0)
 
@@ -1177,9 +1182,12 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
             logger.log_success("Commercial analysis saved")
         
         logger.log_success("Commercial dish-based calculation completed")
-        
+
+        # Store calculation_method at top level for reliable method-switch detection in app.py
+        result['calculation_method'] = 'dish_based'
+
         return result
-        
+
     except Exception as e:
         logger.log_error(f"Error in commercial dish-based calculation: {e}")
         import traceback

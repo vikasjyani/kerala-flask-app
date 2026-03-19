@@ -1258,8 +1258,11 @@ def calculate_png_consumption_from_bill(total_bill_amount, rate_per_scm=None, di
         result = calculate_png_bill_and_consumption(scm, rate_per_scm=rate_per_scm)
         return result['total_bill']
     
-    # Binary search for consumption that matches the bill
-    low, high = 0, 200  # Max 200 SCM monthly consumption
+    # Binary search for consumption that matches the bill.
+    # Upper bound: estimate from bill ÷ rate (no fixed charges) × 2 safety factor.
+    # Min 200 SCM so residential bills always fit; no hard cap for large commercial bills.
+    estimated_max = int(total_bill_amount / max(rate_per_scm, 0.01)) + 200
+    low, high = 0.0, max(200.0, float(estimated_max))
     tolerance = 1  # ±1 rupee tolerance
     logger.log_step(f"Binary search bounds set: low={low} SCM, high={high} SCM, tolerance=₹{tolerance}")
     
@@ -1349,43 +1352,72 @@ def calculate_co2_emissions(daily_energy_kwh, emission_factor, institution_data=
 
 def calculate_pollutant_exposure(base_emission, kitchen_type, ventilation_quality, cooking_hours, scenario_type='residential'):
     """
-    Calculate PM2.5 exposure using Scenario-Based method.
-    Uses unified combined factor from database based on scenario name.
+    Calculate PM2.5 peak concentration in µg/m³ using a Scenario-Based IAQ box model.
+
+    Formula:
+        C (µg/m³) = base_emission × scenario_factor × hours_factor × PM25_SCALE
+
+    where:
+        base_emission   — fuel PM2.5 emission index from emission_factors table
+                          (proportional to g PM2.5 emitted per kWh of input energy)
+        scenario_factor — combined kitchen exposure factor (ventilation + layout),
+                          loaded from kitchen_scenarios table (0.04 – 0.80)
+        hours_factor    — cooking duration modifier: min(hours/3.0, 1.5)
+                          (longer sessions raise time-averaged concentration; capped at 1.5×
+                           so a 6-h cook is 1.5× not 2× a 3-h cook)
+        PM25_SCALE      — calibration constant (µg/m³ per unit of emission_index × factor)
+                          stored as 'PM25_CONCENTRATION_SCALE' system parameter (default 5000).
+                          Calibrated so LPG + No-Exhaust kitchen ≈ 50 µg/m³ (above WHO guideline).
+
+    DB thresholds (health_risk_thresholds) use µg/m³ so the output of this function must
+    be in the same units for get_health_risk_score() to return meaningful scores.
     """
-    # Use kitchen_type as the scenario name (assuming updated UI passes scenario name here)
-    # If legacy separate values are passed, we might need to handle that, but prioritized fix uses direct scenario lookup.
-    # Try to find factor by name first
     combined_factor = db_helper.get_scenario_factor(kitchen_type, scenario_type)
-    
-    # If combined_factor is default (0.6) but we have specific legacy inputs, we could fallback, 
-    # but strictly following "Use scenario-based calculation instead" instruction.
-    
-    peak_exposure = base_emission * combined_factor
-    
+
+    # Cooking duration modifier — baseline is 3 h, max multiplier capped at 1.5
+    hours_factor = min(max(cooking_hours, 0.5) / 3.0, 1.5)
+
+    # Scale emission index → µg/m³ (DB parameter so it can be adjusted without code changes)
+    pm25_scale = db_helper.get_system_parameter('PM25_CONCENTRATION_SCALE', 5000.0)
+
+    peak_exposure_ug_m3 = base_emission * combined_factor * hours_factor * pm25_scale
+
     logger = get_logger()
     logger.log_calculation(
-        "Pollutant Exposure (Scenario-Based)",
-        "base_emission × combined_scenario_factor",
+        "Pollutant Exposure IAQ (µg/m³)",
+        "base_emission × scenario_factor × hours_factor × PM25_SCALE",
         {
             "base_emission": base_emission,
             "scenario_name": kitchen_type,
             "scenario_type": scenario_type,
             "combined_factor": combined_factor,
-            "cooking_hours": cooking_hours
+            "cooking_hours": cooking_hours,
+            "hours_factor": round(hours_factor, 3),
+            "pm25_scale": pm25_scale,
         },
-        f"{peak_exposure:.4f}"
+        f"{peak_exposure_ug_m3:.2f} µg/m³"
     )
-    return peak_exposure
+    return peak_exposure_ug_m3
 
 def calculate_health_risk_score(pm25_peak_exposure, cooking_hours, sensitive_members):
-    """Calculate health risk score using database thresholds."""
+    """Calculate health risk score using database thresholds.
+
+    pm25_peak_exposure is now in µg/m³ (output of calculate_pollutant_exposure).
+    DB health_risk_thresholds are also in µg/m³ — units now match.
+
+    The old guard (< 1.0) fired for EVERY fuel because peak_exposure was a raw emission
+    index (0.0002 – 0.4) not a concentration.  It is replaced with a physically meaningful
+    threshold: fuels that produce < PM25_LOW_RISK_THRESHOLD µg/m³ (default 5 µg/m³,
+    covering Grid electricity and Solar which have pm25_factor = 0.0) are treated as clean
+    and receive no sensitive/duration penalty.
+    """
     logger = get_logger()
     logger.log_subsection("HEALTH RISK SCORE")
-    logger.log_input("PM2.5 Peak Exposure", pm25_peak_exposure)
+    logger.log_input("PM2.5 Peak Exposure (µg/m³)", pm25_peak_exposure)
     logger.log_input("Cooking Hours", cooking_hours)
     logger.log_input("Sensitive Members", sensitive_members)
 
-    # Get PM2.5 base score from database
+    # Get PM2.5 base score from database (thresholds are in µg/m³)
     pm25_score, _ = db_helper.get_health_risk_score(pm25_peak_exposure)
 
     # Get penalty factors from database
@@ -1393,21 +1425,20 @@ def calculate_health_risk_score(pm25_peak_exposure, cooking_hours, sensitive_mem
     duration_penalty_factor = db_helper.get_system_parameter('HEALTH_DURATION_PENALTY', 5)
     baseline_hours = db_helper.get_system_parameter('HEALTH_BASELINE_HOURS', 2)
 
-    # Calculate penalties
-    # Calculate penalties
-    # MODIFIED: If PM2.5 exposure is effectively zero (Low Risk), do not add penalties.
-    # This prevents clean fuels (Solar/Grid) from becoming "Moderate" due to household size/duration.
-    
-    LOW_RISK_THRESHOLD = 5.0 # If peak exposure is very low, treat as clean env
-    
-    if pm25_peak_exposure < 1.0: # Effectively zero/clean
-         sensitive_penalty = 0
-         duration_penalty = 0
-         health_risk_score = pm25_score # Should be 0 or very low
+    # Clean-fuel threshold in µg/m³: fuels below this emit virtually no PM2.5
+    # (Grid electricity, Solar — pm25_factor = 0.0 in DB → concentration ≈ 0)
+    low_risk_ug_m3 = db_helper.get_system_parameter('PM25_LOW_RISK_THRESHOLD_UG_M3', 5.0)
+
+    if pm25_peak_exposure <= low_risk_ug_m3:
+        # Essentially zero PM2.5 — no penalties for sensitive members or duration
+        sensitive_penalty = 0
+        duration_penalty = 0
+        health_risk_score = pm25_score
     else:
-         sensitive_penalty = sensitive_members * sensitive_penalty_factor
-         duration_penalty = max(0, (cooking_hours - baseline_hours) * duration_penalty_factor)
-         health_risk_score = pm25_score + sensitive_penalty + duration_penalty
+        sensitive_penalty = sensitive_members * sensitive_penalty_factor
+        duration_penalty = max(0, (cooking_hours - baseline_hours) * duration_penalty_factor)
+        health_risk_score = pm25_score + sensitive_penalty + duration_penalty
+
     logger.log_calculation(
         "Health Risk Score",
         "pm25_score + sensitive_penalty + duration_penalty",
@@ -1422,15 +1453,22 @@ def calculate_health_risk_score(pm25_peak_exposure, cooking_hours, sensitive_mem
     return min(100, health_risk_score)
 
 def categorize_health_risk(score):
-    """Categorize health risk based on score - uses fixed thresholds for now."""
-    if score < 30:
+    """Categorize health risk based on score.
+
+    Cut-points are midpoints between consecutive DB base scores (10/25/45/65/85):
+      midpoints → 17.5, 35, 55, 75
+    Using integer boundaries: 17, 35, 55, 75.
+    """
+    if score <= 17:
         return "low"
-    elif score < 50:
+    elif score <= 35:
         return "moderate"
-    elif score < 70:
+    elif score <= 55:
         return "high"
-    else:
+    elif score <= 75:
         return "very_high"
+    else:
+        return "critical"
 
 def get_environmental_grade(annual_co2_kg, household_size=4):
     """
@@ -2284,7 +2322,7 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
 
         # ✅ Calculate CO2 using centralized function with institution_data
         daily_energy = energy_required / monthly_factor
-        emission_factor = EMISSION_FACTORS.get('Biogas', 0.27)
+        emission_factor = EMISSION_FACTORS.get('Biogas', 0.30)
         annual_co2 = calculate_co2_emissions(
             daily_energy, 
             emission_factor,
@@ -2318,6 +2356,64 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
             'emission_source': EMISSION_SOURCES.get(fuel),
             'cost_components': biogas_costs,
             'monthly_m3': monthly_m3
+        }
+
+    elif fuel == 'Traditional Solid Biomass':
+        # ✅ Dedicated commercial Biomass handler — avoids residential /30 and missing institution_data
+        district = institution_data.get('district', 'Thiruvananthapuram')
+        biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
+        biomass_cost_per_kg = float(
+            biomass_price_data['unit_price']
+            if biomass_price_data and biomass_price_data.get('unit_price') is not None
+            else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
+        )
+        biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
+
+        energy_required_gross = monthly_energy_kwh / efficiency if efficiency > 0 else monthly_energy_kwh
+        monthly_kg = energy_required_gross / biomass_energy_content if biomass_energy_content > 0 else 0
+        monthly_cost = monthly_kg * biomass_cost_per_kg
+
+        # ✅ Use working_days (not hardcoded 30) and pass institution_data for correct annual days
+        daily_energy = energy_required_gross / monthly_factor
+        emission_factor = EMISSION_FACTORS.get('Traditional Solid Biomass', 0.4)
+        annual_co2 = calculate_co2_emissions(daily_energy, emission_factor, institution_data)
+
+        logger.log_data("Commercial Biomass Cost & Emission", {
+            "district": district,
+            "efficiency": efficiency,
+            "energy_required_gross_kwh": energy_required_gross,
+            "monthly_kg": monthly_kg,
+            "biomass_cost_per_kg": biomass_cost_per_kg,
+            "monthly_cost": monthly_cost,
+            "annual_co2": annual_co2,
+            "working_days": working_days
+        })
+
+        base_pm25 = PM25_BASE_EMISSIONS.get(fuel, 0.5)
+        pm25_peak = calculate_pollutant_exposure(
+            base_pm25,
+            kitchen_data.get('kitchen_type', 'Open Kitchen'),
+            kitchen_data.get('ventilation_quality', 'Average'),
+            kitchen_data.get('cooking_hours_daily', 3.0)
+        )
+        health_risk_score = calculate_health_risk_score(
+            pm25_peak,
+            kitchen_data.get('cooking_hours_daily', 3.0),
+            kitchen_data.get('sensitive_members', 1)
+        )
+
+        return {
+            'fuel': fuel,
+            'monthly_cost': monthly_cost,
+            'capital_cost': 0,
+            'efficiency': efficiency * 100,
+            'annual_co2': annual_co2,
+            'environmental_grade': get_environmental_grade(annual_co2),
+            'pm25_peak': pm25_peak,
+            'health_risk_score': health_risk_score,
+            'health_risk_category': categorize_health_risk(health_risk_score),
+            'cost_per_kwh': (monthly_cost / monthly_energy_kwh) if monthly_energy_kwh > 0 else 0,
+            'emission_source': EMISSION_SOURCES.get(fuel)
         }
 
     elif fuel == 'Solar + BESS':
@@ -2744,15 +2840,17 @@ def generate_recommendations(alternatives, household_data, kitchen_data, energy_
     
     for fuel, data in alternatives.items():
         logger.log_subsection(f"Scoring Fuel: {fuel}")
-        # Health score
-        if data['health_risk_score'] < 30:
+        # Health score — cut-points aligned with DB base scores (10/25/45/65/85)
+        if data['health_risk_score'] <= 17:
             health_score = 100
-        elif data['health_risk_score'] < 50:
+        elif data['health_risk_score'] <= 35:
             health_score = 75
-        elif data['health_risk_score'] < 70:
+        elif data['health_risk_score'] <= 55:
             health_score = 40
+        elif data['health_risk_score'] <= 75:
+            health_score = 15
         else:
-            health_score = 10
+            health_score = 5
         
         if data['pm25_peak'] > 200:
             health_score -= 20
