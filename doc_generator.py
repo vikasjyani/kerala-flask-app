@@ -158,10 +158,10 @@ This section provides step-by-step verification logic for EVERY supported calcul
 ## 3.4 Residential Consumption: Traditional Biomass
 **Input**: `Monthly_Mass` (kg).
 **Calorific**: ~4.5 kWh/kg (Wood).
-**Efficiency**: **15%** (0.15) - Very low.
+**Efficiency**: **55%** (0.55) - Very low.
 
 1.  **Useful Energy**:
-    $$ E_{useful} = (Mass_{kg} \\times 4.5) \\times 0.15 $$
+    $$ E_{useful} = (Mass_{kg} \\times 4.5) \\times 0.55 $$
 
 ---
 

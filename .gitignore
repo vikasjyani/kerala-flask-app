@@ -68,3 +68,7 @@ render.yaml
 # NOTE: cooking_webapp.db and user_data.db are intentionally tracked.
 # cooking_webapp.db = master reference data (constants, emission factors)
 # user_data.db      = user submissions (pre-seeded, needed at startup)
+
+# Claude Code session data (local only)
+.claude/
+PRESENTATION_SCRIPT.md

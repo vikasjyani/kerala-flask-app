@@ -529,7 +529,7 @@ def energy_calculation():
                           lpg_efficiency=helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60),
                           png_efficiency=helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70),
                           electricity_efficiency=helper.DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90),
-                          biomass_efficiency=helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15),
+                          biomass_efficiency=helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55),
                           lpg_calorific_value=helper.LPG_CALORIFIC_VALUE,
                           lpg_cylinder_weight=helper.LPG_CYLINDER_WEIGHT,
                           png_calorific_value=helper.PNG_CALORIFIC_VALUE,

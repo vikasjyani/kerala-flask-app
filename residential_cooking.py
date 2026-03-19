@@ -373,7 +373,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         # Biomass energy content and efficiency - load from database
         biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
         biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
-        efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
+        efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
 
         logger.log_input("Biomass Energy Content", f"{biomass_energy_content} kWh/kg")
         logger.log_input("Biomass Cost", f"Rs {biomass_cost_per_kg}/kg")
@@ -517,7 +517,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
 
             biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
             biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
-            efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
 
             monthly_energy_required = monthly_kg * biomass_energy_content
             energy = monthly_energy_required * efficiency

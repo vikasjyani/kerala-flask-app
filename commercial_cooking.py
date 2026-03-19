@@ -605,7 +605,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             monthly_cost = monthly_biomass_kg * biomass_cost_per_kg
             
             # Apply thermal efficiency (very low for traditional stoves)
-            efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
             delivered_energy = monthly_energy_kwh_gross * efficiency
              #useful energy = delivered energy
             annual_co2_kg = calculate_co2_emissions(
@@ -767,7 +767,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
                 
                 biomass_energy = mixed_kg * biomass_energy_content
-                efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
+                efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
                 delivered = biomass_energy * efficiency
                 biomass_cost = mixed_kg * biomass_cost_per_kg
                 
