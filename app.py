@@ -111,26 +111,40 @@ def get_district_options_with_fallback():
     return [{'value': d, 'label_en': d, 'label_ml': None} for d in FALLBACK_DISTRICTS]
 
 def clear_application_journey():
-    """Clear application journey state without wiping unrelated session keys."""
+    """Clear application journey state without wiping unrelated session keys.
+
+    Must be called at every flow entry point:
+      - index()                 — home page (already done)
+      - commercial_selection()  — start of commercial flow
+      - household_profile() GET — if switching from commercial to residential
+
+    Keys preserved across clear: 'language' (UI locale).
+    """
     session_keys = (
+        # Flow discriminator
+        'flow_type',
+        # Residential keys
         'household_id',
         'household_data',
         'kitchen_data',
         'energy_data',
         'analysis_result',
         'residential_analysis_result',
-        'commercial_analysis_result',
-        'analysis_cache_key',
         'residential_analysis_cache_key',
-        'commercial_analysis_cache_key',
+        # Commercial keys
         'institution_data',
         'commercial_analysis_id',
+        'commercial_analysis_result',
+        'commercial_analysis_cache_key',
+        # Generic / legacy keys (clean up old browser cookies)
+        'analysis_cache_key',
+        # Feedback (cleared after submission)
         'feedback_submitted',
         'schemes_selected',
         'solar_scheme',
         'png_scheme',
         'ujjwala_scheme',
-        'allow_contact'
+        'allow_contact',
     )
     for key in session_keys:
         session.pop(key, None)
@@ -283,7 +297,12 @@ def household_profile():
     """Household profile input form"""
     if request.method == 'POST':
         return redirect(url_for('submit_household'))
-        
+
+    # If user arrives at the residential entry from a previous commercial
+    # journey (without going via /), clear all stale commercial keys.
+    if session.get('flow_type') == 'commercial':
+        clear_application_journey()
+
     household_data = session.get('household_data') or {}
     # Get default electricity tariff from database (avoid hardcoded value in template)
     default_electricity_rate = db_helper.get_system_parameter('ELECTRICITY_RESIDENTIAL_RATE', None)
@@ -326,7 +345,8 @@ def submit_household():
         # Save to database
         household_id = helper.save_household_data(household_data)
         
-        # Store in session
+        # Store in session — tag this as a residential flow
+        session['flow_type'] = 'residential'
         session['household_id'] = household_id
         session['household_data'] = household_data
         session.pop('kitchen_data', None)
@@ -817,6 +837,9 @@ def download_report():
 @app.route('/commercial_selection')
 def commercial_selection():
     """Commercial analysis landing page with institution profile"""
+    # Clear any previous journey (residential or commercial) so old session
+    # keys never bleed into this new commercial flow.
+    clear_application_journey()
     try:
         # Fetch institution types and filter to allowed 5
         all_institutions = db_helper.get_all_institution_types()
@@ -871,6 +894,8 @@ def commercial_institution_profile():
         # Save to database
         institution_id = helper.save_institution_data(institution_data)
         
+        # Tag this as a commercial flow
+        session['flow_type'] = 'commercial'
         session['institution_data'] = institution_data
         session['commercial_analysis_id'] = institution_id
         
