@@ -350,10 +350,14 @@
             return;
         }
 
-        // Submit the form
+        // Submit the form — reset unsaved-changes flag before programmatic submit
+        // so main.js's beforeunload handler does not show "Leave site?" dialog.
         console.log('DEBUG: Submitting institution form', {
             institution_type: form.querySelector('input[name="institution_type"]:checked')?.value
         });
+        if (typeof window.markFormSubmitting === 'function') {
+            window.markFormSubmitting();
+        }
         form.submit();
     });
     });

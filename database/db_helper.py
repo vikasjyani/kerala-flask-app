@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 from datetime import datetime, date
 from typing import Dict, List, Optional, Tuple, Any
-from functools import lru_cache
 
 # Database path
 BASE_DIR = Path(__file__).parent.parent
@@ -21,8 +20,8 @@ SYSTEM_PARAMETER_ALIASES = {
 }
 
 
-@lru_cache(maxsize=8)
 def _cached_recommendation_weights(priority_profile: str = 'balanced') -> Dict[str, float]:
+    """Fetch recommendation weights from DB. No in-process cache — SQLite WAL supports concurrent reads."""
     with DatabaseConnection() as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -42,8 +41,8 @@ def _cached_recommendation_weights(priority_profile: str = 'balanced') -> Dict[s
     return {'health': 0.3, 'environmental': 0.2, 'economic': 0.3, 'practicality': 0.2}
 
 
-@lru_cache(maxsize=16)
 def _cached_household_size_efficiency(household_size: int) -> float:
+    """Fetch group cooking efficiency from DB. No in-process cache — SQLite WAL supports concurrent reads."""
     with DatabaseConnection() as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -172,19 +171,13 @@ class DatabaseHelper:
 
     def get_all_fuels(self, active_only=True) -> List[Dict]:
         """Get all fuel types."""
-        cache_key = f'fuels_active_{active_only}'
-        if cache_key in self._cache:
-            return self._cache[cache_key]
-
         query = "SELECT * FROM fuel_types"
         if active_only:
             query += " WHERE is_active = 1"
         query += " ORDER BY display_order"
 
         rows = self._fetch_all(query)
-        result = [dict(row) for row in rows]
-        self._cache[cache_key] = result
-        return result
+        return [dict(row) for row in rows]
 
     def get_fuel_by_name(self, fuel_name: str) -> Optional[Dict]:
         """Get fuel by name."""

@@ -638,40 +638,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="row g-4 mb-4">
-                <div class="col-lg-6">
-                    <div class="chart-container">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="chart-title mb-0">{{ _('Health Risk Score Comparison') }}</h6>
-                            <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
-                        </div>
-                        <canvas id="healthChart" height="300"
-                            aria-label="{{ _('Bar chart comparing health risk scores across fuels') }}"></canvas>
-                        <div class="chart-footnote small text-muted">{{ _('Scores on 0–100 scale; lower indicates safer
-                            indoor air exposure.') }}</div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="chart-container">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="chart-title mb-0">{{ _('Multi-Criteria Performance') }}</h6>
-                            <span class="badge bg-light text-dark">{{ _('Top options overview') }}</span>
-                        </div>
-                        <canvas id="radarChart" height="300"
-                            aria-label="{{ _('Radar chart summarizing cost, emissions, health, and overall performance for top fuels') }}"></canvas>
-                        <div class="chart-footnote small text-muted">{{ _('Balanced view across cost efficiency,
-                            emissions,
-                            health safety, and overall rating.') }}</div>
-                    </div>
-                </div>
-            </div>
-
-
-
         </div>
         <!-- Health Impact Assessment -->
-        <div class="card shadow-green fade-in-up mb-4">
+        <!-- <div class="card shadow-green fade-in-up mb-4">
             <div class="card-body">
                 <h4 class="card-title text-primary-green mb-4"><i class="bi bi-heart-pulse me-2"></i>{{ _('Health &
                     Safety Evaluation') }}</h4>
@@ -734,7 +703,7 @@
                 </div>
                 {% endif %}
             </div>
-        </div>
+        </div> -->
         <!-- Action Center -->
         <div class="card shadow-green fade-in-up mb-4">
             <div class="card-body">
@@ -777,7 +746,7 @@
         </div>
 
         <!-- Research Information -->
-        <div class="card shadow-green fade-in-up">
+        <!-- <div class="card shadow-green fade-in-up">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-md-8">
@@ -807,7 +776,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div> <!-- end container -->
 
     {% endblock %}
