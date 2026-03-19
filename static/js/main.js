@@ -196,7 +196,13 @@ function goToNextStep(url, data = null) {
 }
 
 function goToPreviousStep() {
-    window.history.back();
+    // Use the custom nav-confirm modal when there are unsaved changes,
+    // otherwise just go back immediately.
+    if (typeof window.showNavConfirm === 'function') {
+        window.showNavConfirm('__back__');
+    } else {
+        window.history.back();
+    }
 }
 
 // Form submission
@@ -656,36 +662,72 @@ function addAnimations() {
     });
 }
 
-// Navigation warnings
+// Navigation warnings — custom Bootstrap modal instead of native "Leave site?" dialog
 function initializeNavigationWarnings() {
     let hasUnsavedChanges = false;
+    let pendingNavTarget = null;   // URL string  OR  '__back__'
 
-    // Expose a global reset so pages that submit via form.submit() (which skips
-    // the native 'submit' event) can still clear the unsaved-changes flag.
+    // ── Public API ──────────────────────────────────────────────────────────
+
+    // Call before any programmatic form.submit() so "Next" never triggers a warning.
     window.markFormSubmitting = function () {
         hasUnsavedChanges = false;
     };
 
-    // Track form changes
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('input', () => {
-            hasUnsavedChanges = true;
-        });
-
-        form.addEventListener('submit', () => {
-            hasUnsavedChanges = false;
-        });
-    });
-
-    // Warn before leaving
-    window.addEventListener('beforeunload', (e) => {
-        if (hasUnsavedChanges) {
-            e.preventDefault();
-            e.returnValue = t('confirm_navigation');
-            return t('confirm_navigation');
+    // Call instead of window.location.href / history.back() for back-navigation.
+    // Shows the custom modal when there are unsaved changes; navigates immediately otherwise.
+    window.showNavConfirm = function (target) {
+        if (!hasUnsavedChanges) {
+            target === '__back__' ? window.history.back() : (window.location.href = target);
+            return;
         }
+        pendingNavTarget = target;
+        const modalEl = document.getElementById('navConfirmModal');
+        if (modalEl) {
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        } else {
+            // Fallback if modal markup is absent
+            target === '__back__' ? window.history.back() : (window.location.href = target);
+        }
+    };
+
+    // ── Track form changes ───────────────────────────────────────────────────
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('input', () => { hasUnsavedChanges = true; });
+        form.addEventListener('submit', () => { hasUnsavedChanges = false; });
     });
+
+    // ── Intercept <a class="btn-nav-back"> link clicks ──────────────────────
+    // (button-type back buttons go through goToPreviousStep → showNavConfirm)
+    document.addEventListener('click', function (e) {
+        const backLink = e.target.closest('a.btn-nav-back, a[data-nav-confirm]');
+        if (!backLink) return;
+        if (!hasUnsavedChanges) return;   // no changes — let the link navigate normally
+        e.preventDefault();
+        pendingNavTarget = backLink.href;
+        const modalEl = document.getElementById('navConfirmModal');
+        if (modalEl) bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    });
+
+    // ── "Leave" button inside the custom modal ───────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+        const leaveBtn = document.getElementById('navConfirmLeaveBtn');
+        if (!leaveBtn) return;
+        leaveBtn.addEventListener('click', function () {
+            const modalEl = document.getElementById('navConfirmModal');
+            bootstrap.Modal.getInstance(modalEl)?.hide();
+            const target = pendingNavTarget;
+            pendingNavTarget = null;
+            hasUnsavedChanges = false;
+            if (target === '__back__') {
+                window.history.back();
+            } else if (target) {
+                window.location.href = target;
+            }
+        });
+    });
+
+    // NOTE: No window.beforeunload handler — avoids the ugly native "Leave site?" browser dialog.
 }
 
 // Download and share functions
