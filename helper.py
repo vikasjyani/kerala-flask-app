@@ -2284,7 +2284,7 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
 
         # ✅ Calculate CO2 using centralized function with institution_data
         daily_energy = energy_required / monthly_factor
-        emission_factor = EMISSION_FACTORS.get('Biogas', 0.27)
+        emission_factor = EMISSION_FACTORS.get('Biogas', 0.30)
         annual_co2 = calculate_co2_emissions(
             daily_energy, 
             emission_factor,
