@@ -1,7 +1,6 @@
 
 import sys
 import os
-from functools import lru_cache
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file, flash, make_response, g
 from flask_babel import Babel, _
 from flask_compress import Compress
@@ -98,7 +97,6 @@ def localize_db_label(label_en, label_ml=None):
         return label_ml
     return label_en
 
-@lru_cache(maxsize=1)
 def get_district_options_with_fallback():
     """Load district options, using a static fallback when reference DB access fails."""
     try:
