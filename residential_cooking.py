@@ -1,13 +1,16 @@
 import pandas as pd
 import json
+import helper
 from helper import (
     db_helper, basic_calories, calculate_lpg_consumption_from_refill,
     calculate_png_consumption_from_bill, calculate_png_bill_and_consumption,
     calculate_co2_emissions, calculate_fuel_emissions_and_costs,
-    save_cooking_analysis, DEFAULT_EFFICIENCIES, EMISSION_FACTORS,
+    save_cooking_analysis,
     LPG_SUBSIDY_AMOUNT, LPG_CALORIFIC_VALUE, LPG_ENERGY_PER_CYLINDER
 )
-import helper
+# NOTE: Do NOT import EMISSION_FACTORS or DEFAULT_EFFICIENCIES by name.
+# Always use helper.EMISSION_FACTORS and helper.DEFAULT_EFFICIENCIES so that
+# load_constants_from_db() reassignments are reflected here (name-binding safety).
 from debug_logger import get_logger
 
 # =================================================================
@@ -183,7 +186,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         logger.log_input("Cylinder Size", f"{cylinder_size} kg")
 
         lpg_data = calculate_lpg_consumption_from_refill(refill_days, cylinder_size)
-        efficiency = DEFAULT_EFFICIENCIES.get('LPG', 0.60)
+        efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)
 
         logger.log_data("LPG Data from calculation", lpg_data)
         logger.log_input("LPG Thermal Efficiency", f"{efficiency * 100}%")
@@ -232,13 +235,13 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
             "annual_emissions = daily_energy_kwh × emission_factor × 365",
             {
                 "daily_energy_kwh": f"{lpg_data['daily_energy_kwh']:.2f} kWh",
-                "emission_factor": f"{EMISSION_FACTORS['LPG']} kg CO₂/kWh"
+                "emission_factor": f"{helper.EMISSION_FACTORS['LPG']} kg CO₂/kWh"
             },
-            f"{calculate_co2_emissions(lpg_data['daily_energy_kwh'], EMISSION_FACTORS['LPG']):.2f}",
+            f"{calculate_co2_emissions(lpg_data['daily_energy_kwh'], helper.EMISSION_FACTORS['LPG']):.2f}",
             "kg CO₂/year"
         )
         result['annual_emissions'] = calculate_co2_emissions(
-            lpg_data['daily_energy_kwh'], EMISSION_FACTORS['LPG']
+            lpg_data['daily_energy_kwh'], helper.EMISSION_FACTORS['LPG']
         )
 
         # Standardize fuel_details to match multi-fuel structure for analysis.html
@@ -285,7 +288,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
             monthly_scm = daily_scm * 30
             png_data = calculate_png_bill_and_consumption(monthly_scm, rate_per_scm=png_rate)
 
-        efficiency = DEFAULT_EFFICIENCIES.get('PNG', 0.70)
+        efficiency = helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70)
         logger.log_data("PNG Data from calculation", png_data)
         logger.log_input("PNG Thermal Efficiency", f"{efficiency * 100}%")
 
@@ -296,7 +299,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         logger.log_data("Bill Breakdown", png_data['bill_breakdown'])
 
         result['annual_emissions'] = calculate_co2_emissions(
-            png_data['daily_energy_kwh'], EMISSION_FACTORS['PNG']
+            png_data['daily_energy_kwh'], helper.EMISSION_FACTORS['PNG']
         )
         logger.log_result("Annual CO₂ Emissions", result['annual_emissions'], "kg CO₂/year")
 
@@ -319,7 +322,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         logger.log_step("Calculating Grid Electricity consumption")
 
         monthly_kwh = float(data.get('monthly_kwh_cooking', 80))
-        efficiency = DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
+        efficiency = helper.DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
         tariff = household_data.get('electricity_tariff', 6.5)
 
         logger.log_input("Monthly kWh for Cooking", f"{monthly_kwh} kWh")
@@ -340,7 +343,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         result['monthly_cost'] = monthly_kwh * tariff
 
         result['annual_emissions'] = calculate_co2_emissions(
-            monthly_kwh / 30, EMISSION_FACTORS['Grid electricity']
+            monthly_kwh / 30, helper.EMISSION_FACTORS['Grid electricity']
         )
         logger.log_result("Annual CO₂ Emissions", result['annual_emissions'], "kg CO₂/year")
 
@@ -370,7 +373,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         # Biomass energy content and efficiency - load from database
         biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
         biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
-        efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
+        efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
 
         logger.log_input("Biomass Energy Content", f"{biomass_energy_content} kWh/kg")
         logger.log_input("Biomass Cost", f"Rs {biomass_cost_per_kg}/kg")
@@ -391,7 +394,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         result['monthly_cost'] = monthly_kg * biomass_cost_per_kg
 
         result['annual_emissions'] = calculate_co2_emissions(
-            monthly_energy_required / 30, EMISSION_FACTORS['Traditional Solid Biomass']
+            monthly_energy_required / 30, helper.EMISSION_FACTORS['Traditional Solid Biomass']
         )
         logger.log_result("Annual CO₂ Emissions", result['annual_emissions'], "kg CO₂/year")
         
@@ -427,11 +430,11 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
             cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
 
             lpg_data = calculate_lpg_consumption_from_refill(refill_days, cylinder_size)
-            efficiency = DEFAULT_EFFICIENCIES.get('LPG', 0.60)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)
 
             energy = lpg_data['monthly_energy_kwh'] * efficiency
             cost = lpg_data['cylinders_per_month'] * cylinder_price
-            emissions = calculate_co2_emissions(lpg_data['daily_energy_kwh'], EMISSION_FACTORS['LPG'])
+            emissions = calculate_co2_emissions(lpg_data['daily_energy_kwh'], helper.EMISSION_FACTORS['LPG'])
 
             total_energy += energy
             total_cost += cost
@@ -458,11 +461,11 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
                 raise ValueError("PNG pricing not found in database. Please ensure fuel_unit_pricing table has PNG data.")
             png_rate = float(png_price_data['price_per_scm'])
             png_data = calculate_png_consumption_from_bill(monthly_bill, rate_per_scm=png_rate)
-            efficiency = DEFAULT_EFFICIENCIES.get('PNG', 0.70)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70)
 
             energy = png_data['monthly_energy_kwh'] * efficiency
             cost = png_data['total_bill']
-            emissions = calculate_co2_emissions(png_data['daily_energy_kwh'], EMISSION_FACTORS['PNG'])
+            emissions = calculate_co2_emissions(png_data['daily_energy_kwh'], helper.EMISSION_FACTORS['PNG'])
 
             total_energy += energy
             total_cost += cost
@@ -484,12 +487,12 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         if data.get('mixed_use_elec') in [True, 'true', 'on', '1', 1]:
             logger.log_step("Processing Grid electricity in mixed mode")
             monthly_kwh = float(data.get('mixed_monthly_kwh', 40))
-            efficiency = DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('Grid electricity', 0.90)
             tariff = household_data.get('electricity_tariff', 6.5)
 
             energy = monthly_kwh * efficiency
             cost = monthly_kwh * tariff
-            emissions = calculate_co2_emissions(monthly_kwh / 30, EMISSION_FACTORS['Grid electricity'])
+            emissions = calculate_co2_emissions(monthly_kwh / 30, helper.EMISSION_FACTORS['Grid electricity'])
 
             total_energy += energy
             total_cost += cost
@@ -514,12 +517,12 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
 
             biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
             biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
-            efficiency = DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.15)
 
             monthly_energy_required = monthly_kg * biomass_energy_content
             energy = monthly_energy_required * efficiency
             cost = monthly_kg * biomass_cost_per_kg
-            emissions = calculate_co2_emissions(monthly_energy_required / 30, EMISSION_FACTORS['Traditional Solid Biomass'])
+            emissions = calculate_co2_emissions(monthly_energy_required / 30, helper.EMISSION_FACTORS['Traditional Solid Biomass'])
 
             total_energy += energy
             total_cost += cost
@@ -573,7 +576,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
 
     # Add overall thermal efficiency to result
     # For consumption-based, efficiency is based on the primary fuel's efficiency
-    efficiency = DEFAULT_EFFICIENCIES.get(primary_fuel, 0.60)
+    efficiency = helper.DEFAULT_EFFICIENCIES.get(primary_fuel, 0.60)
     result['overall_thermal_efficiency'] = efficiency * 100
     
     logger.log_result("Overall Thermal Efficiency", f"{result['overall_thermal_efficiency']:.1f}%")
@@ -831,7 +834,7 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
             fuel_efficiency_dict[fuel] = efficiency
             logger.log_result(f"{fuel} - Thermal Efficiency (from stove database)", f"{efficiency:.2%}")
         else:
-            efficiency = DEFAULT_EFFICIENCIES.get(fuel, 0.50)
+            efficiency = helper.DEFAULT_EFFICIENCIES.get(fuel, 0.50)
             fuel_efficiency_dict[fuel] = efficiency
             logger.log_warning(f"{fuel} not found in stove database, using default efficiency")
             logger.log_result(f"{fuel} - Thermal Efficiency (default)", f"{efficiency:.2%}")
