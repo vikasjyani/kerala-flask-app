@@ -2240,9 +2240,14 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
                 )
                 cost_per_kwh = tariff
             elif fuel == 'LPG':
-                cylinder_price = db_helper.get_system_parameter('LPG_COMMERCIAL_CYLINDER_PRICE', None)
-                if cylinder_price is None:
-                    cylinder_price = db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1810.50)
+                # Get LPG price: session custom > system parameter
+                _custom = institution_data.get('custom_fuel_prices', {})
+                if _custom.get('LPG_unit_price'):
+                    cylinder_price = float(_custom['LPG_unit_price'])
+                else:
+                    cylinder_price = db_helper.get_system_parameter('LPG_COMMERCIAL_CYLINDER_PRICE', None)
+                    if cylinder_price is None:
+                        cylinder_price = db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1810.50)
                 cylinder_weight = db_helper.get_system_parameter('LPG_COMMERCIAL_CYLINDER_WEIGHT', 19.0)
                 energy_per_cylinder = cylinder_weight * LPG_CALORIFIC_VALUE
                 cost_per_kwh = cylinder_price / energy_per_cylinder if energy_per_cylinder > 0 else 0
@@ -2262,12 +2267,17 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
 
 
         monthly_cost = energy_required * cost_per_kwh
-        
+
         # ✅ Calculate CO2 using centralized function with institution_data
         daily_energy = energy_required / monthly_factor
-        emission_factor = EMISSION_FACTORS.get(fuel, 0.5)
+        # Honour session Grid CO₂ override for Grid electricity
+        if fuel == 'Grid electricity':
+            _cef_cfs = institution_data.get('custom_fuel_prices', {})
+            emission_factor = float(_cef_cfs['Grid_emission_factor']) if _cef_cfs.get('Grid_emission_factor') is not None else EMISSION_FACTORS.get('Grid electricity', 0.65)
+        else:
+            emission_factor = EMISSION_FACTORS.get(fuel, 0.5)
         annual_co2 = calculate_co2_emissions(
-            daily_energy, 
+            daily_energy,
             emission_factor,
             institution_data  # ✅ Pass institution_data for working_days
         )
@@ -2361,12 +2371,17 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
     elif fuel == 'Traditional Solid Biomass':
         # ✅ Dedicated commercial Biomass handler — avoids residential /30 and missing institution_data
         district = institution_data.get('district', 'Thiruvananthapuram')
-        biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
-        biomass_cost_per_kg = float(
-            biomass_price_data['unit_price']
-            if biomass_price_data and biomass_price_data.get('unit_price') is not None
-            else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
-        )
+        # Get biomass cost: session custom > DB > fallback
+        _custom = institution_data.get('custom_fuel_prices', {})
+        if _custom.get('Biomass_unit_price'):
+            biomass_cost_per_kg = float(_custom['Biomass_unit_price'])
+        else:
+            biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
+            biomass_cost_per_kg = float(
+                biomass_price_data['unit_price']
+                if biomass_price_data and biomass_price_data.get('unit_price') is not None
+                else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
+            )
         biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
 
         energy_required_gross = monthly_energy_kwh / efficiency if efficiency > 0 else monthly_energy_kwh
@@ -2569,7 +2584,9 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         levelized_monthly_cost = monthly_cost
 
         # Emissions: Solar (near zero) + Grid Backup
-        grid_emission_factor = EMISSION_FACTORS.get('Grid electricity', 0.65)
+        # Honour session custom grid emission factor override
+        _cef_s = household_data.get('custom_fuel_prices', {})
+        grid_emission_factor = float(_cef_s['Grid_emission_factor']) if _cef_s.get('Grid_emission_factor') is not None else EMISSION_FACTORS.get('Grid electricity', 0.65)
         # BESS losses are already accounted for in the input monthly_electricity_kwh (via efficiency)
         # but emissions strictly come from the grid portion
         annual_backup_emissions = grid_backup_kwh_daily * 365 * grid_emission_factor
@@ -2616,12 +2633,15 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
             monthly_cost = fuel_energy_required * cost_per_kwh
             cylinder_price = cost_per_kwh * LPG_ENERGY_PER_CYLINDER  # For logging
         else:
-            # Fallback: calculate cost_per_kwh from database cylinder price
-            lpg_price = db_helper.get_lpg_pricing(household_data.get('district', 'Thiruvananthapuram'), 'Domestic')
-            cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+            # Fallback: session custom > database cylinder price
+            _custom = household_data.get('custom_fuel_prices', {})
+            if _custom.get('LPG_unit_price'):
+                cylinder_price = float(_custom['LPG_unit_price'])
+            else:
+                lpg_price = db_helper.get_lpg_pricing(household_data.get('district', 'Thiruvananthapuram'), 'Domestic')
+                cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
             if household_data.get('lpg_subsidy') == 'Yes':
                 cylinder_price = max(0, cylinder_price - LPG_SUBSIDY_AMOUNT)
-            # Calculate cost_per_kwh from cylinder price for consistent comparison
             cost_per_kwh = cylinder_price / LPG_ENERGY_PER_CYLINDER
             monthly_cost = fuel_energy_required * cost_per_kwh
                 
@@ -2643,10 +2663,13 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
             # Use cost_per_kwh for consistency with current usage
             monthly_cost = fuel_energy_required * cost_per_kwh
         else:
-            # Fallback: calculate from database rate (variable cost only, no fixed charges)
-            png_price_data = db_helper.get_png_pricing(household_data.get('district', 'All'), 'Domestic')
-            png_rate = float(png_price_data['price_per_scm']) if png_price_data else db_helper.get_system_parameter('PNG_DOMESTIC_RATE', 54.0)
-            # Variable cost only (no fixed charges for fair comparison)
+            # Fallback: session custom > database rate (variable cost only, no fixed charges)
+            _custom = household_data.get('custom_fuel_prices', {})
+            if _custom.get('PNG_unit_price'):
+                png_rate = float(_custom['PNG_unit_price'])
+            else:
+                png_price_data = db_helper.get_png_pricing(household_data.get('district', 'All'), 'Domestic')
+                png_rate = float(png_price_data['price_per_scm']) if png_price_data else db_helper.get_system_parameter('PNG_DOMESTIC_RATE', 54.0)
             monthly_cost = monthly_scm * png_rate
             cost_per_kwh = png_rate / PNG_CALORIFIC_VALUE
             
@@ -2658,7 +2681,12 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         })
     else:  # Traditional Solid Biomass
         biomass_energy_content = db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5)
-        biomass_cost_per_kg = db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
+        # Get biomass cost: session custom > system parameter
+        _custom = household_data.get('custom_fuel_prices', {})
+        if _custom.get('Biomass_unit_price'):
+            biomass_cost_per_kg = float(_custom['Biomass_unit_price'])
+        else:
+            biomass_cost_per_kg = db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
         monthly_kg = fuel_energy_required / biomass_energy_content
         monthly_cost = monthly_kg * biomass_cost_per_kg
         capital_cost = 0  # Traditional stove cost
@@ -2669,8 +2697,12 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
             "monthly_cost": monthly_cost
         })
     
-    # Emissions
-    emission_factor = EMISSION_FACTORS.get(fuel, 0.5)
+    # Emissions — for Grid electricity, honour session custom override
+    if fuel == 'Grid electricity':
+        _cef_h = household_data.get('custom_fuel_prices', {})
+        emission_factor = float(_cef_h['Grid_emission_factor']) if _cef_h.get('Grid_emission_factor') is not None else EMISSION_FACTORS.get('Grid electricity', 0.65)
+    else:
+        emission_factor = EMISSION_FACTORS.get(fuel, 0.5)
     annual_co2 = calculate_co2_emissions(daily_fuel_energy, emission_factor)
     logger.log_result("Annual CO₂", f"{annual_co2:.2f} kg/year")
     

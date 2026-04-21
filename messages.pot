@@ -805,7 +805,7 @@ msgid "Retry"
 msgstr ""
 
 #: templates/commercial_analysis.html:985
-msgid "Monthly Cost (₹)"
+msgid "Monthly Cost"
 msgstr ""
 
 #: templates/commercial_analysis.html:1013
@@ -1934,7 +1934,7 @@ msgid "Cylinders/month"
 msgstr ""
 
 #: templates/energy_calculation.html:323 templates/energy_calculation.html:451
-msgid "Monthly cost (₹)"
+msgid "Monthly cost"
 msgstr ""
 
 #: templates/energy_calculation.html:332
@@ -1965,7 +1965,7 @@ msgid "Monthly SCM"
 msgstr ""
 
 #: templates/energy_calculation.html:410
-msgid "Monthly bill (₹)"
+msgid "Monthly bill"
 msgstr ""
 
 #: templates/energy_calculation.html:416
