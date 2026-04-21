@@ -114,7 +114,7 @@ msgstr "Assessment Report"
 #: templates/kitchen_profile.html:3
 #, fuzzy
 msgid "Keralam Clean Cooking Insights Platform"
-msgstr "Keralam Clean Cooking Energy Assessment Platform"
+msgstr "Kerala Clean Cooking Energy Assessment Platform"
 
 #: templates/analysis.html:6 templates/commercial_analysis.html:7
 msgid "Step 4 of 4"
@@ -328,7 +328,7 @@ msgstr "Daily Generation"
 
 #: templates/analysis.html:232 templates/commercial_analysis.html:402
 msgid "Based on Keralam GHI"
-msgstr "Based on Keralam GHI"
+msgstr "Based on Kerala GHI"
 
 #: templates/analysis.html:236 templates/commercial_analysis.html:406
 msgid "Grid Backup Needed"
@@ -516,7 +516,7 @@ msgid ""
 "                            research-backed methods that support a "
 "sustainable energy transition"
 msgstr ""
-" anonymised data helps strengthen cooking-energy policies in Keralam using"
+" anonymised data helps strengthen cooking-energy policies in Kerala using"
 "\n"
 "                            research-backed methods that support a "
 "sustainable energy transition"
@@ -565,11 +565,11 @@ msgstr ""
 #: templates/base.html:76 templates/contact_us.html:3
 #, fuzzy
 msgid "Keralam Clean Cooking Tool"
-msgstr "Keralam Clean Cooking Energy Assessment Platform"
+msgstr "Kerala Clean Cooking Energy Assessment Platform"
 
 #: templates/base.html:78
 msgid "Keralam"
-msgstr "Keralam"
+msgstr "Kerala"
 
 #: templates/base.html:78 templates/index.html:19
 msgid "Clean Cooking Tool"
@@ -581,11 +581,11 @@ msgstr "English"
 
 #: templates/base.html:145
 msgid "Thiruvananthapuram | Keralam"
-msgstr "Thiruvananthapuram | Keralam"
+msgstr "Thiruvananthapuram | Kerala"
 
 #: templates/base.html:150
 msgid "© 2025 Vasudha Foundation & EMC Keralam."
-msgstr "© 2025 Vasudha Foundation & EMC Keralam."
+msgstr "© 2025 Vasudha Foundation & EMC Kerala."
 
 #: templates/commercial_analysis.html:3
 #, fuzzy
@@ -824,7 +824,7 @@ msgstr ""
 
 #: templates/commercial_analysis.html:784
 msgid "Your data supports Keralam cooking energy policy"
-msgstr "Your data supports Keralam clean cooking energy policy"
+msgstr "Your data supports Kerala clean cooking energy policy"
 
 #: templates/commercial_analysis.html:796
 msgid "Environmental Grade"
@@ -1480,7 +1480,7 @@ msgstr "Kitchen & Facility Profile"
 #: templates/commercial_kitchen_profile.html:3
 #: templates/commercial_selection.html:3
 msgid "Keralam Clean Cooking Platform"
-msgstr "Keralam Clean Cooking Energy Assessment Platform"
+msgstr "Kerala Clean Cooking Energy Assessment Platform"
 
 #: templates/commercial_kitchen_profile.html:6
 #: templates/energy_calculation.html:6
@@ -2478,7 +2478,7 @@ msgstr ""
 
 #: templates/feedback_success.html:31
 msgid "Your anonymized data helps improve clean cooking policies in Keralam"
-msgstr "Your anonymised data helps improve clean cooking energy policies in Keralam"
+msgstr "Your anonymised data helps improve clean cooking energy policies in Kerala"
 
 #: templates/feedback_success.html:33
 msgid "You can start a new analysis to explore more scenarios"
@@ -2771,7 +2771,7 @@ msgstr "Energy efficiency gain from economies of scale"
 #: templates/index.html:3
 #, fuzzy
 msgid "Keralam Clean Cooking Tool - Home"
-msgstr "Keralam Clean Cooking Energy Assessment Platform - Home"
+msgstr "Kerala Clean Cooking Energy Assessment Platform - Home"
 
 #: templates/index.html:15
 #, fuzzy
@@ -2786,7 +2786,7 @@ msgid ""
 msgstr ""
 "A research-driven analytical platform that identifies the most efficient "
 "cooking-energy solutions for\n"
-"            diverse use cases across Keralam."
+"            diverse use cases across Kerala."
 
 #: templates/index.html:27
 msgid "Start Analysing"
@@ -3014,7 +3014,7 @@ msgid ""
 msgstr ""
 "Anonymised data only; secure storage to\n"
 "                                    strengthen\n"
-"                                    cooking energy policies in Keralam. "
+"                                    cooking energy policies in Kerala. "
 "Personal details are optional and stored\n"
 "                                    securely."
 
