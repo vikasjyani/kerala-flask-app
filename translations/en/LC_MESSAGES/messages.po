@@ -563,9 +563,8 @@ msgstr ""
 "                    Kitchens)"
 
 #: templates/base.html:76 templates/contact_us.html:3
-#, fuzzy
 msgid "Keralam Clean Cooking Tool"
-msgstr "Kerala Clean Cooking Energy Assessment Platform"
+msgstr "Kerala Clean Cooking Tool"
 
 #: templates/base.html:78
 msgid "Keralam"
@@ -2769,9 +2768,8 @@ msgid "energy efficiency gain from economies of scale"
 msgstr "Energy efficiency gain from economies of scale"
 
 #: templates/index.html:3
-#, fuzzy
 msgid "Keralam Clean Cooking Tool - Home"
-msgstr "Kerala Clean Cooking Energy Assessment Platform - Home"
+msgstr "Kerala Clean Cooking Tool - Home"
 
 #: templates/index.html:15
 #, fuzzy
