@@ -322,15 +322,18 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             if 'Domestic' in lpg_types_selected:
                 domestic_cylinders = float(data.get('domestic_cylinders') or 0)
                 logger.log_input("Domestic Cylinders/Month", domestic_cylinders)
-                
+
                 if domestic_cylinders > 0:
-                    # Get pricing from database
-                    # Get pricing from database
-                    try:
-                        price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Domestic')
-                        domestic_price = float(price_data['unit_price']) if price_data else 850.0
-                    except:
-                        domestic_price = 850.0
+                    # Get pricing: session custom > database > fallback
+                    custom_prices = institution_data.get('custom_fuel_prices', {})
+                    if custom_prices.get('LPG_unit_price'):
+                        domestic_price = float(custom_prices['LPG_unit_price'])
+                    else:
+                        try:
+                            price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Domestic')
+                            domestic_price = float(price_data['unit_price']) if price_data else 850.0
+                        except:
+                            domestic_price = 850.0
                     
                     # Energy calculation (14.2 kg * 12.8 kWh/kg)
                     domestic_energy = domestic_cylinders * 14.2 * 12.8
@@ -361,10 +364,13 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 logger.log_input("Commercial Cylinders/Month", commercial_cylinders)
                 
                 if commercial_cylinders > 0:
-                    # Get pricing: User Input > DB > Default (1810.5)
+                    # Get pricing: User Input > session custom > DB > Default (1810.5)
                     commercial_price_input = data.get('commercial_cylinder_price')
+                    custom_prices = institution_data.get('custom_fuel_prices', {})
                     if commercial_price_input and float(commercial_price_input) > 0:
                         commercial_price = float(commercial_price_input)
+                    elif custom_prices.get('LPG_unit_price'):
+                        commercial_price = float(custom_prices['LPG_unit_price'])
                     else:
                         try:
                             price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Commercial')
@@ -429,10 +435,14 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             png_method = data.get('png_input_method', 'bill')
             logger.log_input("PNG Input Method", png_method)
 
-            # Single canonical rate source for this request (DB-backed commercial rate).
-            png_price_data = db_helper.get_png_pricing(district=district, category='Commercial')
-            png_rate = float(png_price_data['price_per_scm']) if png_price_data else 47.0
-            logger.log_input("PNG Rate (Commercial, DB)", f"Rs {png_rate:.2f}/SCM")
+            # Get PNG rate: session custom > DB > fallback
+            custom_prices = institution_data.get('custom_fuel_prices', {})
+            if custom_prices.get('PNG_unit_price'):
+                png_rate = float(custom_prices['PNG_unit_price'])
+            else:
+                png_price_data = db_helper.get_png_pricing(district=district, category='Commercial')
+                png_rate = float(png_price_data['price_per_scm']) if png_price_data else 47.0
+            logger.log_input("PNG Rate (Commercial)", f"Rs {png_rate:.2f}/SCM")
             
             if png_method == 'bill':
                 monthly_bill = float(data.get('monthly_bill') or 0)
@@ -508,8 +518,10 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
              #useful energy = delivered energy
             # Calculate emissions using standard function for consistency
             daily_energy = monthly_kwh / working_days if working_days else monthly_kwh / 30
-            annual_co2_kg = calculate_co2_emissions(daily_energy, helper.EMISSION_FACTORS.get('Grid electricity', 0.65), institution_data)
-            
+            _cef_c = institution_data.get('custom_fuel_prices', {})
+            grid_ef_c = float(_cef_c['Grid_emission_factor']) if _cef_c.get('Grid_emission_factor') is not None else helper.EMISSION_FACTORS.get('Grid electricity', 0.65)
+            annual_co2_kg = calculate_co2_emissions(daily_energy, grid_ef_c, institution_data)
+
             result['fuel_details']['Grid electricity'] = {
                 'gross_energy_kwh': monthly_kwh,
                 'delivered_energy_kwh': delivered_energy,
@@ -590,13 +602,20 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             biomass_type = data.get('biomass_type', 'Firewood')
             monthly_factor = float(working_days) if working_days else 30.0
             biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
-            biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
-            default_biomass_cost = float(
-                biomass_price_data['unit_price']
-                if biomass_price_data and biomass_price_data.get('unit_price') is not None
-                else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
-            )
-            biomass_cost_per_kg = float(data.get('biomass_cost_per_kg') or default_biomass_cost)
+            # Get biomass cost: form input > session custom > DB > fallback
+            custom_prices = institution_data.get('custom_fuel_prices', {})
+            form_biomass = data.get('biomass_cost_per_kg')
+            if form_biomass and float(form_biomass) > 0:
+                biomass_cost_per_kg = float(form_biomass)
+            elif custom_prices.get('Biomass_unit_price'):
+                biomass_cost_per_kg = float(custom_prices['Biomass_unit_price'])
+            else:
+                biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
+                biomass_cost_per_kg = float(
+                    biomass_price_data['unit_price']
+                    if biomass_price_data and biomass_price_data.get('unit_price') is not None
+                    else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
+                )
             
             logger.log_input("Monthly Biomass (kg)", monthly_biomass_kg)
             logger.log_input("Biomass Type", biomass_type)
@@ -649,13 +668,18 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             if data.get('mixed_use_lpg') in [True, 'true', 'on', '1', 1, 'on']:
                 logger.log_step("Mixed: Processing Commercial LPG")
                 mixed_cylinders = float(data.get('mixed_commercial_cylinders') or 5)
-                
-                lpg_price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Commercial')
-                cylinder_price = float(
-                    lpg_price_data['unit_price']
-                    if lpg_price_data and lpg_price_data.get('unit_price') is not None
-                    else db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1810.5)
-                )
+
+                # Get pricing: session custom > DB > fallback
+                _custom = institution_data.get('custom_fuel_prices', {})
+                if _custom.get('LPG_unit_price'):
+                    cylinder_price = float(_custom['LPG_unit_price'])
+                else:
+                    lpg_price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Commercial')
+                    cylinder_price = float(
+                        lpg_price_data['unit_price']
+                        if lpg_price_data and lpg_price_data.get('unit_price') is not None
+                        else db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1810.5)
+                    )
                 lpg_energy = mixed_cylinders * 19.0 * 12.8
                 lpg_cost = mixed_cylinders * cylinder_price
                 efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)
@@ -683,12 +707,16 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 logger.log_step("Mixed: Processing PNG")
                 mixed_bill = float(data.get('mixed_monthly_bill_png') or 5000)
 
-                # Use same canonical commercial PNG flow as single-fuel mode.
-                png_price_data = db_helper.get_png_pricing(
-                    district=institution_data.get('district', 'All'),
-                    category='Commercial'
-                )
-                rate_per_scm = float(png_price_data['price_per_scm']) if png_price_data else 47.0
+                # Get PNG rate: session custom > DB > fallback
+                _custom = institution_data.get('custom_fuel_prices', {})
+                if _custom.get('PNG_unit_price'):
+                    rate_per_scm = float(_custom['PNG_unit_price'])
+                else:
+                    png_price_data = db_helper.get_png_pricing(
+                        district=institution_data.get('district', 'All'),
+                        category='Commercial'
+                    )
+                    rate_per_scm = float(png_price_data['price_per_scm']) if png_price_data else 47.0
                 png_calc = helper.calculate_png_consumption_from_bill(
                     mixed_bill,
                     rate_per_scm=rate_per_scm,
@@ -734,11 +762,9 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 elec_cost = mixed_kwh * tariff
                 
                 daily_energy = mixed_kwh / monthly_factor
-                elec_emissions = calculate_co2_emissions(
-                    daily_energy,
-                    helper.EMISSION_FACTORS.get('Grid electricity', 0.65),
-                    institution_data
-                )
+                _cef_cm = institution_data.get('custom_fuel_prices', {})
+                grid_ef_cm = float(_cef_cm['Grid_emission_factor']) if _cef_cm.get('Grid_emission_factor') is not None else helper.EMISSION_FACTORS.get('Grid electricity', 0.65)
+                elec_emissions = calculate_co2_emissions(daily_energy, grid_ef_cm, institution_data)
                 
                 total_energy += delivered
                 total_cost += elec_cost
@@ -758,12 +784,17 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             if data.get('mixed_use_biomass') in [True, 'true', 'on', '1', 1, 'on']:
                 logger.log_step("Mixed: Processing Traditional Biomass")
                 mixed_kg = float(data.get('mixed_monthly_kg_biomass') or 200)
-                biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
-                biomass_cost_per_kg = float(
-                    biomass_price_data['unit_price']
-                    if biomass_price_data and biomass_price_data.get('unit_price') is not None
-                    else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
-                )
+                # Get biomass cost: session custom > DB > fallback
+                _custom = institution_data.get('custom_fuel_prices', {})
+                if _custom.get('Biomass_unit_price'):
+                    biomass_cost_per_kg = float(_custom['Biomass_unit_price'])
+                else:
+                    biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
+                    biomass_cost_per_kg = float(
+                        biomass_price_data['unit_price']
+                        if biomass_price_data and biomass_price_data.get('unit_price') is not None
+                        else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
+                    )
                 biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
                 
                 biomass_energy = mixed_kg * biomass_energy_content
@@ -1067,12 +1098,21 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
             
             logger.log_result(f"{fuel} Cost", f"Rs {cost_per_kwh:.2f}/kWh", source)
         
+        # Build custom emission-factors dict respecting session Grid CO₂ override
+        _cef_db_c = institution_data.get('custom_fuel_prices', {})
+        if _cef_db_c.get('Grid_emission_factor') is not None:
+            _custom_ef_c = dict(helper.EMISSION_FACTORS)
+            _custom_ef_c['Grid electricity'] = float(_cef_db_c['Grid_emission_factor'])
+        else:
+            _custom_ef_c = helper.EMISSION_FACTORS
+
         # Calculate using helper function
         logger.log_step("Calculating emissions and costs using helper function")
         multi_fuel_results = calculate_fuel_emissions_and_costs(
             fuel_energy_dict,
             fuel_efficiency_dict,
             fuel_cost_per_kwh_dict,
+            emission_factors=_custom_ef_c,
             institution_data=institution_data  # Pass context for correct annualization (working days)
         )
         

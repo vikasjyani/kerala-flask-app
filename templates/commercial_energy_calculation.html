@@ -303,8 +303,7 @@
                                                     <input type="number" class="form-control" id="domestic_cylinders"
                                                         name="domestic_cylinders" placeholder="{{ _('e.g., 10') }}"
                                                         min="0" step="1">
-                                                    <small class="form-text text-muted">{{ _('Average price:
-                                                        ₹850/cylinder') }}</small>
+                                                    <small class="form-text text-muted">{{ _('Average price:') }} ₹{{ lpg_domestic_price|default(850)|int }}/{{ _('cylinder') }}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -326,8 +325,7 @@
                                                     <input type="number" class="form-control" id="commercial_cylinders"
                                                         name="commercial_cylinders" placeholder="{{ _('e.g., 5') }}"
                                                         min="0" step="1">
-                                                    <small class="form-text text-muted">{{ _('Average price:
-                                                        ₹1,800/cylinder') }}</small>
+                                                    <small class="form-text text-muted">{{ _('Average price:') }} ₹{{ lpg_commercial_price|default(1800)|int }}/{{ _('cylinder') }}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -386,7 +384,7 @@
                                             <label for="rate_per_scm" class="form-label">{{ _('Rate per SCM') }}
                                                 (₹)</label>
                                             <input type="number" class="form-control" id="rate_per_scm"
-                                                name="rate_per_scm" value="48" step="0.01">
+                                                name="rate_per_scm" value="{{ png_rate|default(48) }}" step="0.01">
                                         </div>
                                     </div>
                                 </div>
@@ -467,7 +465,7 @@
                                         <label for="biomass_cost_per_kg" class="form-label">{{ _('Cost per kg') }}
                                             (₹)</label>
                                         <input type="number" class="form-control" id="biomass_cost_per_kg"
-                                            name="biomass_cost_per_kg" value="5.0" step="0.1">
+                                            name="biomass_cost_per_kg" value="{{ biomass_cost_per_kg|default(5.0) }}" step="0.1">
                                     </div>
                                 </div>
 
