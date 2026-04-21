@@ -172,10 +172,13 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         logger.log_step("Calculating LPG consumption from refill data")
 
         refill_days = float(data.get('refill_days', 30))
-        # Priority: User input > database > fallback
+        # Priority: User input > session custom > database > fallback
         user_price = data.get('cylinder_price')
+        custom_prices = household_data.get('custom_fuel_prices', {})
         if user_price and float(user_price) > 0:
             cylinder_price = float(user_price)
+        elif custom_prices.get('LPG_unit_price'):
+            cylinder_price = float(custom_prices['LPG_unit_price'])
         else:
             lpg_price = db_helper.get_lpg_pricing(data.get('district', 'Thiruvananthapuram'), 'Domestic')
             cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
@@ -267,11 +270,15 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         png_input_method = data.get('png_input_method')
         logger.log_input("PNG Input Method", png_input_method)
 
-        # Get Domestic PNG rate from database (required).
-        png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
-        if not png_price_data:
-            raise ValueError("PNG pricing not found in database. Please ensure fuel_unit_pricing table has PNG data.")
-        png_rate = float(png_price_data['price_per_scm'])
+        # Get Domestic PNG rate: session custom > database (required).
+        custom_prices = household_data.get('custom_fuel_prices', {})
+        if custom_prices.get('PNG_unit_price'):
+            png_rate = float(custom_prices['PNG_unit_price'])
+        else:
+            png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
+            if not png_price_data:
+                raise ValueError("PNG pricing not found in database. Please ensure fuel_unit_pricing table has PNG data.")
+            png_rate = float(png_price_data['price_per_scm'])
         logger.log_input("PNG Rate (Domestic)", f"Rs {png_rate:.2f}/SCM")
 
         if png_input_method == 'bill':
@@ -342,9 +349,9 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         )
         result['monthly_cost'] = monthly_kwh * tariff
 
-        result['annual_emissions'] = calculate_co2_emissions(
-            monthly_kwh / 30, helper.EMISSION_FACTORS['Grid electricity']
-        )
+        _cef = household_data.get('custom_fuel_prices', {})
+        grid_ef = float(_cef['Grid_emission_factor']) if _cef.get('Grid_emission_factor') is not None else helper.EMISSION_FACTORS.get('Grid electricity', 0.65)
+        result['annual_emissions'] = calculate_co2_emissions(monthly_kwh / 30, grid_ef)
         logger.log_result("Annual CO₂ Emissions", result['annual_emissions'], "kg CO₂/year")
 
         result['fuel_details'] = {
@@ -372,7 +379,11 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
 
         # Biomass energy content and efficiency - load from database
         biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
-        biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
+        custom_prices = household_data.get('custom_fuel_prices', {})
+        if custom_prices.get('Biomass_unit_price'):
+            biomass_cost_per_kg = float(custom_prices['Biomass_unit_price'])
+        else:
+            biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
         efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
 
         logger.log_input("Biomass Energy Content", f"{biomass_energy_content} kWh/kg")
@@ -425,9 +436,13 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
             logger.log_step("Processing LPG in mixed mode")
             refill_days = float(data.get('mixed_refill_days', 45))
             cylinder_size = 14.2  # Default domestic cylinder
-            # Get price from database
-            lpg_price = db_helper.get_lpg_pricing(data.get('district', 'Thiruvananthapuram'), 'Domestic')
-            cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+            # Get price: session custom > database
+            custom_prices = household_data.get('custom_fuel_prices', {})
+            if custom_prices.get('LPG_unit_price'):
+                cylinder_price = float(custom_prices['LPG_unit_price'])
+            else:
+                lpg_price = db_helper.get_lpg_pricing(data.get('district', 'Thiruvananthapuram'), 'Domestic')
+                cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
 
             lpg_data = calculate_lpg_consumption_from_refill(refill_days, cylinder_size)
             efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)
@@ -456,10 +471,14 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         if data.get('mixed_use_png') in [True, 'true', 'on', '1', 1]:
             logger.log_step("Processing PNG in mixed mode")
             monthly_bill = float(data.get('mixed_monthly_bill_png', 500))
-            png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
-            if not png_price_data:
-                raise ValueError("PNG pricing not found in database. Please ensure fuel_unit_pricing table has PNG data.")
-            png_rate = float(png_price_data['price_per_scm'])
+            custom_prices = household_data.get('custom_fuel_prices', {})
+            if custom_prices.get('PNG_unit_price'):
+                png_rate = float(custom_prices['PNG_unit_price'])
+            else:
+                png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
+                if not png_price_data:
+                    raise ValueError("PNG pricing not found in database. Please ensure fuel_unit_pricing table has PNG data.")
+                png_rate = float(png_price_data['price_per_scm'])
             png_data = calculate_png_consumption_from_bill(monthly_bill, rate_per_scm=png_rate)
             efficiency = helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70)
 
@@ -492,7 +511,9 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
 
             energy = monthly_kwh * efficiency
             cost = monthly_kwh * tariff
-            emissions = calculate_co2_emissions(monthly_kwh / 30, helper.EMISSION_FACTORS['Grid electricity'])
+            _cef_m = household_data.get('custom_fuel_prices', {})
+            grid_ef_m = float(_cef_m['Grid_emission_factor']) if _cef_m.get('Grid_emission_factor') is not None else helper.EMISSION_FACTORS.get('Grid electricity', 0.65)
+            emissions = calculate_co2_emissions(monthly_kwh / 30, grid_ef_m)
 
             total_energy += energy
             total_cost += cost
@@ -516,7 +537,11 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
             monthly_kg = float(data.get('mixed_monthly_kg_biomass', 50))
 
             biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
-            biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
+            custom_prices = household_data.get('custom_fuel_prices', {})
+            if custom_prices.get('Biomass_unit_price'):
+                biomass_cost_per_kg = float(custom_prices['Biomass_unit_price'])
+            else:
+                biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
             efficiency = helper.DEFAULT_EFFICIENCIES.get('Traditional Solid Biomass', 0.55)
 
             monthly_energy_required = monthly_kg * biomass_energy_content
@@ -854,12 +879,23 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
         fuel_cost_per_kwh_dict[fuel] = cost_per_kwh
         logger.log_result(f"{fuel} - Cost per kWh", f"Rs {cost_per_kwh:.2f}/kWh", source)
 
+    # Build a custom emission-factors dict that respects the session Grid CO₂ override.
+    # calculate_fuel_emissions_and_costs defaults to helper.EMISSION_FACTORS (DB values)
+    # which ignores any session-level Grid_emission_factor override, so we patch it here.
+    _cef_db = household_data.get('custom_fuel_prices', {})
+    if _cef_db.get('Grid_emission_factor') is not None:
+        _custom_ef = dict(helper.EMISSION_FACTORS)
+        _custom_ef['Grid electricity'] = float(_cef_db['Grid_emission_factor'])
+    else:
+        _custom_ef = helper.EMISSION_FACTORS
+
     # Calculate using helper function
     logger.log_step("Calling calculate_fuel_emissions_and_costs() function")
     multi_fuel_results = calculate_fuel_emissions_and_costs(
         fuel_energy_dict,
         fuel_efficiency_dict,
-        fuel_cost_per_kwh_dict
+        fuel_cost_per_kwh_dict,
+        emission_factors=_custom_ef
     )
 
     logger.log_data("Multi-fuel calculation results", multi_fuel_results)

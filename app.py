@@ -316,9 +316,25 @@ def household_profile():
     default_electricity_rate = db_helper.get_system_parameter('ELECTRICITY_RESIDENTIAL_RATE', None)
     if not default_electricity_rate:
         default_electricity_rate = 6.50  # Log warning but allow fallback for UI
+
+    # Fetch default fuel unit prices for the collapsible override panel
+    district = household_data.get('district', 'Thiruvananthapuram')
+    lpg_price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Domestic')
+    png_price_data = db_helper.get_fuel_unit_price(district, 'PNG', 'Domestic')
+    biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Domestic')
+
+    default_fuel_prices = {
+        'LPG_unit_price': float(lpg_price_data.get('unit_price', 850)) if lpg_price_data else float(db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)),
+        'PNG_unit_price': float(png_price_data.get('unit_price', 54.0)) if png_price_data else float(db_helper.get_system_parameter('PNG_DOMESTIC_RATE', 54.0)),
+        'Electricity_unit_price': float(default_electricity_rate),
+        'Biomass_unit_price': float(biomass_price_data.get('unit_price', 5.0)) if biomass_price_data else float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)),
+        'Grid_emission_factor': float(helper.EMISSION_FACTORS.get('Grid electricity', 0.65))
+    }
+
     return render_template('household_profile.html', 
                           household_data=household_data,
-                          default_electricity_rate=default_electricity_rate)
+                          default_electricity_rate=default_electricity_rate,
+                          default_fuel_prices=default_fuel_prices)
 
 @app.route('/submit_household', methods=['POST'])
 def submit_household():
@@ -349,7 +365,32 @@ def submit_household():
             'solar_rooftop_area': float(data.get('solar_rooftop_area', 0) or 0),
             'consent_given': True if data.get('consent') == 'on' or data.get('consent') is True else False
         }
-        
+
+        # Parse custom fuel prices from collapsible override panel
+        custom_prices_str = data.get('custom_fuel_prices')
+        if custom_prices_str:
+            try:
+                custom_fuel_prices = json.loads(custom_prices_str)
+                household_data['custom_fuel_prices'] = custom_fuel_prices
+                # Set electricity_tariff from custom prices for backward compatibility
+                if 'Electricity_unit_price' in custom_fuel_prices:
+                    household_data['electricity_tariff'] = float(custom_fuel_prices['Electricity_unit_price'])
+            except Exception:
+                pass
+
+        # Belt-and-suspenders: also read fp_grid_ef directly from the form field.
+        # This covers the case where the JSON custom_fuel_prices chain fails silently
+        # (e.g. missing key, stale session, encoding edge case). The direct field
+        # value is authoritative — it's what the user actually typed.
+        _fp_grid_raw = data.get('fp_grid_ef')
+        if _fp_grid_raw is not None and str(_fp_grid_raw).strip() != '':
+            try:
+                _gef = float(_fp_grid_raw)
+                _cpf = household_data.setdefault('custom_fuel_prices', {})
+                _cpf['Grid_emission_factor'] = _gef
+            except (ValueError, TypeError):
+                pass
+
         # Save to database
         household_id = helper.save_household_data(household_data)
         
@@ -500,20 +541,46 @@ def energy_calculation():
     # Prevents dish-based values pre-filling consumption fields and vice-versa.
     _raw_energy = session.get('res_energy_data', {})
     energy_data = _raw_energy if _raw_energy.get('calculation_method') in ('consumption_based', 'dish_based') else {}
+
+    # Resolve prices: session custom overrides take priority over DB values
+    _custom = household_data.get('custom_fuel_prices', {})
+
+    # Electricity tariff — already stored in household_data from submit_household
     electricity_tariff = household_data.get('electricity_tariff') or db_helper.get_system_parameter('ELECTRICITY_RESIDENTIAL_RATE', 6.50)
-    png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
-    if not png_price_data:
-        # Log warning - database pricing missing
-        png_rate = db_helper.get_system_parameter('PNG_DOMESTIC_RATE', 54.0)
+
+    # PNG rate
+    if _custom.get('PNG_unit_price'):
+        png_rate = float(_custom['PNG_unit_price'])
     else:
-        png_rate = float(png_price_data['price_per_scm'])
-    lpg_price_data = db_helper.get_lpg_pricing(household_data.get('district', 'Thiruvananthapuram'), 'Domestic')
-    if not lpg_price_data:
-        # Fallback to system parameter
-        lpg_cylinder_price = db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+        png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
+        if not png_price_data:
+            png_rate = db_helper.get_system_parameter('PNG_DOMESTIC_RATE', 54.0)
+        else:
+            png_rate = float(png_price_data['price_per_scm'])
+
+    # LPG cylinder price
+    if _custom.get('LPG_unit_price'):
+        lpg_cylinder_price = float(_custom['LPG_unit_price'])
     else:
-        lpg_cylinder_price = float(lpg_price_data.get('subsidized_price', lpg_price_data.get('non_subsidized_price', 850)))
-    
+        lpg_price_data = db_helper.get_lpg_pricing(household_data.get('district', 'Thiruvananthapuram'), 'Domestic')
+        if not lpg_price_data:
+            lpg_cylinder_price = db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+        else:
+            lpg_cylinder_price = float(lpg_price_data.get('subsidized_price', lpg_price_data.get('non_subsidized_price', 850)))
+
+    # Biomass cost per kg
+    if _custom.get('Biomass_unit_price'):
+        biomass_cost_per_kg_val = float(_custom['Biomass_unit_price'])
+    else:
+        biomass_cost_per_kg_val = db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
+
+    # Grid emission factor: session custom > DB (only affects CO₂ display on this page)
+    # Use 'is not None' so that a user-entered 0 (zero-carbon grid) is honoured, not treated as falsy.
+    if _custom.get('Grid_emission_factor') is not None:
+        grid_ef_val = float(_custom['Grid_emission_factor'])
+    else:
+        grid_ef_val = helper.EMISSION_FACTORS.get('Grid electricity', 0.65)
+
     return render_template('energy_calculation.html', 
                           dishes_by_category=dishes_by_category,
                           dish_data=dish_data,
@@ -534,8 +601,8 @@ def energy_calculation():
                           lpg_cylinder_weight=helper.LPG_CYLINDER_WEIGHT,
                           png_calorific_value=helper.PNG_CALORIFIC_VALUE,
                           biomass_energy_content=db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5),
-                          biomass_cost_per_kg=db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0),
-                          grid_emission_factor=helper.EMISSION_FACTORS.get('Grid electricity', 0.65),
+                          biomass_cost_per_kg=biomass_cost_per_kg_val,
+                          grid_emission_factor=grid_ef_val,
                           grid_emission_adjustment=db_helper.get_system_parameter('GRID_EMISSION_ADJUSTMENT_FACTOR', 0.9),
                           household_data=household_data)
 
@@ -860,11 +927,25 @@ def commercial_selection():
         
         # Get default electricity rate from database
         default_electricity_rate = db_helper.get_system_parameter('ELECTRICITY_COMMERCIAL_RATE', 9.50)
-        
+
+        # Fetch default fuel unit prices for the collapsible override panel
+        lpg_price_data = db_helper.get_fuel_unit_price('Thiruvananthapuram', 'LPG', 'Commercial')
+        png_price_data = db_helper.get_fuel_unit_price('All', 'PNG', 'Commercial')
+        biomass_price_data = db_helper.get_fuel_unit_price('Thiruvananthapuram', 'Traditional Solid Biomass', 'Commercial')
+
+        default_fuel_prices = {
+            'LPG_unit_price': float(lpg_price_data.get('unit_price', 1850)) if lpg_price_data else float(db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1850)),
+            'PNG_unit_price': float(png_price_data.get('unit_price', 48.0)) if png_price_data else float(db_helper.get_system_parameter('PNG_COMMERCIAL_RATE', 48.0)),
+            'Electricity_unit_price': float(default_electricity_rate),
+            'Biomass_unit_price': float(biomass_price_data.get('unit_price', 5.0)) if biomass_price_data else float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 6.0)),
+            'Grid_emission_factor': float(helper.EMISSION_FACTORS.get('Grid electricity', 0.65))
+        }
+
         return render_template('commercial_selection.html',
                              institutions=institutions,
                              districts=districts,
-                             default_electricity_rate=default_electricity_rate)
+                             default_electricity_rate=default_electricity_rate,
+                             default_fuel_prices=default_fuel_prices)
     except Exception as e:
         logger = get_logger()
         logger.log_error(f"Error in commercial_selection: {e}")
@@ -895,7 +976,29 @@ def commercial_institution_profile():
             'available_roof_area': float(request.form.get('available_roof_area') or 0),  # NEW
             'budget': request.form.get('budget', '')  # NEW
         }
-        
+
+        # Parse custom fuel prices from collapsible override panel
+        custom_prices_str = request.form.get('custom_fuel_prices')
+        if custom_prices_str:
+            try:
+                custom_fuel_prices = json.loads(custom_prices_str)
+                institution_data['custom_fuel_prices'] = custom_fuel_prices
+                # Set electricity_tariff from custom prices for backward compatibility
+                if 'Electricity_unit_price' in custom_fuel_prices:
+                    institution_data['electricity_tariff'] = float(custom_fuel_prices['Electricity_unit_price'])
+            except Exception:
+                pass
+
+        # Belt-and-suspenders: also read fp_grid_ef directly (commercial form uses request.form)
+        _fp_grid_raw_c = request.form.get('fp_grid_ef')
+        if _fp_grid_raw_c is not None and str(_fp_grid_raw_c).strip() != '':
+            try:
+                _gef_c = float(_fp_grid_raw_c)
+                _cpf_c = institution_data.setdefault('custom_fuel_prices', {})
+                _cpf_c['Grid_emission_factor'] = _gef_c
+            except (ValueError, TypeError):
+                pass
+
         if not institution_data['institution_type'] or not institution_data['institution_name']:
             flash('Please provide institution type and name', 'error')
             return redirect(url_for('commercial_selection'))
@@ -937,12 +1040,8 @@ def commercial_kitchen_profile():
                 'risk_icon': helper.RISK_STYLES[data['risk']]['icon']
             })
         
-        institution_data = session.get('institution_data', {})
-        default_electricity_rate = institution_data.get('electricity_tariff') or db_helper.get_system_parameter('ELECTRICITY_COMMERCIAL_RATE', 9.50)
-        
         return render_template('commercial_kitchen_profile.html',
-                             scenarios=scenarios,
-                             default_electricity_rate=default_electricity_rate)
+                             scenarios=scenarios)
     except Exception as e:
         logger = get_logger()
         logger.log_error(f"Error in commercial_kitchen_profile: {e}")
@@ -974,7 +1073,9 @@ def commercial_submit_kitchen():
             'kitchen_scenario': data.get('kitchen_scenario'),  # NEW: single scenario field
             'cooking_hours_daily': float(data.get('cooking_hours_daily', 6)),
             'staff_exposed': int(data.get('staff_exposed', 2)),
-            'electricity_tariff': float(data.get('electricity_tariff') or db_helper.get_system_parameter('ELECTRICITY_COMMERCIAL_RATE', 9.50)),
+            # Inherit electricity_tariff from institution_data (set via Fuel Price Overrides in step 1)
+            # so the custom override is never silently discarded here.
+            'electricity_tariff': float(institution_data.get('electricity_tariff') or db_helper.get_system_parameter('ELECTRICITY_COMMERCIAL_RATE', 9.50)),
             # Keep old fields for backward compatibility
             'kitchen_type': data.get('kitchen_scenario', ''),
             'ventilation_quality': 'Average',
@@ -1118,6 +1219,42 @@ def commercial_energy_calculation():
 
         conn.close()
 
+        # Resolve commercial fuel prices: session custom > DB > fallback
+        _custom_c = institution_data.get('custom_fuel_prices', {})
+
+        if _custom_c.get('PNG_unit_price'):
+            com_png_rate = float(_custom_c['PNG_unit_price'])
+        else:
+            _png_data = db_helper.get_png_pricing(
+                district=institution_data.get('district', 'All'), category='Commercial')
+            com_png_rate = float(_png_data['price_per_scm']) if _png_data else float(
+                db_helper.get_system_parameter('PNG_COMMERCIAL_RATE', 48.0))
+
+        if _custom_c.get('Biomass_unit_price'):
+            com_biomass_cost = float(_custom_c['Biomass_unit_price'])
+        else:
+            _bio_data = db_helper.get_fuel_unit_price(
+                institution_data.get('district', 'Thiruvananthapuram'),
+                'Traditional Solid Biomass', 'Commercial')
+            com_biomass_cost = float(
+                _bio_data['unit_price'] if _bio_data and _bio_data.get('unit_price') is not None
+                else db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
+
+        # LPG prices for display labels (domestic 14.2 kg and commercial 19 kg)
+        _custom_lpg = _custom_c.get('LPG_unit_price')
+        if _custom_lpg:
+            com_lpg_domestic_price = float(_custom_lpg)
+            com_lpg_commercial_price = float(_custom_lpg)
+        else:
+            _lpg_dom_data = db_helper.get_fuel_unit_price(
+                institution_data.get('district', 'Thiruvananthapuram'), 'LPG', 'Domestic')
+            com_lpg_domestic_price = float(_lpg_dom_data.get('unit_price', 850)) if _lpg_dom_data else float(
+                db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850))
+            _lpg_com_data = db_helper.get_fuel_unit_price(
+                institution_data.get('district', 'Thiruvananthapuram'), 'LPG', 'Commercial')
+            com_lpg_commercial_price = float(_lpg_com_data.get('unit_price', 1800)) if _lpg_com_data else float(
+                db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1800))
+
         logger.log_step(f"DEBUG: dishes_available = True")
         logger.log_step("DEBUG: Rendering template: commercial_energy_calculation.html")
 
@@ -1126,7 +1263,11 @@ def commercial_energy_calculation():
                              dish_data=dish_data,
                              all_fuels=all_fuels,
                              fuel_label_map=fuel_label_map,
-                             dishes_available=True)
+                             dishes_available=True,
+                             png_rate=com_png_rate,
+                             biomass_cost_per_kg=com_biomass_cost,
+                             lpg_domestic_price=com_lpg_domestic_price,
+                             lpg_commercial_price=com_lpg_commercial_price)
     
     except Exception as e:
         logger.log_error(f"Error loading commercial energy calculation: {e}")

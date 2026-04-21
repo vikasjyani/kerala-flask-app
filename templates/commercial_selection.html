@@ -216,17 +216,6 @@
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="electricity_tariff" class="form-label">
-                                        {{ _('Electricity Rate') }} (₹/kWh)
-                                    </label>
-                                    <input type="number" step="0.01" class="form-control" id="electricity_tariff"
-                                        name="electricity_tariff" value="{{ default_electricity_rate or 9.50 }}"
-                                        placeholder="9.50">
-                                    <div class="form-text">{{ _('Check your electricity bill for accurate rate') }}
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
                                     <label for="budget" class="form-label">{{ _('Budget Priority') }}</label>
                                     <select class="form-select" id="budget" name="budget">
                                         <option value="">{{ _('Not specified') }}</option>
@@ -256,6 +245,79 @@
                                     <input type="number" class="form-control" id="available_roof_area"
                                         name="available_roof_area" placeholder="100" min="10">
                                     <div class="form-text">{{ _('Minimum 10 m² required') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden field: serialised custom fuel prices (populated by JS on submit) -->
+                    <input type="hidden" name="custom_fuel_prices" id="custom_fuel_prices_input">
+
+                    <!-- Fuel Price Overrides (collapsible) -->
+                    <div class="mb-3 text-end">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="fuelPriceToggle"
+                            title="{{ _('Adjust fuel prices for this session') }}">
+                            <i class="bi bi-currency-rupee me-1"></i>{{ _('Fuel Price Overrides') }}
+                            <i class="bi bi-chevron-down ms-1" id="fuelPriceChevron"></i>
+                        </button>
+                    </div>
+
+                    <div id="fuelPricePanel" class="card shadow-green fade-in-up mb-4 d-none">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-green mb-1">
+                                <i class="bi bi-currency-rupee me-2"></i>{{ _('Fuel Price Overrides') }}
+                            </h5>
+                            <p class="text-muted small mb-3">{{ _('Optional — defaults are loaded from the database.
+                                Changes apply only to this session.') }}</p>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="fp_lpg" class="form-label">{{ _('LPG Cylinder Price') }} (₹)</label>
+                                    <input type="number" class="form-control" id="fp_lpg" name="fp_lpg" min="100"
+                                        max="10000" step="0.5"
+                                        value="{{ default_fuel_prices.LPG_unit_price | default(1810.5) }}"
+                                        placeholder="{{ default_fuel_prices.LPG_unit_price | default(1810.5) }}">
+                                    <div class="form-text">{{ _('Price per 19 kg commercial cylinder') }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="fp_png" class="form-label">{{ _('PNG Rate') }} (₹/SCM)</label>
+                                    <input type="number" class="form-control" id="fp_png" name="fp_png" min="10"
+                                        max="500" step="0.1"
+                                        value="{{ default_fuel_prices.PNG_unit_price | default(85) }}"
+                                        placeholder="{{ default_fuel_prices.PNG_unit_price | default(85) }}">
+                                    <div class="form-text">{{ _('Rate per standard cubic metre') }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="fp_electricity" class="form-label">{{ _('Electricity Tariff') }}
+                                        (₹/kWh)</label>
+                                    <input type="number" class="form-control" id="fp_electricity" name="fp_electricity"
+                                        min="1" max="30" step="0.01"
+                                        value="{{ default_fuel_prices.Electricity_unit_price | default(9.5) }}"
+                                        placeholder="{{ default_fuel_prices.Electricity_unit_price | default(9.5) }}">
+                                    <div class="form-text">{{ _('Check your electricity bill for accurate rate') }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="fp_biomass" class="form-label">{{ _('Biomass Cost') }} (₹/kg)</label>
+                                    <input type="number" class="form-control" id="fp_biomass" name="fp_biomass" min="0"
+                                        max="100" step="0.5"
+                                        value="{{ default_fuel_prices.Biomass_unit_price | default(5) }}"
+                                        placeholder="{{ default_fuel_prices.Biomass_unit_price | default(5) }}">
+                                    <div class="form-text">{{ _('Average cost per kg of firewood/biomass') }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="fp_grid_ef" class="form-label">{{ _('Grid CO₂ Factor') }} (kg
+                                        CO₂/kWh)</label>
+                                    <input type="number" class="form-control" id="fp_grid_ef" name="fp_grid_ef" min="0"
+                                        max="1.0" step="0.01"
+                                        value="{{ default_fuel_prices.Grid_emission_factor | default(0.65) }}"
+                                        placeholder="{{ default_fuel_prices.Grid_emission_factor | default(0.65) }}">
+                                    <div class="form-text">{{ _('Kerala grid CO₂ intensity — affects emission
+                                        estimates') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -340,6 +402,20 @@
         });
     });
 
+    // Collapsible fuel price panel toggle
+    const fuelPriceToggle = document.getElementById('fuelPriceToggle');
+    const fuelPricePanel = document.getElementById('fuelPricePanel');
+    const fuelPriceChevron = document.getElementById('fuelPriceChevron');
+
+    if (fuelPriceToggle) {
+        fuelPriceToggle.addEventListener('click', function () {
+            const isHidden = fuelPricePanel.classList.contains('d-none');
+            fuelPricePanel.classList.toggle('d-none', !isHidden);
+            fuelPriceChevron.classList.toggle('bi-chevron-down', !isHidden);
+            fuelPriceChevron.classList.toggle('bi-chevron-up', isHidden);
+        });
+    }
+
     // Form submission
     form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -350,15 +426,28 @@
             return;
         }
 
-        // Submit the form — reset unsaved-changes flag before programmatic submit
-        // so main.js's beforeunload handler does not show "Leave site?" dialog.
-        console.log('DEBUG: Submitting institution form', {
-            institution_type: form.querySelector('input[name="institution_type"]:checked')?.value
-        });
-        if (typeof window.markFormSubmitting === 'function') {
-            window.markFormSubmitting();
-        }
-        form.submit();
+        // Serialise fuel price overrides into hidden JSON field.
+        // Always send defaults so electricity_tariff is always set server-side.
+        const customFuelPrices = {
+            LPG_unit_price: parseFloat(document.getElementById('fp_lpg')?.value) || {{ default_fuel_prices.LPG_unit_price | default (1810.5)
+    }},
+        PNG_unit_price: parseFloat(document.getElementById('fp_png')?.value) || {{ default_fuel_prices.PNG_unit_price | default(85) }},
+        Electricity_unit_price: parseFloat(document.getElementById('fp_electricity')?.value) || {{ default_fuel_prices.Electricity_unit_price | default(9.5) }},
+        Biomass_unit_price: parseFloat(document.getElementById('fp_biomass')?.value) || {{ default_fuel_prices.Biomass_unit_price | default(5) }},
+        Grid_emission_factor: (function(){ const v = parseFloat(document.getElementById('fp_grid_ef')?.value); return !isNaN(v) ? v : {{ default_fuel_prices.Grid_emission_factor | default(0.65) }}; })()
+        };
+    document.getElementById('custom_fuel_prices_input').value = JSON.stringify(customFuelPrices);
+
+    // Submit the form — reset unsaved-changes flag before programmatic submit
+    // so main.js's beforeunload handler does not show "Leave site?" dialog.
+    console.log('DEBUG: Submitting institution form', {
+        institution_type: form.querySelector('input[name="institution_type"]:checked')?.value,
+        customFuelPrices
+    });
+    if (typeof window.markFormSubmitting === 'function') {
+        window.markFormSubmitting();
+    }
+    form.submit();
     });
     });
 

@@ -48,6 +48,9 @@ class FuelCostCalculator:
         
         # Zero-cost fuels (no variable fuel cost, capital costs handled separately)
         self.ZERO_COST_FUELS = ['Biogas', 'Solar rooftop', 'Solar + BESS']
+        
+        # Session-specific custom fuel price overrides
+        self.custom_prices = self.entity_data.get('custom_fuel_prices', {}) if self.entity_data else {}
     
     def get_cost_per_kwh(self, fuel_name: str, user_input_cost: Optional[float] = None,
                          energy_required: Optional[float] = None) -> Tuple[float, str]:
@@ -139,129 +142,119 @@ class FuelCostCalculator:
     def _calculate_lpg_cost_from_db(self) -> Optional[float]:
         """Calculate LPG cost per kWh from database pricing."""
         category = 'Commercial' if self.is_commercial else 'Domestic'
-        
-        # Get pricing from database using new consolidated method
-        # Returns: {'unit_price': ..., 'unit_name': ...}
-        pricing = self.db.get_fuel_unit_price(self.district, 'LPG', category)
-        
-        if pricing:
-            # Determine which price to use
+
+        # ── Step 1: resolve unit price (custom override OR database) ──────────
+        custom_lpg = self.custom_prices.get('LPG_unit_price')
+        if custom_lpg is not None and float(custom_lpg) > 0:
+            unit_price = float(custom_lpg)
+            self.logger.log_result("LPG Price Override", f"Using session custom price ₹{unit_price}")
+        else:
+            pricing = self.db.get_fuel_unit_price(self.district, 'LPG', category)
+            if not pricing:
+                return None
             unit_price = pricing['unit_price']
-            
-            # If domestic, check for subsidy eligibility
+
+            # Domestic subsidy eligibility check
             if category == 'Domestic':
-                # Check income threshold
                 try:
                     income_threshold = float(self.db.get_system_parameter('SUBSIDY_INCOME_THRESHOLD', 50000))
-                    household_income = float(self.household_data.get('monthly_income', 999999)) # Default high if missing
-                    
+                    household_income = float(self.household_data.get('monthly_income', 999999))
                     if household_income < income_threshold:
-                        # Eligible for subsidy
                         subsidized_price = float(pricing.get('subsidized_unit_price', 0))
                         if subsidized_price > 0:
                             unit_price = subsidized_price
                             self.logger.log_result("Subsidy Applied", f"Income {household_income} < {income_threshold}")
-                except Exception as e:
+                except Exception:
                     pass
 
-            # Get parameters from system_parameters
-            try:
-                # Determine weight based on pricing category implicitly or defaulting
-                # Typically Domestic=14.2kg, Commercial=19.0kg
-                weight_param = 'LPG_COMMERCIAL_CYLINDER_WEIGHT_KG' if category == 'Commercial' else 'LPG_DOMESTIC_CYLINDER_WEIGHT_KG'
-                default_weight = 19.0 if category == 'Commercial' else 14.2
-                
-                cylinder_weight = float(self.db.get_system_parameter(weight_param, default_weight))
-                calorific_value = float(self.db.get_system_parameter('LPG_CALORIFIC_VALUE_KWH_PER_KG', 12.8))
-            except Exception as e:
-                self.logger.log_error(f"Error fetching LPG params: {e}")
-                cylinder_weight = 14.2 
-                calorific_value = 12.8
-            
-            # Calculate cost per kWh
-            energy_per_cylinder = cylinder_weight * calorific_value
-            if energy_per_cylinder > 0:
-                cost_per_kwh = unit_price / energy_per_cylinder
-                
-                self.logger.log_calculation(
-                    "LPG Cost from DB",
-                    "unit_price / (weight × calorific_value)",
-                    {
-                        "category": category,
-                        "unit_price": f"₹{unit_price}",
-                        "weight": f"{cylinder_weight} kg",
-                        "calorific_value": f"{calorific_value} kWh/kg",
-                        "energy_per_cylinder": f"{energy_per_cylinder} kWh"
-                    },
-                    f"₹{cost_per_kwh:.2f}/kWh"
-                )
-                return cost_per_kwh
-            
+        # ── Step 2: convert unit price → cost per kWh (runs for BOTH paths) ──
+        try:
+            weight_param = 'LPG_COMMERCIAL_CYLINDER_WEIGHT_KG' if category == 'Commercial' else 'LPG_DOMESTIC_CYLINDER_WEIGHT_KG'
+            default_weight = 19.0 if category == 'Commercial' else 14.2
+            cylinder_weight = float(self.db.get_system_parameter(weight_param, default_weight))
+            calorific_value = float(self.db.get_system_parameter('LPG_CALORIFIC_VALUE_KWH_PER_KG', 12.8))
+        except Exception as e:
+            self.logger.log_error(f"Error fetching LPG params: {e}")
+            cylinder_weight = 14.2
+            calorific_value = 12.8
+
+        energy_per_cylinder = cylinder_weight * calorific_value
+        if energy_per_cylinder > 0:
+            cost_per_kwh = unit_price / energy_per_cylinder
+            self.logger.log_calculation(
+                "LPG Cost per kWh",
+                "unit_price / (weight × calorific_value)",
+                {
+                    "category": category,
+                    "unit_price": f"₹{unit_price}",
+                    "weight": f"{cylinder_weight} kg",
+                    "calorific_value": f"{calorific_value} kWh/kg",
+                    "energy_per_cylinder": f"{energy_per_cylinder} kWh"
+                },
+                f"₹{cost_per_kwh:.2f}/kWh"
+            )
+            return cost_per_kwh
+
         return None
     
     def _calculate_png_cost_from_db(self, energy_required: Optional[float] = None) -> Optional[float]:
         """Calculate PNG cost per kWh from database pricing."""
         category = 'Commercial' if self.is_commercial else 'Domestic'
-        
-        # Get PNG pricing 
-        # PNG might be district specific in new DB, or 'All'
-        # Try district first, then fall back? 
-        # Our migration populated per district, so district should work.
-        pricing = self.db.get_fuel_unit_price(self.district, 'PNG', category)
-        
-        if pricing:
+
+        # ── Step 1: resolve rate per SCM (custom override OR database) ────────
+        custom_png = self.custom_prices.get('PNG_unit_price')
+        if custom_png is not None and float(custom_png) > 0:
+            rate_per_scm = float(custom_png)
+            self.logger.log_result("PNG Price Override", f"Using session custom rate ₹{rate_per_scm}/SCM")
+        else:
+            pricing = self.db.get_fuel_unit_price(self.district, 'PNG', category)
+            if not pricing:
+                return None
             rate_per_scm = pricing['unit_price']
-            
-            # Get calorific value
-            try:
-                calorific_value = float(self.db.get_system_parameter('PNG_CALORIFIC_VALUE_KWH_PER_SCM', 10.2))
-            except:
-                calorific_value = 10.2
-            
-            # Calculate base cost per kWh (variable cost only)
-            if calorific_value > 0:
-                base_cost_per_kwh = rate_per_scm / calorific_value
-                
-                # Add fixed charges if we know the energy requirement
-                if energy_required and energy_required > 0:
-                    # Get fixed charges
-                    try:
-                        fixed_charge = float(self.db.get_system_parameter('PNG_FIXED_CHARGE_MONTHLY', 0)) # Defaulting 0 if not set
-                        meter_rent = float(self.db.get_system_parameter('PNG_METER_RENT_MONTHLY', 0))
-                        total_fixed = fixed_charge + meter_rent
-                    except:
-                        total_fixed = 0
-                    
-                    # Add fixed charges to cost per kWh
-                    cost_per_kwh = base_cost_per_kwh + (total_fixed / energy_required)
-                    
-                    self.logger.log_calculation(
-                        "PNG Cost from DB (with fixed charges)",
-                        "rate/calorific_value + fixed_charges/energy",
-                        {
-                            "rate_per_scm": f"₹{rate_per_scm}",
-                            "calorific_value": f"{calorific_value} kWh/SCM",
-                            "fixed_charges": f"₹{total_fixed}",
-                            "energy_required": f"{energy_required} kWh"
-                        },
-                        f"₹{cost_per_kwh:.2f}/kWh"
-                    )
-                else:
-                    # Without energy requirement, use base cost
-                    cost_per_kwh = base_cost_per_kwh
-                    
-                    self.logger.log_calculation(
-                        "PNG Cost from DB (variable only)",
-                        "rate/calorific_value",
-                        {
-                            "rate_per_scm": f"₹{rate_per_scm}",
-                            "calorific_value": f"{calorific_value} kWh/SCM"
-                        },
-                        f"₹{cost_per_kwh:.2f}/kWh"
-                    )
-                
-                return cost_per_kwh
-        
+
+        # ── Step 2: convert rate → cost per kWh (runs for BOTH paths) ─────────
+        try:
+            calorific_value = float(self.db.get_system_parameter('PNG_CALORIFIC_VALUE_KWH_PER_SCM', 10.2))
+        except Exception:
+            calorific_value = 10.2
+
+        if calorific_value > 0:
+            base_cost_per_kwh = rate_per_scm / calorific_value
+
+            if energy_required and energy_required > 0:
+                try:
+                    fixed_charge = float(self.db.get_system_parameter('PNG_FIXED_CHARGE_MONTHLY', 0))
+                    meter_rent = float(self.db.get_system_parameter('PNG_METER_RENT_MONTHLY', 0))
+                    total_fixed = fixed_charge + meter_rent
+                except Exception:
+                    total_fixed = 0
+
+                cost_per_kwh = base_cost_per_kwh + (total_fixed / energy_required)
+                self.logger.log_calculation(
+                    "PNG Cost per kWh (with fixed charges)",
+                    "rate/calorific_value + fixed_charges/energy",
+                    {
+                        "rate_per_scm": f"₹{rate_per_scm}",
+                        "calorific_value": f"{calorific_value} kWh/SCM",
+                        "fixed_charges": f"₹{total_fixed}",
+                        "energy_required": f"{energy_required} kWh"
+                    },
+                    f"₹{cost_per_kwh:.2f}/kWh"
+                )
+            else:
+                cost_per_kwh = base_cost_per_kwh
+                self.logger.log_calculation(
+                    "PNG Cost per kWh (variable only)",
+                    "rate/calorific_value",
+                    {
+                        "rate_per_scm": f"₹{rate_per_scm}",
+                        "calorific_value": f"{calorific_value} kWh/SCM"
+                    },
+                    f"₹{cost_per_kwh:.2f}/kWh"
+                )
+
+            return cost_per_kwh
+
         return None
     
     def _get_electricity_tariff_from_db(self) -> Optional[float]:
@@ -344,29 +337,33 @@ class FuelCostCalculator:
         """Calculate biomass cost per kWh from database pricing."""
         category = 'Commercial' if self.is_commercial else 'Domestic'
         
-        # Determine specific fuel name (Traditional vs Improved)
-        # Assuming generic 'Traditional Solid Biomass' for base price lookup if specific not found?
-        # Actually our DB has entries for both potentially.
-        # Let's try 'Traditional Solid Biomass' as the base commodity (Firewood) price
-        
-        pricing = self.db.get_fuel_unit_price(self.district, 'Traditional Solid Biomass', category)
-        
-        if pricing:
-            cost_per_kg = pricing['unit_price']
-            
-            # Get energy content
+        # Check for session-specific custom override first
+        custom_biomass = self.custom_prices.get('Biomass_unit_price')
+        if custom_biomass is not None and float(custom_biomass) > 0:
+            cost_per_kg = float(custom_biomass)
+            self.logger.log_result("Biomass Price Override", f"Using session custom price ₹{cost_per_kg}/kg")
             try:
                 energy_content = float(self.db.get_system_parameter('BIOMASS_ENERGY_CONTENT_KWH_PER_KG', 4.5))
             except:
                 energy_content = 4.5
         else:
-            # Fallback to system defaults if no regional price
-            try:
-                cost_per_kg = float(self.db.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
-                energy_content = float(self.db.get_system_parameter('BIOMASS_ENERGY_CONTENT_KWH_PER_KG', 4.5))
-            except:
-                cost_per_kg = 5.0
-                energy_content = 4.5
+            # Determine specific fuel name (Traditional vs Improved)
+            pricing = self.db.get_fuel_unit_price(self.district, 'Traditional Solid Biomass', category)
+            
+            if pricing:
+                cost_per_kg = pricing['unit_price']
+                try:
+                    energy_content = float(self.db.get_system_parameter('BIOMASS_ENERGY_CONTENT_KWH_PER_KG', 4.5))
+                except:
+                    energy_content = 4.5
+            else:
+                # Fallback to system defaults if no regional price
+                try:
+                    cost_per_kg = float(self.db.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
+                    energy_content = float(self.db.get_system_parameter('BIOMASS_ENERGY_CONTENT_KWH_PER_KG', 4.5))
+                except:
+                    cost_per_kg = 5.0
+                    energy_content = 4.5
         
         if energy_content > 0:
             cost_per_kwh = cost_per_kg / energy_content
