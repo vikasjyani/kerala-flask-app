@@ -2219,7 +2219,7 @@ msgstr "Go Back"
 
 #: templates/error.html:65
 msgid "Start Analysis"
-msgstr "Start Analysing"
+msgstr "Start Analysis"
 
 #: templates/error.html:74
 msgid "Quick Links"
@@ -2482,11 +2482,11 @@ msgstr "Your anonymised data helps improve clean cooking energy policies in Kera
 
 #: templates/feedback_success.html:33
 msgid "You can start a new analysis to explore more scenarios"
-msgstr "You may commence a new assessment to explore additional scenarios"
+msgstr "You can start a new analysis to explore more scenarios"
 
 #: templates/feedback_success.html:40
 msgid "Start New Analysis"
-msgstr "Commence New Assessment"
+msgstr "Start New Analysis"
 
 #: templates/feedback_success.html:51
 msgid ""
@@ -2790,7 +2790,7 @@ msgstr ""
 
 #: templates/index.html:27
 msgid "Start Analysing"
-msgstr "Start Analysing"
+msgstr "Start Analysis"
 
 #: templates/index.html:34
 msgid "Districts Analysed"
