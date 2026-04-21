@@ -182,11 +182,11 @@ msgstr "Joules"
 #: templates/commercial_analysis.html:527
 #: templates/commercial_analysis.html:567
 msgid "Monthly Cost"
-msgstr "Monthly Expenditure (₹)"
+msgstr "Monthly Expenditure "
 
 #: templates/analysis.html:48 templates/commercial_analysis.html:133
 msgid "Annual Emission"
-msgstr "Annual Carbon Emission (kg CO₂)"
+msgstr "Annual Carbon Emission"
 
 #: templates/analysis.html:86 templates/commercial_analysis.html:199
 msgid "Total"
@@ -852,8 +852,8 @@ msgid "Retry"
 msgstr "Retry"
 
 #: templates/commercial_analysis.html:985
-msgid "Monthly Cost (₹)"
-msgstr "Monthly Expenditure (₹)"
+msgid "Monthly Cost"
+msgstr "Monthly Expenditure"
 
 #: templates/commercial_analysis.html:1013
 msgid "Saves"
@@ -2012,8 +2012,8 @@ msgid "Cylinders/month"
 msgstr "Cylinders/month"
 
 #: templates/energy_calculation.html:323 templates/energy_calculation.html:451
-msgid "Monthly cost (₹)"
-msgstr "Monthly expenditure (₹)"
+msgid "Monthly cost"
+msgstr "Monthly expenditure"
 
 #: templates/energy_calculation.html:332
 msgid ""
@@ -2043,8 +2043,8 @@ msgid "Monthly SCM"
 msgstr "Monthly SCM"
 
 #: templates/energy_calculation.html:410
-msgid "Monthly bill (₹)"
-msgstr "Monthly bill (₹)"
+msgid "Monthly bill"
+msgstr "Monthly bill"
 
 #: templates/energy_calculation.html:416
 msgid "Avg rate (₹/SCM)"
@@ -2219,7 +2219,7 @@ msgstr "Go Back"
 
 #: templates/error.html:65
 msgid "Start Analysis"
-msgstr "Commence Assessment"
+msgstr "Start Analysing"
 
 #: templates/error.html:74
 msgid "Quick Links"
@@ -2790,7 +2790,7 @@ msgstr ""
 
 #: templates/index.html:27
 msgid "Start Analysing"
-msgstr "Commence Assessment"
+msgstr "Start Analysing"
 
 #: templates/index.html:34
 msgid "Districts Analysed"

@@ -291,7 +291,7 @@
                                     <label for="cylinder_price" class="form-label">{{ _('Price of a Cylinder') }}
                                         (₹)</label>
                                     <input type="number" class="form-control" id="cylinder_price" min="200" max="1500"
-                                        value="850">
+                                        value="{{ lpg_cylinder_price|default(850) }}">
 
                                 </div>
                             </div>
@@ -319,7 +319,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="metric-card small">
-                                            <div class="metric-value" id="lpg-monthly-cost">850</div>
+                                            <div class="metric-value" id="lpg-monthly-cost">{{ lpg_cylinder_price|default(850) }}</div>
                                             <div class="metric-label">{{ _('Monthly cost (₹)') }}</div>
                                         </div>
                                     </div>
@@ -1154,7 +1154,10 @@
             'Content-Type': 'application/json',
             'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
         },
-        body: JSON.stringify({ monthly_bill: monthlyBill }),
+        body: JSON.stringify({
+            monthly_bill: monthlyBill,
+            rate: {{ png_rate|default(54.0) }}   // pass session-overridden rate so API doesn't fall back to DB
+        }),
     })
         .then(response => response.json())
         .then(data => {
