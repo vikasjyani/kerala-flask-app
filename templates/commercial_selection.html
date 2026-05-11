@@ -268,8 +268,8 @@
                                     <label for="fp_lpg" class="form-label">{{ _('LPG Cylinder Price') }} (₹)</label>
                                     <input type="number" class="form-control" id="fp_lpg" name="fp_lpg" min="100"
                                         max="10000" step="0.5"
-                                        value="{{ default_fuel_prices.LPG_unit_price | default(1810.5) }}"
-                                        placeholder="{{ default_fuel_prices.LPG_unit_price | default(1810.5) }}">
+                                        value="{{ default_fuel_prices.LPG_unit_price | default(3106) }}"
+                                        placeholder="{{ default_fuel_prices.LPG_unit_price | default(3106) }}">
                                     <div class="form-text">{{ _('Price per 19 kg commercial cylinder') }}</div>
                                 </div>
 
@@ -408,12 +408,11 @@
         // Serialise fuel price overrides into hidden JSON field.
         // Always send defaults so electricity_tariff is always set server-side.
         const customFuelPrices = {
-            LPG_unit_price: parseFloat(document.getElementById('fp_lpg')?.value) || {{ default_fuel_prices.LPG_unit_price | default (1810.5)
-    }},
-        PNG_unit_price: parseFloat(document.getElementById('fp_png')?.value) || {{ default_fuel_prices.PNG_unit_price | default(85) }},
-        Electricity_unit_price: parseFloat(document.getElementById('fp_electricity')?.value) || {{ default_fuel_prices.Electricity_unit_price | default(9.5) }},
-        Biomass_unit_price: parseFloat(document.getElementById('fp_biomass')?.value) || {{ default_fuel_prices.Biomass_unit_price | default(5) }},
-        Grid_emission_factor: (function () { const v = parseFloat(document.getElementById('fp_grid_ef')?.value); return !isNaN(v) ? v : {{ default_fuel_prices.Grid_emission_factor | default (0.65) } }; }) ()
+            LPG_unit_price: parseFloat(document.getElementById('fp_lpg')?.value) || {{ default_fuel_prices.LPG_unit_price | default(3106) }},
+            PNG_unit_price: parseFloat(document.getElementById('fp_png')?.value) || {{ default_fuel_prices.PNG_unit_price | default(85) }},
+            Electricity_unit_price: parseFloat(document.getElementById('fp_electricity')?.value) || {{ default_fuel_prices.Electricity_unit_price | default(9.5) }},
+            Biomass_unit_price: parseFloat(document.getElementById('fp_biomass')?.value) || {{ default_fuel_prices.Biomass_unit_price | default(5) }},
+            Grid_emission_factor: (function () { const v = parseFloat(document.getElementById('fp_grid_ef')?.value); return !isNaN(v) ? v : {{ default_fuel_prices.Grid_emission_factor | default(0.65) }}; })()
         };
     document.getElementById('custom_fuel_prices_input').value = JSON.stringify(customFuelPrices);
 
