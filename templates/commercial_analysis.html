@@ -475,13 +475,7 @@
                                                 <td class="text-end">₹{{
                                                     "%.0f"|format(best_cost_fuel.data.monthly_cost|default(0)) }}</td>
                                             </tr>
-                                            <tr class="table-success">
-                                                <td><strong>{{ _('You Save') }}:</strong></td>
-                                                <td class="text-end text-success fw-bold">
-                                                    ₹{{ "%.0f"|format((analysis.current.monthly_cost|default(0)) -
-                                                    (best_cost_fuel.data.monthly_cost|default(0))) }}
-                                                </td>
-                                            </tr>
+                                           
                                             <tr>
                                                 <td><strong>{{ _('Annual CO₂') }}:</strong></td>
                                                 <td class="text-end">{{
@@ -503,6 +497,13 @@
                                                     </span>
                                                 </td>
                                             </tr>
+                                             <tr class="table-success">
+                                                <td><strong>{{ _('You Save') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    ₹{{ "%.0f"|format((analysis.current.monthly_cost|default(0)) -
+                                                    (best_cost_fuel.data.monthly_cost|default(0))) }}
+                                                </td>
+                                            </tr>
                                         </table>
                                     </td>
 
@@ -512,25 +513,20 @@
                                             <h5 class="text-success mb-0">{{ _(best_emission_fuel.name) }}</h5>
                                         </div>
                                         <table class="table table-sm table-borderless mb-0">
+                                              <tr>
+                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
+                                                <td class="text-end">₹{{
+                                                    "%.0f"|format(best_emission_fuel.data.monthly_cost|default(0)) }}
+                                                </td>
+                                            </tr>
                                             <tr>
                                                 <td><strong>{{ _('Annual CO₂') }}:</strong></td>
                                                 <td class="text-end">{{
                                                     "%.0f"|format(best_emission_fuel.data.annual_co2|default(0)) }} kg
                                                 </td>
                                             </tr>
-                                            <tr class="table-success">
-                                                <td><strong>{{ _('You Reduce') }}:</strong></td>
-                                                <td class="text-end text-success fw-bold">
-                                                    {{ "%.0f"|format((analysis.current.annual_emissions|default(0)) -
-                                                    (best_emission_fuel.data.annual_co2|default(0))) }} kg CO₂
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>{{ _('Monthly Cost') }}:</strong></td>
-                                                <td class="text-end">₹{{
-                                                    "%.0f"|format(best_emission_fuel.data.monthly_cost|default(0)) }}
-                                                </td>
-                                            </tr>
+                                     
+                                          
                                             <tr>
                                                 <td><strong>{{ _('Efficiency') }}:</strong></td>
                                                 <td class="text-end">{{
@@ -548,6 +544,13 @@
                                                     </span>
                                                 </td>
                                             </tr>
+                                                   <tr class="table-success">
+                                                <td><strong>{{ _('You Reduce') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    {{ "%.0f"|format((analysis.current.annual_emissions|default(0)) -
+                                                    (best_emission_fuel.data.annual_co2|default(0))) }} kg CO₂
+                                                </td>
+                                            </tr>
                                         </table>
                                     </td>
 
@@ -557,13 +560,16 @@
                                         {% set top_fuel = analysis.recommendations[0][0] %}
                                         {% set top_score = analysis.recommendations[0][1] %}
                                         {% set top_data = analysis.recommendations[0][2] %}
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h5 class="text-warning mb-0">
-                                                🏆 {{ _(top_fuel) }}
+                                        <!-- <div class="d-flex align-items-center justify-content-between"> -->
+                                    
+                                      
+                                            <div class="text-center mb-3">
+                                            <h5 class="text-warning mb-0">{{ _(top_fuel) }}
                                             </h5>
-                                            <span class="badge bg-warning text-dark ms-2 fs-075">
+                                            </div>
+                                            <!-- <span class="badge bg-warning text-dark ms-2 fs-075">
                                                 {{ _('Score') }}: {{ "%.1f"|format(top_score|default(0)) }}/100
-                                            </span>
+                                            </span> -->
                                         </div>
                                         <table class="table table-sm table-borderless mb-0">
                                             <tr>
@@ -576,12 +582,7 @@
                                                 <td class="text-end">{{
                                                     "%.0f"|format(top_data.annual_co2|default(0)) }} kg</td>
                                             </tr>
-                                            <tr class="table-success">
-                                                <td><strong>{{ _('Balance') }}:</strong></td>
-                                                <td class="text-end text-success fw-bold">
-                                                    {{ _('Best Overall') }}
-                                                </td>
-                                            </tr>
+                                          
                                             <tr>
                                                 <td><strong>{{ _('Efficiency') }}:</strong></td>
                                                 <td class="text-end">{{
@@ -595,6 +596,12 @@
                                                         class="badge bg-{{ 'success' if top_risk == 'low' else 'warning' if top_risk == 'moderate' else 'danger' }}">
                                                         {{ risk_text(top_risk) }}
                                                     </span>
+                                                </td>
+                                            </tr>
+                                              <tr class="table-success">
+                                                <td><strong>{{ _('Balance') }}:</strong></td>
+                                                <td class="text-end text-success fw-bold">
+                                                    {{ _('Best Overall') }}
                                                 </td>
                                             </tr>
                                         </table>

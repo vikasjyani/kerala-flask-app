@@ -252,16 +252,8 @@
             <!-- Hidden field: serialised custom fuel prices (populated by JS on submit) -->
             <input type="hidden" name="custom_fuel_prices" id="custom_fuel_prices_input">
 
-            <!-- Fuel Price Overrides (collapsible) -->
-            <div class="mb-3 text-end">
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="fuelPriceToggle"
-                    title="{{ _('Adjust fuel prices for this session') }}">
-                    <i class="bi bi-currency-rupee me-1"></i>{{ _('Fuel Price Overrides') }}
-                    <i class="bi bi-chevron-down ms-1" id="fuelPriceChevron"></i>
-                </button>
-            </div>
-
-            <div id="fuelPricePanel" class="card shadow-green fade-in-up mb-4 d-none">
+            <!-- Fuel Price Overrides -->
+            <div id="fuelPricePanel" class="card shadow-green fade-in-up mb-4">
                 <div class="card-body">
                     <h5 class="card-title text-primary-green mb-1">
                         <i class="bi bi-currency-rupee me-2"></i>{{ _('Fuel Price Overrides') }}
@@ -273,8 +265,8 @@
                         <div class="col-md-6">
                             <label for="fp_lpg" class="form-label">{{ _('LPG Cylinder Price') }} (₹)</label>
                             <input type="number" class="form-control" id="fp_lpg" name="fp_lpg" min="100" max="5000"
-                                step="0.5" value="{{ default_fuel_prices.LPG_unit_price | default(850) }}"
-                                placeholder="{{ default_fuel_prices.LPG_unit_price | default(850) }}">
+                                step="0.5" value="{{ default_fuel_prices.LPG_unit_price | default(922) }}"
+                                placeholder="{{ default_fuel_prices.LPG_unit_price | default(922) }}">
                             <div class="form-text">{{ _('Price per 14.2 kg domestic cylinder') }}</div>
                         </div>
 
@@ -412,18 +404,6 @@
             updateEfficiencyInfo(parseInt(this.value));
         });
 
-        // Collapsible fuel price panel toggle
-        const fuelPriceToggle = document.getElementById('fuelPriceToggle');
-        const fuelPricePanel = document.getElementById('fuelPricePanel');
-        const fuelPriceChevron = document.getElementById('fuelPriceChevron');
-
-        fuelPriceToggle.addEventListener('click', function () {
-            const isHidden = fuelPricePanel.classList.contains('d-none');
-            fuelPricePanel.classList.toggle('d-none', !isHidden);
-            fuelPriceChevron.classList.toggle('bi-chevron-down', !isHidden);
-            fuelPriceChevron.classList.toggle('bi-chevron-up', isHidden);
-        });
-
         // Form submission
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -437,7 +417,7 @@
             // Serialise fuel price overrides into hidden JSON field.
             // Always send defaults so electricity_tariff is always set server-side.
             const customFuelPrices = {
-                LPG_unit_price: parseFloat(document.getElementById('fp_lpg').value) || {{ default_fuel_prices.LPG_unit_price | default (850)
+                LPG_unit_price: parseFloat(document.getElementById('fp_lpg').value) || {{ default_fuel_prices.LPG_unit_price | default (922)
         }},
         PNG_unit_price: parseFloat(document.getElementById('fp_png').value) || {{ default_fuel_prices.PNG_unit_price | default(54) }},
         Electricity_unit_price: parseFloat(document.getElementById('fp_electricity').value) || {{ default_fuel_prices.Electricity_unit_price | default(6.5) }},

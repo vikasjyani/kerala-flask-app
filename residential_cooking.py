@@ -181,7 +181,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
             cylinder_price = float(custom_prices['LPG_unit_price'])
         else:
             lpg_price = db_helper.get_lpg_pricing(data.get('district', 'Thiruvananthapuram'), 'Domestic')
-            cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+            cylinder_price = float(lpg_price.get('subsidized_price', 922)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922)
         cylinder_size = float(data.get('cylinder_size', 14.2))
 
         logger.log_input("Refill Days", f"{refill_days} days")
@@ -442,7 +442,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
                 cylinder_price = float(custom_prices['LPG_unit_price'])
             else:
                 lpg_price = db_helper.get_lpg_pricing(data.get('district', 'Thiruvananthapuram'), 'Domestic')
-                cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+                cylinder_price = float(lpg_price.get('subsidized_price', 922)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922)
 
             lpg_data = calculate_lpg_consumption_from_refill(refill_days, cylinder_size)
             efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)

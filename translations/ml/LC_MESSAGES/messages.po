@@ -371,7 +371,7 @@ msgstr "വർഷം"
 msgid ""
 "Strategic\n"
 "                        Recommendations"
-msgstr "നയാധിഷ്ഠിത ശുപാർശകൾ"
+msgstr ""
 
 #: templates/analysis.html:284 templates/commercial_analysis.html:454
 msgid "Cost Effective"
@@ -1134,8 +1134,8 @@ msgstr "ഉദാ., 10"
 #: templates/commercial_energy_calculation.html:307
 msgid ""
 "Average price:\n"
-"                                                        ₹850/cylinder"
-msgstr "ശരാശരി വില: ₹850/സിലിണ്ടർ"
+"                                                        ₹922/cylinder"
+msgstr "ശരാശരി വില: ₹922/സിലിണ്ടർ"
 
 #: templates/commercial_energy_calculation.html:321
 msgid "Commercial LPG (19 kg)"
@@ -3185,3 +3185,155 @@ msgstr "പരിസ്ഥിതി ആഘാതം പരമാവധി കു
 
 #~ msgid "Warning"
 #~ msgstr "മുന്നറിയിപ്പ്"
+
+# ── Fuel Price Overrides (residential + commercial) ──────────────
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "Fuel Price Overrides"
+msgstr "ഇന്ധന വില ക്രമീകരണങ്ങൾ"
+
+#: templates/household_profile.html
+msgid ""
+"Optional — defaults are loaded from the database. Changes\n"
+"                        apply only to this session."
+msgstr "ഐച്ഛികം — സ്ഥിരസ്ഥിതി മൂല്യങ്ങൾ ഡാറ്റാബേസിൽ നിന്ന് ലോഡ് ചെയ്യുന്നു. മാറ്റങ്ങൾ ഈ സെഷനിൽ മാത്രം ബാധകമാണ്."
+
+#: templates/commercial_selection.html
+msgid ""
+"Optional — defaults are loaded from the database.\n"
+"                                Changes apply only to this session."
+msgstr "ഐച്ഛികം — സ്ഥിരസ്ഥിതി മൂല്യങ്ങൾ ഡാറ്റാബേസിൽ നിന്ന് ലോഡ് ചെയ്യുന്നു. മാറ്റങ്ങൾ ഈ സെഷനിൽ മാത്രം ബാധകമാണ്."
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "LPG Cylinder Price"
+msgstr "LPG സിലിണ്ടർ വില"
+
+#: templates/household_profile.html
+msgid "Price per 14.2 kg domestic cylinder"
+msgstr "14.2 kg ഗാർഹിക സിലിണ്ടറിന്റെ വില"
+
+#: templates/commercial_selection.html
+msgid "Price per 19 kg commercial cylinder"
+msgstr "19 kg വാണിജ്യ സിലിണ്ടറിന്റെ വില"
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "PNG Rate"
+msgstr "PNG നിരക്ക്"
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "Rate per standard cubic metre"
+msgstr "ഒരു സ്റ്റാൻഡേർഡ് ക്യൂബിക് മീറ്ററിന്റെ നിരക്ക്"
+
+#: templates/household_profile.html
+msgid "Check your electricity bill for the applicable slab rate"
+msgstr "ബാധകമായ സ്ലാബ് നിരക്കിനായി നിങ്ങളുടെ വൈദ്യുതി ബിൽ പരിശോധിക്കുക"
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "Biomass Cost"
+msgstr "ജൈവ ഇന്ധന ചെലവ്"
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "Average cost per kg of firewood/biomass"
+msgstr "വിറകിന്റെ/ജൈവ ഇന്ധനത്തിന്റെ ശരാശരി കിലോ വില"
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "Grid CO₂ Factor"
+msgstr "ഗ്രിഡ് CO₂ ഘടകം"
+
+#: templates/household_profile.html templates/commercial_selection.html
+msgid "Kerala grid CO₂ intensity — affects emission estimates"
+msgstr "കേരള ഗ്രിഡ് CO₂ തീവ്രത — ഉദ്‌വമന കണക്കുകളെ ബാധിക്കുന്നു"
+
+# ── Feedback form ────────────────────────────────────────────────
+
+#: templates/feedback.html
+msgid "You're one step closer to cleaner, smarter cooking. Tell us how we can help."
+msgstr "ശുദ്ധവും മികച്ചതുമായ പാചക രീതിയിലേക്ക് നിങ്ങൾ ഒരു ചുവട് അടുത്തിരിക്കുന്നു. ഞങ്ങൾ എങ്ങനെ സഹായിക്കണമെന്ന് പറയൂ."
+
+#: templates/feedback.html
+msgid "Are you interested in knowing more about electric cooking / clean cooking?"
+msgstr "ഇലക്ട്രിക് പാചകം / ശുദ്ധ പാചകം എന്നിവയെക്കുറിച്ച് കൂടുതലറിയാൻ നിങ്ങൾക്ക് താൽപ്പര്യമുണ്ടോ?"
+
+#: templates/feedback.html
+msgid "Yes, tell me more"
+msgstr "അതെ, കൂടുതൽ പറയൂ"
+
+#: templates/feedback.html
+msgid "No, I've learned enough"
+msgstr "ഇല്ല, ആവശ്യത്തിന് മനസ്സിലായി"
+
+#: templates/feedback.html
+msgid "Your Consent"
+msgstr "നിങ്ങളുടെ സമ്മതം"
+
+#: templates/feedback.html
+msgid "Allow authorities to contact me"
+msgstr "അധികാരികൾ എന്നെ ബന്ധപ്പെടാൻ അനുവദിക്കുക"
+
+#: templates/feedback.html
+msgid "I permit government authorities and scheme coordinators to reach me via phone or email regarding selected programmes and subsidy schemes."
+msgstr "തിരഞ്ഞെടുത്ത പദ്ധതികളും സബ്‌സിഡി സ്കീമുകളും സംബന്ധിച്ച് ഫോൺ അല്ലെങ്കിൽ ഇമെയിൽ വഴി ബന്ധപ്പെടാൻ സർക്കാർ അധികാരികളെയും പദ്ധതി കോർഡിനേറ്റർമാരെയും ഞാൻ അനുവദിക്കുന്നു."
+
+#: templates/feedback.html
+msgid "Do you need further support or assistance with any of the following?"
+msgstr "ഇനിപ്പറയുന്ന ഏതെങ്കിലും കാര്യത്തിൽ നിങ്ങൾക്ക് കൂടുതൽ സഹായം ആവശ്യമുണ്ടോ?"
+
+#: templates/feedback.html
+msgid "Solar Rooftop Installation"
+msgstr "സോളാർ റൂഫ്‌ടോപ്പ് ഇൻസ്റ്റാളേഷൻ"
+
+#: templates/feedback.html
+msgid "PM Surya Ghar subsidy & setup"
+msgstr "PM സൂര്യ ഘർ സബ്‌സിഡിയും സജ്ജീകരണവും"
+
+#: templates/feedback.html
+msgid "Electric Cooking"
+msgstr "ഇലക്ട്രിക് പാചകം"
+
+#: templates/feedback.html
+msgid "Induction, e-pressure cookers & more"
+msgstr "ഇൻഡക്ഷൻ, ഇ-പ്രഷർ കുക്കർ എന്നിവയും മറ്റും"
+
+#: templates/feedback.html
+msgid "PNG Connections"
+msgstr "PNG കണക്ഷനുകൾ"
+
+#: templates/feedback.html
+msgid "Piped Natural Gas availability"
+msgstr "പൈപ്പ്ഡ് നാച്ചുറൽ ഗ്യാസ് ലഭ്യത"
+
+#: templates/feedback.html
+msgid "Government Schemes & Support"
+msgstr "സർക്കാർ പദ്ധതികളും സഹായവും"
+
+#: templates/feedback.html
+msgid "Ujjwala, CGD & existing subsidies"
+msgstr "ഉജ്ജ്വല, CGD, നിലവിലുള്ള സബ്‌സിഡികൾ"
+
+#: templates/feedback.html
+msgid "None — I have all the information I need"
+msgstr "ഒന്നും വേണ്ട — ആവശ്യമായ എല്ലാ വിവരങ്ങളും ലഭിച്ചു"
+
+#: templates/feedback.html
+msgid "Thank you for using the platform"
+msgstr "പ്ലാറ്റ്ഫോം ഉപയോഗിച്ചതിന് നന്ദി"
+
+#: templates/feedback.html
+msgid "Verify Your Contact Information"
+msgstr "നിങ്ങളുടെ ബന്ധപ്പെടാനുള്ള വിവരങ്ങൾ സ്ഥിരീകരിക്കുക"
+
+#: templates/feedback.html
+msgid "Please confirm or update your details below"
+msgstr "ദയവായി നിങ്ങളുടെ വിശദാംശങ്ങൾ സ്ഥിരീകരിക്കുക അല്ലെങ്കിൽ അപ്‌ഡേറ്റ് ചെയ്യുക"
+
+#: templates/feedback.html
+msgid "Please enter a valid 10-digit number"
+msgstr "സാധുവായ 10 അക്ക നമ്പർ നൽകുക"
+
+#: templates/feedback.html
+msgid "Submit & Get Support"
+msgstr "സമർപ്പിച്ച് സഹായം നേടുക"
+
+#: templates/feedback.html
+msgid "Please select an option for question A"
+msgstr "ദയവായി ചോദ്യം A-യ്ക്ക് ഒരു ഉത്തരം തിരഞ്ഞെടുക്കുക"
