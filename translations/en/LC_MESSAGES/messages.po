@@ -150,7 +150,7 @@ msgstr "Clean Cooking Energy Assessment Report"
 
 #: templates/analysis.html:29 templates/commercial_analysis.html:41
 msgid "Assessment with key recommendations"
-msgstr "Assessment Report with Policy Recommendations"
+msgstr "Assessment with key recommendations"
 
 #: templates/analysis.html:38 templates/commercial_analysis.html:123
 msgid ""
@@ -174,15 +174,7 @@ msgstr "Consumption"
 msgid "Joules"
 msgstr "Joules"
 
-#: templates/analysis.html:47 templates/analysis.html:110
-#: templates/analysis.html:302 templates/analysis.html:355
-#: templates/analysis.html:392 templates/commercial_analysis.html:132
-#: templates/commercial_analysis.html:272
-#: templates/commercial_analysis.html:473
-#: templates/commercial_analysis.html:527
-#: templates/commercial_analysis.html:567
-msgid "Monthly Cost"
-msgstr "Monthly Expenditure "
+
 
 #: templates/analysis.html:48 templates/commercial_analysis.html:133
 msgid "Annual Emission"
@@ -370,11 +362,7 @@ msgstr "Loan"
 msgid "years"
 msgstr "years"
 
-#: templates/analysis.html:267 templates/commercial_analysis.html:437
-msgid ""
-"Strategic\n"
-"                        Recommendations"
-msgstr "Policy-Aligned Recommendations"
+
 
 #: templates/analysis.html:284 templates/commercial_analysis.html:454
 msgid "Cost Effective"
@@ -388,9 +376,7 @@ msgstr "Low Carbon Emission"
 msgid "Top Rated"
 msgstr "Overall Recommended"
 
-#: templates/analysis.html:307 templates/commercial_analysis.html:478
-msgid "You Save"
-msgstr "Projected Savings"
+
 
 #: templates/analysis.html:319 templates/analysis.html:361
 #: templates/analysis.html:406 templates/commercial_analysis.html:490
@@ -399,9 +385,6 @@ msgstr "Projected Savings"
 msgid "Efficiency"
 msgstr "Efficiency"
 
-#: templates/analysis.html:348 templates/commercial_analysis.html:520
-msgid "You Reduce"
-msgstr "You Reduce"
 
 #: templates/analysis.html:387 templates/commercial_analysis.html:562
 msgid "Score"
@@ -850,9 +833,7 @@ msgstr "No chart data available for this assessment."
 msgid "Retry"
 msgstr "Retry"
 
-#: templates/commercial_analysis.html:985
-msgid "Monthly Cost"
-msgstr "Monthly Expenditure"
+
 
 #: templates/commercial_analysis.html:1013
 msgid "Saves"
@@ -1169,8 +1150,8 @@ msgstr "e.g., 10"
 #: templates/commercial_energy_calculation.html:307
 msgid ""
 "Average price:\n"
-"                                                        ₹850/cylinder"
-msgstr "Average price: ₹850/cylinder"
+"                                                        ₹922/cylinder"
+msgstr "Average price: ₹922/cylinder"
 
 #: templates/commercial_energy_calculation.html:321
 msgid "Commercial LPG (19 kg)"
@@ -2010,9 +1991,6 @@ msgstr "Monthly energy (kWh)"
 msgid "Cylinders/month"
 msgstr "Cylinders/month"
 
-#: templates/energy_calculation.html:323 templates/energy_calculation.html:451
-msgid "Monthly cost"
-msgstr "Monthly expenditure"
 
 #: templates/energy_calculation.html:332
 msgid ""
@@ -2896,9 +2874,7 @@ msgstr "Sustainability grading system"
 msgid "Social cost of carbon"
 msgstr "Social cost of carbon"
 
-#: templates/info.html:85
-msgid "Strategic recommendations"
-msgstr "Policy-aligned recommendations"
+
 
 #: templates/info.html:86
 msgid ""

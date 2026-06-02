@@ -291,7 +291,7 @@
                                     <label for="cylinder_price" class="form-label">{{ _('Price of a Cylinder') }}
                                         (₹)</label>
                                     <input type="number" class="form-control" id="cylinder_price" min="200" max="1500"
-                                        value="{{ lpg_cylinder_price|default(850) }}">
+                                        value="{{ lpg_cylinder_price|default(922) }}">
 
                                 </div>
                             </div>
@@ -319,7 +319,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="metric-card small">
-                                            <div class="metric-value" id="lpg-monthly-cost">{{ lpg_cylinder_price|default(850) }}</div>
+                                            <div class="metric-value" id="lpg-monthly-cost">{{ lpg_cylinder_price|default(922) }}</div>
                                             <div class="metric-label">{{ _('Monthly cost (₹)') }}</div>
                                         </div>
                                     </div>
@@ -1076,7 +1076,7 @@
 
     function calculateLpgConsumption() {
         const refillDays = parseFloat(document.getElementById('refill_days').value) || 30;
-        const cylinderPrice = parseFloat(document.getElementById('cylinder_price').value) || {{ lpg_cylinder_price|default(850) }};
+        const cylinderPrice = parseFloat(document.getElementById('cylinder_price').value) || {{ lpg_cylinder_price|default(922) }};
     const cylinderWeight = parseFloat(document.getElementById('cylinder_size').value) || {{ lpg_cylinder_weight|default (14.2) }};
 
     // Constants from backend
@@ -1239,7 +1239,7 @@
                 const cylinderEnergy = {{ lpg_cylinder_weight|default(14.2) }} * {{ lpg_calorific_value|default(12.8) }} * {{ lpg_efficiency|default(0.63) }};
     const monthlyEnergy = (cylinderEnergy * 30) / refillDays;
     totalEnergy += monthlyEnergy;
-    totalCost += (30 / refillDays) * {{ lpg_cylinder_price |default (850) }};
+    totalCost += (30 / refillDays) * {{ lpg_cylinder_price |default (922) }};
             }
 
     if (png) {

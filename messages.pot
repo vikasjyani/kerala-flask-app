@@ -1111,7 +1111,7 @@ msgstr ""
 #: templates/commercial_energy_calculation.html:307
 msgid ""
 "Average price:\n"
-"                                                        ₹850/cylinder"
+"                                                        ₹922/cylinder"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:321

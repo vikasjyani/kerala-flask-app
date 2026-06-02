@@ -506,14 +506,34 @@ def init_user_database():
             name TEXT,
             email TEXT,
             phone TEXT,
+            interest_clean_cooking TEXT DEFAULT '',
+            allow_authority_contact BOOLEAN DEFAULT 0,
+            support_solar BOOLEAN DEFAULT 0,
+            support_electric_cooking BOOLEAN DEFAULT 0,
+            support_png BOOLEAN DEFAULT 0,
+            support_govt_schemes BOOLEAN DEFAULT 0,
+            support_none BOOLEAN DEFAULT 0,
             png_scheme_interested BOOLEAN DEFAULT 0,
             solar_scheme_interested BOOLEAN DEFAULT 0,
             ujjwala_scheme_interested BOOLEAN DEFAULT 0,
-            allow_authority_contact BOOLEAN DEFAULT 0,
             feedback_text TEXT,
             submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+
+    # Ensure new columns exist for databases created before the schema update
+    for col, coltype in [
+        ('interest_clean_cooking', 'TEXT DEFAULT ""'),
+        ('support_solar', 'BOOLEAN DEFAULT 0'),
+        ('support_electric_cooking', 'BOOLEAN DEFAULT 0'),
+        ('support_png', 'BOOLEAN DEFAULT 0'),
+        ('support_govt_schemes', 'BOOLEAN DEFAULT 0'),
+        ('support_none', 'BOOLEAN DEFAULT 0'),
+    ]:
+        try:
+            cursor.execute(f'ALTER TABLE user_feedback ADD COLUMN {col} {coltype}')
+        except Exception:
+            pass  # Column already exists
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS analysis_cache (
@@ -677,9 +697,12 @@ def save_user_feedback(feedback_data):
         cursor.execute('''
             INSERT INTO user_feedback (
                 feedback_id, entity_id, entity_type, name, email, phone,
-                png_scheme_interested, solar_scheme_interested, 
-                ujjwala_scheme_interested, allow_authority_contact, feedback_text
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                interest_clean_cooking, allow_authority_contact,
+                support_solar, support_electric_cooking, support_png,
+                support_govt_schemes, support_none,
+                png_scheme_interested, solar_scheme_interested,
+                ujjwala_scheme_interested, feedback_text
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             feedback_id,
             feedback_data.get('entity_id', ''),
@@ -687,10 +710,16 @@ def save_user_feedback(feedback_data):
             feedback_data.get('name', ''),
             feedback_data.get('email', ''),
             feedback_data.get('phone', ''),
-            feedback_data.get('png_scheme_interested', False),
-            feedback_data.get('solar_scheme_interested', False),
-            feedback_data.get('ujjwala_scheme_interested', False),
+            feedback_data.get('interest_clean_cooking', ''),
             feedback_data.get('allow_authority_contact', False),
+            feedback_data.get('support_solar', False),
+            feedback_data.get('support_electric_cooking', False),
+            feedback_data.get('support_png', False),
+            feedback_data.get('support_govt_schemes', False),
+            feedback_data.get('support_none', False),
+            feedback_data.get('support_png', False),
+            feedback_data.get('support_solar', False),
+            feedback_data.get('support_govt_schemes', False),
             feedback_data.get('feedback_text', '')
         ))
         conn.commit()
@@ -2247,7 +2276,7 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
                 else:
                     cylinder_price = db_helper.get_system_parameter('LPG_COMMERCIAL_CYLINDER_PRICE', None)
                     if cylinder_price is None:
-                        cylinder_price = db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1810.50)
+                        cylinder_price = db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 31060)
                 cylinder_weight = db_helper.get_system_parameter('LPG_COMMERCIAL_CYLINDER_WEIGHT', 19.0)
                 energy_per_cylinder = cylinder_weight * LPG_CALORIFIC_VALUE
                 cost_per_kwh = cylinder_price / energy_per_cylinder if energy_per_cylinder > 0 else 0
@@ -2639,7 +2668,7 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
                 cylinder_price = float(_custom['LPG_unit_price'])
             else:
                 lpg_price = db_helper.get_lpg_pricing(household_data.get('district', 'Thiruvananthapuram'), 'Domestic')
-                cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+                cylinder_price = float(lpg_price.get('subsidized_price', 922)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922)
             if household_data.get('lpg_subsidy') == 'Yes':
                 cylinder_price = max(0, cylinder_price - LPG_SUBSIDY_AMOUNT)
             cost_per_kwh = cylinder_price / LPG_ENERGY_PER_CYLINDER

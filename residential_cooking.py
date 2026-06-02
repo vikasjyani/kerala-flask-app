@@ -181,7 +181,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
             cylinder_price = float(custom_prices['LPG_unit_price'])
         else:
             lpg_price = db_helper.get_lpg_pricing(data.get('district', 'Thiruvananthapuram'), 'Domestic')
-            cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+            cylinder_price = float(lpg_price.get('subsidized_price', 922)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922)
         cylinder_size = float(data.get('cylinder_size', 14.2))
 
         logger.log_input("Refill Days", f"{refill_days} days")
@@ -442,7 +442,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
                 cylinder_price = float(custom_prices['LPG_unit_price'])
             else:
                 lpg_price = db_helper.get_lpg_pricing(data.get('district', 'Thiruvananthapuram'), 'Domestic')
-                cylinder_price = float(lpg_price.get('subsidized_price', 850)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+                cylinder_price = float(lpg_price.get('subsidized_price', 922)) if lpg_price else db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922)
 
             lpg_data = calculate_lpg_consumption_from_refill(refill_days, cylinder_size)
             efficiency = helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60)
@@ -705,6 +705,7 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
 
         # Determine which dish column to use for merging
         logger.log_step("Merging user selections with dish database")
+        merge_responses = user_responses.rename(columns={'Dishes': 'Selected_Dishes'})
         if language == 'ml':
             logger.log_step("Using Malayalam dish mapping for merge")
             # For Malayalam, try to merge using Malayalam dish names
@@ -712,27 +713,29 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
             dish_mapping = dict(zip(dishes['Dishes_ml'].fillna(''), dishes['Dishes']))
             
             # Map Malayalam dish names to English for merging
-            user_responses['Dishes_mapped'] = user_responses['Dishes'].map(
+            merge_responses['Merge_Dishes'] = merge_responses['Selected_Dishes'].map(
                 lambda x: dish_mapping.get(x, x)
             )
 
-            # Merge using mapped names
+            # Merge using mapped dish names and the selected meal category.
             user_dishes_with_data = pd.merge(
-                user_responses,
+                merge_responses,
                 dishes,
-                left_on='Dishes_mapped',
-                right_on='Dishes',
+                left_on=['Merge_Dishes', 'Category'],
+                right_on=['Dishes', 'Category'],
                 how='left',
                 suffixes=('_user', '_dish')
             )
             logger.log_success("Malayalam dish merge completed")
         else:
             logger.log_step("Using English dish names for direct merge")
-            # For English, merge directly
+            merge_responses['Merge_Dishes'] = merge_responses['Selected_Dishes']
+            # For English, merge by dish name and selected meal category.
             user_dishes_with_data = pd.merge(
-                user_responses,
+                merge_responses,
                 dishes,
-                on='Dishes',
+                left_on=['Merge_Dishes', 'Category'],
+                right_on=['Dishes', 'Category'],
                 how='left',
                 suffixes=('_user', '_dish')
             )
@@ -741,9 +744,7 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
         # Log merge result
         logger.log_dataframe("user_dishes_with_data (After Merge)", user_dishes_with_data, max_rows=10)
 
-        # Restore the Category column from user data
-        user_dishes_with_data['Category'] = user_dishes_with_data['Category_user']
-        logger.log_step("Restored Category column from user data")
+        logger.log_step("Merged dishes by dish name and selected meal category")
 
         if user_dishes_with_data.empty:
             logger.log_error("No matching dishes found after merge")

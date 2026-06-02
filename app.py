@@ -324,7 +324,7 @@ def household_profile():
     biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Domestic')
 
     default_fuel_prices = {
-        'LPG_unit_price': float(lpg_price_data.get('unit_price', 850)) if lpg_price_data else float(db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)),
+        'LPG_unit_price': float(lpg_price_data.get('unit_price', 922)) if lpg_price_data else float(db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922)),
         'PNG_unit_price': float(png_price_data.get('unit_price', 54.0)) if png_price_data else float(db_helper.get_system_parameter('PNG_DOMESTIC_RATE', 54.0)),
         'Electricity_unit_price': float(default_electricity_rate),
         'Biomass_unit_price': float(biomass_price_data.get('unit_price', 5.0)) if biomass_price_data else float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)),
@@ -564,9 +564,9 @@ def energy_calculation():
     else:
         lpg_price_data = db_helper.get_lpg_pricing(household_data.get('district', 'Thiruvananthapuram'), 'Domestic')
         if not lpg_price_data:
-            lpg_cylinder_price = db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850)
+            lpg_cylinder_price = db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922)
         else:
-            lpg_cylinder_price = float(lpg_price_data.get('subsidized_price', lpg_price_data.get('non_subsidized_price', 850)))
+            lpg_cylinder_price = float(lpg_price_data.get('subsidized_price', lpg_price_data.get('non_subsidized_price', 922)))
 
     # Biomass cost per kg
     if _custom.get('Biomass_unit_price'):
@@ -777,27 +777,32 @@ def submit_feedback():
             flash(_('Session expired. Please start a new analysis.'), 'error')
             return redirect(url_for('index'))
         
-        # Collect feedback data
+        # Collect feedback data from the redesigned form
+        interest = request.form.get('interest_clean_cooking', '')
         feedback_data = {
             'entity_id': entity_id,
             'entity_type': entity_type,
             'name': request.form.get('name', ''),
             'email': request.form.get('email', ''),
             'phone': request.form.get('phone', ''),
-            'png_scheme_interested': request.form.get('png_scheme_interested') == '1',
-            'solar_scheme_interested': request.form.get('solar_scheme_interested') == '1',
-            'ujjwala_scheme_interested': request.form.get('ujjwala_scheme_interested') == '1',
+            'interest_clean_cooking': interest,
             'allow_authority_contact': request.form.get('allow_authority_contact') == '1',
-            'feedback_text': request.form.get('feedback_text', '')
+            'support_solar': request.form.get('support_solar') == '1',
+            'support_electric_cooking': request.form.get('support_electric_cooking') == '1',
+            'support_png': request.form.get('support_png') == '1',
+            'support_govt_schemes': request.form.get('support_govt_schemes') == '1',
+            'support_none': request.form.get('support_none') == '1',
+            'feedback_text': ''
         }
         
         # Save to database
         helper.save_user_feedback(feedback_data)
 
         schemes_selected = any([
-            feedback_data['png_scheme_interested'],
-            feedback_data['solar_scheme_interested'],
-            feedback_data['ujjwala_scheme_interested']
+            feedback_data['support_solar'],
+            feedback_data['support_electric_cooking'],
+            feedback_data['support_png'],
+            feedback_data['support_govt_schemes']
         ])
 
         # End the journey without dropping unrelated session keys.
@@ -806,9 +811,11 @@ def submit_feedback():
         # Store success flags for the confirmation page
         session['feedback_submitted'] = True
         session['schemes_selected'] = schemes_selected
-        session['solar_scheme'] = feedback_data['solar_scheme_interested']
-        session['png_scheme'] = feedback_data['png_scheme_interested']
-        session['ujjwala_scheme'] = feedback_data['ujjwala_scheme_interested']
+        session['interest_clean_cooking'] = interest
+        session['solar_scheme'] = feedback_data['support_solar']
+        session['png_scheme'] = feedback_data['support_png']
+        session['electric_cooking_scheme'] = feedback_data['support_electric_cooking']
+        session['govt_schemes'] = feedback_data['support_govt_schemes']
         session['allow_contact'] = feedback_data['allow_authority_contact']
 
         return redirect(url_for('feedback_success'))
@@ -832,15 +839,19 @@ def feedback_success():
     schemes_selected = session.get('schemes_selected', False)
     solar_scheme = session.get('solar_scheme', False)
     png_scheme = session.get('png_scheme', False)
-    ujjwala_scheme = session.get('ujjwala_scheme', False)
+    electric_cooking_scheme = session.get('electric_cooking_scheme', False)
+    govt_schemes = session.get('govt_schemes', False)
     allow_contact = session.get('allow_contact', False)
+    interest_clean_cooking = session.get('interest_clean_cooking', '')
     
     return render_template('feedback_success.html',
                           schemes_selected=schemes_selected,
                           solar_scheme=solar_scheme,
                           png_scheme=png_scheme,
-                          ujjwala_scheme=ujjwala_scheme,
-                          allow_contact=allow_contact)
+                          electric_cooking_scheme=electric_cooking_scheme,
+                          govt_schemes=govt_schemes,
+                          allow_contact=allow_contact,
+                          interest_clean_cooking=interest_clean_cooking)
 
 # =================================================================
 # REPORT GENERATION ROUTES
@@ -935,7 +946,7 @@ def commercial_selection():
 
         default_fuel_prices = {
             'LPG_unit_price': float(lpg_price_data.get('unit_price', 1850)) if lpg_price_data else float(db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1850)),
-            'PNG_unit_price': float(png_price_data.get('unit_price', 48.0)) if png_price_data else float(db_helper.get_system_parameter('PNG_COMMERCIAL_RATE', 48.0)),
+            'PNG_unit_price': float(png_price_data.get('unit_price', 51.0)) if png_price_data else float(db_helper.get_system_parameter('PNG_COMMERCIAL_RATE', 51.0)),
             'Electricity_unit_price': float(default_electricity_rate),
             'Biomass_unit_price': float(biomass_price_data.get('unit_price', 5.0)) if biomass_price_data else float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 6.0)),
             'Grid_emission_factor': float(helper.EMISSION_FACTORS.get('Grid electricity', 0.65))
@@ -1228,7 +1239,7 @@ def commercial_energy_calculation():
             _png_data = db_helper.get_png_pricing(
                 district=institution_data.get('district', 'All'), category='Commercial')
             com_png_rate = float(_png_data['price_per_scm']) if _png_data else float(
-                db_helper.get_system_parameter('PNG_COMMERCIAL_RATE', 48.0))
+                db_helper.get_system_parameter('PNG_COMMERCIAL_RATE', 51.0))
 
         if _custom_c.get('Biomass_unit_price'):
             com_biomass_cost = float(_custom_c['Biomass_unit_price'])
@@ -1248,8 +1259,8 @@ def commercial_energy_calculation():
         else:
             _lpg_dom_data = db_helper.get_fuel_unit_price(
                 institution_data.get('district', 'Thiruvananthapuram'), 'LPG', 'Domestic')
-            com_lpg_domestic_price = float(_lpg_dom_data.get('unit_price', 850)) if _lpg_dom_data else float(
-                db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 850))
+            com_lpg_domestic_price = float(_lpg_dom_data.get('unit_price', 922)) if _lpg_dom_data else float(
+                db_helper.get_system_parameter('LPG_DOMESTIC_PRICE', 922))
             _lpg_com_data = db_helper.get_fuel_unit_price(
                 institution_data.get('district', 'Thiruvananthapuram'), 'LPG', 'Commercial')
             com_lpg_commercial_price = float(_lpg_com_data.get('unit_price', 1800)) if _lpg_com_data else float(

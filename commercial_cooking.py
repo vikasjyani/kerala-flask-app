@@ -331,9 +331,9 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     else:
                         try:
                             price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Domestic')
-                            domestic_price = float(price_data['unit_price']) if price_data else 850.0
+                            domestic_price = float(price_data['unit_price']) if price_data else 922.0
                         except:
-                            domestic_price = 850.0
+                            domestic_price = 922.0
                     
                     # Energy calculation (14.2 kg * 12.8 kWh/kg)
                     domestic_energy = domestic_cylinders * 14.2 * 12.8
@@ -364,7 +364,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 logger.log_input("Commercial Cylinders/Month", commercial_cylinders)
                 
                 if commercial_cylinders > 0:
-                    # Get pricing: User Input > session custom > DB > Default (1810.5)
+                    # Get pricing: User Input > session custom > DB > Default (3106)
                     commercial_price_input = data.get('commercial_cylinder_price')
                     custom_prices = institution_data.get('custom_fuel_prices', {})
                     if commercial_price_input and float(commercial_price_input) > 0:
@@ -374,9 +374,9 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     else:
                         try:
                             price_data = db_helper.get_fuel_unit_price(district, 'LPG', 'Commercial')
-                            commercial_price = float(price_data['unit_price']) if price_data else 1810.5
+                            commercial_price = float(price_data['unit_price']) if price_data else 3106
                         except:
-                            commercial_price = 1810.5
+                            commercial_price = 3106
                     
                     # Energy calculation (19 kg * 12.8 kWh/kg)
                     commercial_energy = commercial_cylinders * 19.0 * 12.8
@@ -678,7 +678,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                     cylinder_price = float(
                         lpg_price_data['unit_price']
                         if lpg_price_data and lpg_price_data.get('unit_price') is not None
-                        else db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 1810.5)
+                        else db_helper.get_system_parameter('LPG_COMMERCIAL_PRICE', 3106)
                     )
                 lpg_energy = mixed_cylinders * 19.0 * 12.8
                 lpg_cost = mixed_cylinders * cylinder_price
@@ -1013,18 +1013,18 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
         
         # Create DataFrame from selections
         user_responses = pd.DataFrame(selected_dishes)
+        merge_responses = user_responses.rename(columns={'Dishes': 'Selected_Dishes'})
+        merge_responses['Merge_Dishes'] = merge_responses['Selected_Dishes']
         
-        # Merge with dish database
+        # Merge with dish database by dish name and selected meal category.
         user_dishes_with_data = pd.merge(
-            user_responses,
+            merge_responses,
             dishes,
-            on='Dishes',
+            left_on=['Merge_Dishes', 'Category'],
+            right_on=['Dishes', 'Category'],
             how='left',
             suffixes=('_user', '_dish')
         )
-        
-        # Restore Category from user data
-        user_dishes_with_data['Category'] = user_dishes_with_data['Category_user']
         
         if user_dishes_with_data.empty:
             logger.log_error("No matching dishes found")
