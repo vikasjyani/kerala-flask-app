@@ -5,7 +5,6 @@ from helper import (
     db_helper, basic_calories, calculate_lpg_consumption_from_refill,
     calculate_png_consumption_from_bill, calculate_png_bill_and_consumption,
     calculate_co2_emissions, calculate_fuel_emissions_and_costs,
-    save_cooking_analysis,
     LPG_SUBSIDY_AMOUNT, LPG_CALORIFIC_VALUE, LPG_ENERGY_PER_CYLINDER
 )
 # NOTE: Do NOT import EMISSION_FACTORS or DEFAULT_EFFICIENCIES by name.
@@ -591,14 +590,6 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
     logger.log_result("Monthly Cost", f"Rs {result['monthly_cost']:.2f}")
     logger.log_result("Annual CO₂ Emissions", f"{result['annual_emissions']:.2f} kg CO₂/year")
 
-    # Save to database
-    if household_id:
-        logger.log_step(f"Saving cooking analysis to database for household {household_id}")
-        save_cooking_analysis(household_id, kitchen_data, result)
-        logger.log_success("Cooking analysis saved to database")
-    else:
-        logger.log_warning("No household_id - skipping database save")
-
     # Add overall thermal efficiency to result
     # For consumption-based, efficiency is based on the primary fuel's efficiency
     efficiency = helper.DEFAULT_EFFICIENCIES.get(primary_fuel, 0.60)
@@ -948,14 +939,6 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
     # Calculate environmental grade
     environmental_grade = helper.get_environmental_grade(result['annual_emissions'], household_size=household_size)
     result['environmental_grade'] = environmental_grade
-
-    # Save to database
-    if household_id:
-        logger.log_step(f"Saving cooking analysis to database for household {household_id}")
-        save_cooking_analysis(household_id, kitchen_data, result)
-        logger.log_success("Cooking analysis saved to database")
-    else:
-        logger.log_warning("No household_id - skipping database save")
 
     # Store calculation_method at top level for reliable method-switch detection in app.py
     result['calculation_method'] = 'dish_based'

@@ -1,0 +1,165 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  .mono{font-family:var(--font-mono)}
+  .badge{display:inline-block;font-size:10px;font-weight:500;padding:1px 6px;border-radius:3px;line-height:1.6}
+  .badge-r{background:var(--color-background-danger);color:var(--color-text-danger)}
+  .badge-a{background:var(--color-background-warning);color:var(--color-text-warning)}
+  .badge-b{background:var(--color-background-info);color:var(--color-text-info)}
+  .badge-g{background:var(--color-background-success);color:var(--color-text-success)}
+  .badge-gray{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+  .tbl-card{padding:9px 12px;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary);border-radius:8px;margin-bottom:5px}
+  .tbl-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px}
+  .tbl-name{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--color-text-primary)}
+  .issue{font-size:11px;color:var(--color-text-secondary);line-height:1.6}
+  .sectionhdr{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.07em;margin:20px 0 10px;padding-top:16px;border-top:1px solid var(--color-border-tertiary)}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .pcard{padding:8px 11px;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary);border-radius:8px}
+  .pcard-name{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+  .pcard-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.5}
+  #erd svg{max-width:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--color-text-secondary);margin-bottom:14px}
+</style>
+
+
+<div class="sectionhdr">Proposed ERD — foreign key relationships</div>
+<div id="erd"></div>
+</div>
+
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '12px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const diagram = `erDiagram
+  households ||--o{ analysis_sessions : "entity_id"
+  households ||--o{ fuel_selections : "entity_id"
+  households ||--o{ dish_selections : "entity_id"
+  households ||--o{ user_feedback : "entity_id"
+  households ||--o{ user_activity_log : "entity_id"
+  commercial_institutions ||--o{ analysis_sessions : "entity_id"
+  commercial_institutions ||--o{ fuel_selections : "entity_id"
+  commercial_institutions ||--o{ dish_selections : "entity_id"
+  commercial_institutions ||--o{ user_feedback : "entity_id"
+  commercial_institutions ||--o{ user_activity_log : "entity_id"
+  analysis_sessions ||--o{ alternative_options : "analysis_id"
+  households {
+    TEXT household_id PK
+    TEXT district
+    INT household_size
+    TEXT kitchen_scenario
+    TEXT solar_willingness
+    TEXT calculation_method
+    BOOL consent_given
+    TIMESTAMP created_at
+  }
+  commercial_institutions {
+    TEXT institution_id PK
+    TEXT institution_type
+    TEXT district
+    INT servings_per_day
+    TEXT kitchen_scenario
+    TEXT solar_willing
+    REAL roof_area_available
+    TIMESTAMP created_at
+  }
+  analysis_sessions {
+    INT analysis_id PK
+    TEXT entity_id FK
+    TEXT entity_type
+    TEXT analysis_type
+    REAL monthly_energy_kwh
+    REAL monthly_cost
+    REAL annual_emissions_kg
+    REAL health_risk_score
+    TEXT environmental_grade
+    TIMESTAMP created_at
+  }
+  alternative_options {
+    INT option_id PK
+    INT analysis_id FK
+    INT rank
+    TEXT fuel_name
+    REAL monthly_savings
+    REAL payback_period_months
+    REAL upfront_cost
+    REAL recommendation_score
+    TIMESTAMP created_at
+  }
+  fuel_selections {
+    INT fuel_selection_id PK
+    TEXT entity_id FK
+    TEXT entity_type
+    TEXT fuel_type
+    REAL percentage_usage
+    REAL monthly_cost
+    REAL energy_delivered_kwh
+    REAL monthly_emissions_kg
+    TIMESTAMP created_at
+  }
+  dish_selections {
+    INT selection_id PK
+    TEXT entity_id FK
+    TEXT entity_type
+    TEXT meal_category
+    TEXT dish_name
+    REAL frequency_per_week
+    INT portions_per_meal
+    TIMESTAMP created_at
+  }
+  user_feedback {
+    TEXT feedback_id PK
+    TEXT entity_id FK
+    TEXT entity_type
+    TEXT interest_clean_cooking
+    BOOL support_solar
+    BOOL support_png
+    BOOL support_electric_cooking
+    BOOL support_govt_schemes
+    BOOL allow_authority_contact
+    TIMESTAMP submitted_at
+  }
+  user_activity_log {
+    INT log_id PK
+    TEXT entity_id
+    TEXT entity_type
+    TEXT activity_type
+    TEXT details
+    TIMESTAMP created_at
+  }
+  analysis_cache {
+    TEXT cache_key PK
+    TEXT payload
+    REAL expires_at
+  }`;
+try {
+  const { svg } = await mermaid.render('erd-svg', diagram);
+  document.getElementById('erd').innerHTML = svg;
+  document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+    const fp = node.querySelector('path[d]');
+    if (!fp) return;
+    const nums = fp.getAttribute('d').match(/-?[\d.]+/g)?.map(Number);
+    if (!nums || nums.length < 8) return;
+    const xs = [nums[0],nums[2],nums[4],nums[6]], ys=[nums[1],nums[3],nums[5],nums[7]];
+    const x=Math.min(...xs),y=Math.min(...ys),w=Math.max(...xs)-x,h=Math.max(...ys)-y;
+    const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',w);r.setAttribute('height',h);r.setAttribute('rx','8');
+    for(const a of['fill','stroke','stroke-width','class','style'])if(fp.hasAttribute(a))r.setAttribute(a,fp.getAttribute(a));
+    fp.replaceWith(r);
+  });
+  document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path,#erd svg.erDiagram .row-rect-even path').forEach(p=>p.setAttribute('stroke','none'));
+} catch(e) {
+  document.getElementById('erd').innerHTML = '<p style="font-size:12px;color:var(--color-text-secondary);padding:8px 0">ERD rendering requires network access to esm.sh</p>';
+}
+</script>

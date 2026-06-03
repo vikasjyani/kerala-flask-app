@@ -129,12 +129,14 @@ def clear_application_journey():
         'analysis_result',
         'residential_analysis_result',
         'residential_analysis_cache_key',
+        'residential_persisted_analysis_id',
         # Commercial keys
         'institution_data',
         'commercial_analysis_id',
         'com_energy_data',       # namespaced commercial energy result
         'commercial_analysis_result',
         'commercial_analysis_cache_key',
+        'commercial_persisted_analysis_id',
         # Generic / legacy keys (clean up old browser cookies that predate namespacing)
         'energy_data',
         'analysis_cache_key',
@@ -144,6 +146,9 @@ def clear_application_journey():
         'solar_scheme',
         'png_scheme',
         'ujjwala_scheme',
+        'interest_clean_cooking',
+        'electric_cooking_scheme',
+        'govt_schemes',
         'allow_contact',
     )
     for key in session_keys:
@@ -151,15 +156,17 @@ def clear_application_journey():
 
 def build_analysis_result(current, alternatives, health_impact, recommendations):
     """Build the canonical analysis payload shared by pages, APIs and reports."""
-    return {
+    return helper.round_numeric_values({
         'current': current or {},
         'alternatives': alternatives or {},
         'health_impact': health_impact or {},
         'recommendations': recommendations or []
-    }
+    }, 3)
 
 def save_analysis_result_to_cache(analysis_result, analysis_type):
     """Persist large analysis payloads server-side and store only cache keys in session."""
+    analysis_result = helper.round_numeric_values(analysis_result, 3)
+
     if analysis_type == 'commercial':
         entity_id = session.get('commercial_analysis_id', 'unknown')
         specific_cache_session_key = 'commercial_analysis_cache_key'
@@ -466,6 +473,7 @@ def submit_kitchen():
         }
         
         session['kitchen_data'] = kitchen_data
+        session.pop('residential_persisted_analysis_id', None)
         
         if request.is_json:
             return jsonify({'status': 'success', 'redirect': url_for('analysis')})
@@ -641,6 +649,7 @@ def calculate_consumption():
         # Fixes: old string was 'consumption' vs stored value 'consumption_based' — always triggered.
         # Also check top-level key first (set by engine), fall back to nested fuel_details key.
         old_energy_data = session.pop('res_energy_data', None)
+        session.pop('residential_persisted_analysis_id', None)
         if old_energy_data:
             old_method = (
                 old_energy_data.get('calculation_method')
@@ -716,13 +725,23 @@ def analysis():
     # Generate recommendations
     recommendations = helper.generate_recommendations(alternatives, household_data, kitchen_data, energy_data)
     
-    # Save recommendations to database
-    if household_id:
-        helper.save_recommendations(household_id, recommendations)
-    
     # Prepare complete analysis result
     analysis_result = build_analysis_result(energy_data, alternatives, health_impact, recommendations)
     save_analysis_result_to_cache(analysis_result, 'residential')
+
+    if household_id and not session.get('residential_persisted_analysis_id'):
+        analysis_id = helper.persist_analysis_session(
+            entity_id=household_id,
+            entity_type='household',
+            analysis_type='residential',
+            profile_data=household_data,
+            kitchen_data=kitchen_data,
+            energy_data=energy_data,
+            alternatives=alternatives,
+            recommendations=recommendations,
+            health_impact=health_impact
+        )
+        session['residential_persisted_analysis_id'] = analysis_id
 
     logger = get_logger()
     logger.log_subsection("RENDER RESIDENTIAL ANALYSIS")
@@ -748,6 +767,16 @@ def feedback():
     
     # Determine which type of analysis (residential or commercial)
     is_commercial = 'institution_data' in session
+    persisted_analysis_id = (
+        session.get('commercial_persisted_analysis_id')
+        if is_commercial
+        else session.get('residential_persisted_analysis_id')
+    )
+    if not persisted_analysis_id:
+        flash(_('Please view the analysis results before submitting feedback.'), 'error')
+        if is_commercial:
+            return redirect(url_for('commercial_analysis'))
+        return redirect(url_for('analysis'))
     
     if is_commercial:
         user_name = institution_data.get('contact_person', '')
@@ -772,8 +801,13 @@ def submit_feedback():
         is_commercial = 'institution_data' in session
         entity_type = 'institution' if is_commercial else 'household'
         entity_id = session.get('commercial_analysis_id') if is_commercial else session.get('household_id')
+        analysis_id = (
+            session.get('commercial_persisted_analysis_id')
+            if is_commercial
+            else session.get('residential_persisted_analysis_id')
+        )
         
-        if not entity_id:
+        if not entity_id or not analysis_id:
             flash(_('Session expired. Please start a new analysis.'), 'error')
             return redirect(url_for('index'))
         
@@ -782,6 +816,7 @@ def submit_feedback():
         feedback_data = {
             'entity_id': entity_id,
             'entity_type': entity_type,
+            'analysis_id': analysis_id,
             'name': request.form.get('name', ''),
             'email': request.form.get('email', ''),
             'phone': request.form.get('phone', ''),
@@ -890,6 +925,8 @@ def download_report():
             'kitchen_data': session.get('kitchen_data', {}),
             'energy_data': session.get(energy_key, {})
         }
+        analysis_data = helper.round_numeric_values(analysis_data, 3)
+        user_data = helper.round_numeric_values(user_data, 3)
         report_locale = get_locale()
         
         # Generate PDF report
@@ -1098,6 +1135,7 @@ def commercial_submit_kitchen():
         
         # Store in session
         session['kitchen_data'] = kitchen_data
+        session.pop('commercial_persisted_analysis_id', None)
         logger.log_success("Stored kitchen_data in session for commercial flow")
         if request.is_json:
             return jsonify({'success':True, 'redirect': url_for('commercial_energy_calculation')})
@@ -1135,6 +1173,7 @@ def commercial_energy_calculation():
 
             # Clear previous com_energy_data on method switch (mirrors residential logic).
             old_com_data = session.pop('com_energy_data', None)
+            session.pop('commercial_persisted_analysis_id', None)
             if old_com_data:
                 old_method = (
                     old_com_data.get('calculation_method')
@@ -1163,10 +1202,6 @@ def commercial_energy_calculation():
             if result.get('status') == 'error':
                 flash(result.get('message', 'Calculation failed'), 'error')
                 return redirect(url_for('commercial_energy_calculation'))
-            
-            # Save results to database
-            if institution_id:
-                helper.save_commercial_analysis(institution_id, result)
             
             session['com_energy_data'] = result
             logger.log_data("Commercial Energy Result", result)
@@ -1310,13 +1345,24 @@ def commercial_analysis():
     # Generate recommendations
     recommendations = helper.generate_recommendations(alternatives, institution_data, kitchen_data, energy_data)
     
-    # Save recommendations to database
-    if institution_id:
-        helper.save_recommendations(institution_id, recommendations)
-    
     # Prepare complete analysis result (SAME structure as residential)
     analysis_result = build_analysis_result(energy_data, alternatives, health_impact, recommendations)
     save_analysis_result_to_cache(analysis_result, 'commercial')
+
+    if institution_id and not session.get('commercial_persisted_analysis_id'):
+        analysis_id = helper.persist_analysis_session(
+            entity_id=institution_id,
+            entity_type='institution',
+            analysis_type='commercial',
+            profile_data=institution_data,
+            kitchen_data=kitchen_data,
+            energy_data=energy_data,
+            alternatives=alternatives,
+            recommendations=recommendations,
+            health_impact=health_impact
+        )
+        session['commercial_persisted_analysis_id'] = analysis_id
+
     logger = get_logger()
     logger.log_subsection("RENDER COMMERCIAL ANALYSIS")
     logger.log_data("Energy Data", energy_data)
@@ -1410,7 +1456,7 @@ def chart_data():
             chart_data['health_comparison']['labels'].append(label)
             chart_data['health_comparison']['data'].append(alt.get('health_risk_score', 0))
             
-    return jsonify(chart_data)
+    return jsonify(helper.round_numeric_values(chart_data, 3))
 
 @app.route('/api/calculate_png', methods=['POST'])
 def calculate_png():
@@ -1473,7 +1519,7 @@ def calculate_png():
                     'tariff_used': rate
                 }
 
-        return jsonify(result)
+        return jsonify(helper.round_numeric_values(result, 3))
         
     except Exception as e:
         logger = get_logger()

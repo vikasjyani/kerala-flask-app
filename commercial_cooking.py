@@ -1215,12 +1215,6 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
         logger.log_result("Overall Efficiency", f"{result['overall_thermal_efficiency']:.1f}%")
         logger.log_result("Environmental Grade", f"{grade} ({label})", f"Based on {co2_per_serving:.3f} kg/serving")
         
-        # Save to database
-        if institution_id:
-            logger.log_step(f"Saving commercial analysis for institution {institution_id}")
-            save_commercial_analysis(institution_id, kitchen_data, result)
-            logger.log_success("Commercial analysis saved")
-        
         logger.log_success("Commercial dish-based calculation completed")
 
         # Store calculation_method at top level for reliable method-switch detection in app.py
@@ -1237,6 +1231,10 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
 
 def save_commercial_analysis(institution_id, kitchen_data, result):
     """Save commercial cooking analysis to database"""
+    logger = get_logger()
+    logger.log_warning("Deprecated commercial save skipped; analysis is persisted on /commercial_analysis.")
+    return None
+
     import json
     
     logger = get_logger()
