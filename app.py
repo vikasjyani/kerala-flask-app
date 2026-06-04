@@ -97,6 +97,13 @@ def localize_db_label(label_en, label_ml=None):
         return label_ml
     return label_en
 
+def normalize_veg_status(value):
+    """Return canonical yes/no value for dish vegetarian markers."""
+    if value is None or value == '':
+        return 'yes'
+    normalized = str(value).strip().lower()
+    return 'yes' if normalized in ('yes', 'y', 'true', '1', 'veg', 'vegetarian') else 'no'
+
 def get_district_options_with_fallback():
     """Load district options, using a static fallback when reference DB access fails."""
     try:
@@ -528,7 +535,7 @@ def energy_calculation():
                 'name': name,
                 'name_ml': dish.get('dish_name_ml'),
                 'display_name': localize_db_label(name, dish.get('dish_name_ml')),
-                'is_veg': dish.get('is_veg', 'yes')  # Default to 'yes' if not specified
+                'is_veg': normalize_veg_status(dish.get('is_veg', 'yes'))
             })
         
     # Get available fuels

@@ -673,13 +673,13 @@ def calculate_dish_based(data, household_data, kitchen_data, household_id, langu
             logger.log_input(f"{category} dishes selected", f"{len(dishes_list_input)} dishes")
 
             for dish in dishes_list_input:
-                fuel_type = data.get(f'{dish}_fuel', 'LPG')
+                fuel_type = data.get(f'{category}_{dish}_fuel') or data.get(f'{dish}_fuel', 'LPG')
                 selected_dishes.append({
                     'Dishes': dish,
                     'Category': category,
                     'stoves': fuel_type
                 })
-                fuel_selections[dish] = fuel_type
+                fuel_selections[f"{category}:{dish}"] = fuel_type
                 logger.log_input(f"  - {dish}", f"Fuel: {fuel_type}")
 
         if not selected_dishes:

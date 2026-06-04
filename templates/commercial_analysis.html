@@ -182,12 +182,8 @@
                                         {% if details.annual_emissions is defined %}
                                         <div class="text-gray-900">{{ "%.2f"|format(details.annual_emissions) }} kg
                                         </div>
-                                        {% if details.emission_source is defined and details.emission_source %}
-                                        <div class="text-muted small">{{ _('Source:') }} {{ details.emission_source }}
-                                        </div>
-                                        {% endif %}
-                                        {% else %}
-                                        <div class="text-gray-500">-</div>
+                                        
+                                        
                                         {% endif %}
                                     </td>
                                 </tr>

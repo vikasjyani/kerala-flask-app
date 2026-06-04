@@ -1,5 +1,5 @@
 # Malayalam translations for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
+# Copyright (C) 2026 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
@@ -570,8 +570,8 @@ msgid "Thiruvananthapuram | Keralam"
 msgstr "തിരുവനന്തപുരം | കേരളം"
 
 #: templates/base.html:150
-msgid "© 2025 Vasudha Foundation & EMC Keralam."
-msgstr "© 2025 വസുധ ഫൗണ്ടേഷൻ & ഇഎംസി കേരളം."
+msgid "© 2026 Vasudha Foundation & EMC Keralam."
+msgstr "© 2026 വസുധ ഫൗണ്ടേഷൻ & ഇഎംസി കേരളം."
 
 #: templates/commercial_analysis.html:3
 msgid "Commercial Analysis Results"

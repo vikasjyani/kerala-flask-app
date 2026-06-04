@@ -1,192 +1,569 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Information & Methodology') }}{% endblock %}
+{% block title %}{{ _('Keralam Clean Cooking Tool - Home') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .homepage-section {
+        padding: 4rem 0;
+    }
+
+    .section-container {
+        width: min(1120px, calc(100% - 2rem));
+        margin: 0 auto;
+    }
+
+    .section-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(25, 135, 84, 0.10);
+        color: #146c43;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: clamp(1.85rem, 3vw, 2.75rem);
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        color: #123524;
+    }
+
+    .section-lead {
+        max-width: 900px;
+        color: #4f5f58;
+        font-size: 1.05rem;
+        line-height: 1.75;
+        margin-bottom: 2rem;
+    }
+
+    .methodology-grid,
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.25rem;
+    }
+
+    .methodology-card,
+    .feature-card {
+        background: #ffffff;
+        border: 1px solid rgba(18, 53, 36, 0.10);
+        border-radius: 22px;
+        padding: 1.35rem;
+        box-shadow: 0 18px 45px rgba(18, 53, 36, 0.08);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .methodology-card:hover,
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 24px 60px rgba(18, 53, 36, 0.13);
+    }
+
+    .card-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(25, 135, 84, 0.12);
+        color: #198754;
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
+    }
+
+    .methodology-card h3,
+    .feature-card h3 {
+        color: #123524;
+        font-size: 1.1rem;
+        font-weight: 800;
+        margin-bottom: 0.65rem;
+    }
+
+    .methodology-card p,
+    .feature-card p {
+        color: #53665d;
+        line-height: 1.65;
+        margin-bottom: 0;
+    }
+
+    .formula-panel {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(25, 135, 84, 0.10), rgba(13, 110, 253, 0.08));
+        border: 1px solid rgba(25, 135, 84, 0.16);
+    }
+
+    .formula-panel h3 {
+        color: #123524;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .formula-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        margin: 0;
+    }
+
+    .formula-item {
+        padding: 1rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.78);
+    }
+
+    .formula-item code {
+        color: #0f5132;
+        font-weight: 700;
+        white-space: normal;
+    }
+
+    .source-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+    }
+
+    .source-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.55rem 0.85rem;
+        border-radius: 999px;
+        background: #ffffff;
+        border: 1px solid rgba(18, 53, 36, 0.12);
+        color: #123524;
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 700;
+    }
+
+    .source-pill:hover {
+        color: #0f5132;
+        border-color: rgba(25, 135, 84, 0.35);
+        text-decoration: none;
+    }
+
+    .methodology-note {
+        margin-top: 1.5rem;
+        padding: 1rem 1.15rem;
+        border-left: 4px solid #198754;
+        background: rgba(25, 135, 84, 0.08);
+        border-radius: 14px;
+        color: #385148;
+        line-height: 1.65;
+    }
+
+    .features-section {
+        background: #f7fbf8;
+    }
+
+    .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .duo-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+        align-items: start;
+    }
+
+    .specs-table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(18, 53, 36, 0.10);
+        box-shadow: 0 18px 45px rgba(18, 53, 36, 0.08);
+        background: #ffffff;
+        margin-top: 0.5rem;
+    }
+
+    .specs-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 540px;
+    }
+
+    .specs-table th {
+        background: #198754;
+        color: #ffffff;
+        text-align: left;
+        font-weight: 700;
+        font-size: 0.92rem;
+        padding: 0.85rem 1.15rem;
+    }
+
+    .specs-table td {
+        padding: 0.7rem 1.15rem;
+        border-top: 1px solid #eef3f0;
+        color: #44544d;
+        font-size: 0.95rem;
+    }
+
+    .specs-table tbody tr:hover {
+        background: rgba(25, 135, 84, 0.04);
+    }
+
+    .specs-table .val {
+        font-weight: 700;
+        color: #123524;
+        white-space: nowrap;
+    }
+
+    .specs-table .group-row td {
+        background: rgba(25, 135, 84, 0.09);
+        color: #146c43;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .tag-yes,
+    .tag-no {
+        display: inline-block;
+        padding: 0.12rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .tag-yes { background: rgba(25, 135, 84, 0.15); color: #146c43; }
+    .tag-no { background: rgba(18, 53, 36, 0.07); color: #6f7d76; }
+
+    .info-list {
+        margin: 0;
+        padding-left: 1.15rem;
+        color: #53665d;
+        line-height: 1.7;
+    }
+
+    .info-list li { margin-bottom: 0.4rem; }
+
+    @media (max-width: 992px) {
+        .methodology-grid,
+        .feature-grid,
+        .duo-grid,
+        .formula-list {
+            grid-template-columns: 1fr;
+        }
+
+        .homepage-section {
+            padding: 3rem 0;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
 
-            <div class="text-center mb-5">
-                <h1 class="fw-bold text-primary-green">{{ _('About the Platform') }}</h1>
-                <p class="lead text-muted">{{ _('Platform overview is designed, validated, and kept up to date.') }}</p>
-            </div>
-
-            <!-- Features Section -->
-            <div class="card shadow-sm mb-5 fade-in-up">
-                <div class="card-header bg-white py-3">
-                    <h4 class="mb-0 text-success"><i class="bi bi-stars me-2"></i>{{ _('Key Features') }}</h4>
-                </div>
-                <div class="card-body p-4">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="d-flex mb-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-calculator fs-3 text-success"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h5 class="fw-bold">{{ _('Flexible assessment options') }}</h5>
-                                    <p class="text-muted small mb-2">{{ _('Use meal data or totals inputs or summarize
-                                        existing fuel consumption—whichever fits your data best.') }}</p>
-                                    <ul class="list-unstyled small text-secondary">
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Granular dish-level energy modeling')
-                                            }}</li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Historical consumption analysis') }}
-                                        </li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Multi-fuel scenario comparison') }}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex mb-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-heart-pulse fs-3 text-success"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h5 class="fw-bold">{{ _('Health risk evaluation') }}</h5>
-                                    <p class="text-muted small mb-2">{{ _('WHO-based health risk analysis guidance and
-                                        highlights vulnerable groups.') }}</p>
-                                    <ul class="list-unstyled small text-secondary">
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('WHO air quality benchmarking') }}
-                                        </li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Peak exposure modeling') }}</li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Vulnerable group protection') }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex mb-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-tree fs-3 text-success"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h5 class="fw-bold">{{ _('Environmental impact') }}</h5>
-                                    <p class="text-muted small mb-2">{{ _('Lifecycle carbon accounting across all fuel
-                                        options.') }}</p>
-                                    <ul class="list-unstyled small text-secondary">
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('CO₂ emissions quantification') }}
-                                        </li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Sustainability grading system') }}
-                                        </li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Social cost of carbon') }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex mb-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-lightbulb fs-3 text-success"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h5 class="fw-bold">{{ _('Strategic recommendations') }}</h5>
-                                    <p class="text-muted small mb-2">{{ _('Clean cooking recommendations transition
-                                        strategies.') }}</p>
-                                    <ul class="list-unstyled small text-secondary">
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Multi-criteria decision analysis') }}
-                                        </li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('ROI & Payback calculation') }}</li>
-                                        <li><i class="bi bi-check2 me-2"></i>{{ _('Feasibility assessment') }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Methodology Section -->
-            <div class="card shadow-sm mb-5 fade-in-up delay-1">
-                <div class="card-header bg-white py-3">
-                    <h4 class="mb-0 text-success"><i class="bi bi-journal-text me-2"></i>{{ _('Research-Validated
-                        Methodology') }}</h4>
-                </div>
-                <div class="card-body p-4">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6 class="text-primary-green border-bottom pb-2 mb-3">{{ _('Energy Calculations') }}</h6>
-                            <ul class="list-unstyled mb-4">
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Ministry of
-                                    Petroleum & Natural Gas formulas') }}</li>
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Gas utilities
-                                    slab structure') }}</li>
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Thermal
-                                    efficiency standards') }}</li>
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Economies of
-                                    scale for larger households') }}</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 class="text-primary-green border-bottom pb-2 mb-3">{{ _('Economic Analysis') }}</h6>
-                            <ul class="list-unstyled mb-4">
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('RBI interest
-                                    rates and inflation') }}</li>
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('NPV and
-                                    payback calculations') }}</li>
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('Solar
-                                    investment analysis') }}</li>
-                                <li class="mb-2"><i class="bi bi-arrow-right text-success me-2"></i>{{ _('EMI and
-                                    financing options') }}</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="alert alert-light border-success mt-3">
-                        <div class="d-flex">
-                            <i class="bi bi-shield-lock text-success fs-4 me-3"></i>
-                            <div>
-                                <strong>{{ _('Data Privacy Commitment') }}</strong>
-                                <p class="mb-0 small text-muted">{{ _('Anonymized data only; secure storage to
-                                    strengthen
-                                    cooking energy policies in Keralam. Personal details are optional and stored
-                                    securely.') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Support Section -->
-            <div class="card shadow-sm fade-in-up delay-2">
-                <div class="card-header bg-white py-3">
-                    <h4 class="mb-0 text-success"><i class="bi bi-life-preserver me-2"></i>{{ _('Support & Resources')
-                        }}</h4>
-                </div>
-                <div class="card-body p-4">
-                    <div class="row g-4 text-center">
-                        <div class="col-md-4">
-                            <div class="p-3 border rounded h-100">
-                                <i class="bi bi-question-circle fs-2 text-success mb-3"></i>
-                                <h6>{{ _('Need Help?') }}</h6>
-                                <p class="small text-muted">{{ _('Platform support available the tool or understanding
-                                    your
-                                    results.') }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 border rounded h-100">
-                                <i class="bi bi-file-earmark-pdf fs-2 text-success mb-3"></i>
-                                <h6>{{ _('Download Report') }}</h6>
-                                <p class="small text-muted">{{ _('Download PDF report of your analysis results.')
-                                    }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 border rounded h-100">
-                                <i class="bi bi-share fs-2 text-success mb-3"></i>
-                                <h6>{{ _('Share Results') }}</h6>
-                                <p class="small text-muted">{{ _('Share results with family or energy
-                                    consultants.') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+<!-- 1. SCOPE & OUTPUTS -->
+<section class="homepage-section" id="scope-outputs">
+    <div class="section-container">
+        <span class="section-eyebrow">
+            <i class="bi bi-diagram-3"></i>
+            {{ _('Scope & Outputs') }}
+        </span>
+        <h2 class="section-title">{{ _('What the tool covers and what it produces') }}</h2>
+        <p class="section-lead">
+            {{ _('The tool analyses both residential and commercial cooking. You can work in dish-based mode by
+            selecting meals, dishes, and a fuel for each dish, or in consumption-based mode by entering your actual
+            monthly fuel use. Both modes feed the same energy, cost, emission, and health calculations.') }}
+        </p>
+        <div class="duo-grid">
+            <article class="methodology-card">
+                <div class="card-icon"><i class="bi bi-ui-checks-grid"></i></div>
+                <h3>{{ _('What the tool covers') }}</h3>
+                <ul class="info-list">
+                    <li>{{ _('Residential households and commercial kitchens such as schools, anganwadis, hotels, factories, and community kitchens') }}</li>
+                    <li>{{ _('Dish-based input (meals, dishes, and a fuel per dish) or consumption-based input (real monthly fuel use)') }}</li>
+                    <li>{{ _('Fuels: LPG, PNG, grid electricity, biogas, traditional solid biomass, and solar-ready options where applicable') }}</li>
+                </ul>
+            </article>
+            <article class="methodology-card">
+                <div class="card-icon"><i class="bi bi-clipboard2-data"></i></div>
+                <h3>{{ _('What you get') }}</h3>
+                <ul class="info-list">
+                    <li>{{ _('Monthly useful cooking energy, fuel input energy, and fuel quantity') }}</li>
+                    <li>{{ _('Monthly fuel cost and annual CO₂ emissions') }}</li>
+                    <li>{{ _('Overall stove-to-pot efficiency and an indoor PM2.5 health-risk indicator') }}</li>
+                    <li>{{ _('A side-by-side fuel comparison and ranked cleaner-fuel recommendations') }}</li>
+                </ul>
+            </article>
         </div>
     </div>
-</div>
+</section>
+
+<!-- 2. CALORIE-NORMALISATION LOGIC -->
+<section class="homepage-section features-section" id="calorie-normalisation">
+    <div class="section-container">
+        <span class="section-eyebrow">
+            <i class="bi bi-graph-up-arrow"></i>
+            {{ _('How Dish-Based Mode Works') }}
+        </span>
+        <h2 class="section-title">{{ _('Calorie-normalised energy, not per-serving energy') }}</h2>
+        <p class="section-lead">
+            {{ _('Dish-based mode does not assume you cook a single serving of each dish you select. Instead, it sizes
+            each meal to the household monthly calorie need, then scales the dishes you picked so that together they
+            meet that calorie target. This keeps results comparable no matter how many dishes are selected.') }}
+        </p>
+        <div class="formula-panel">
+            <h3>{{ _('The scaling steps') }}</h3>
+            <div class="formula-list">
+                <div class="formula-item">
+                    <code>{{ _('meal_target_kcal = calories_per_person_per_day × household_size × 30 × meal_share') }}</code>
+                </div>
+                <div class="formula-item">
+                    <code>{{ _('meal_scaling = meal_target_kcal ÷ sum(selected_dish_calories_in_meal)') }}</code>
+                </div>
+                <div class="formula-item">
+                    <code>{{ _('useful_energy = energy_to_cook × meal_scaling × household_efficiency × wastage') }}</code>
+                </div>
+            </div>
+        </div>
+        <div class="methodology-note">
+            <strong>{{ _('What this means in practice:') }}</strong>
+            {{ _('Adding more dishes to a meal mostly redistributes that meal calorie target across them rather than
+            adding new energy. In a worked four-person example, selecting four dishes produced about 364 kWh per month,
+            while selecting every available dish produced about 373 kWh per month. So adding dishes changes the result
+            only slightly, and a single selected dish is scaled up to represent the whole meal.') }}
+        </div>
+    </div>
+</section>
+
+<!-- 3. ASSUMPTIONS & CONSTANTS -->
+<section class="homepage-section" id="assumptions">
+    <div class="section-container">
+        <span class="section-eyebrow">
+            <i class="bi bi-table"></i>
+            {{ _('Model Assumptions') }}
+        </span>
+        <h2 class="section-title">{{ _('Assumptions and constants') }}</h2>
+        <p class="section-lead">
+            {{ _('These are the default values the calculator uses. Energy contents, stove efficiencies, and most
+            emission factors are fixed model assumptions, while fuel prices and the grid CO₂ factor can be overridden
+            with local values on the input forms.') }}
+        </p>
+        <div class="specs-table-wrap">
+            <table class="specs-table">
+                <thead>
+                    <tr>
+                        <th>{{ _('Parameter') }}</th>
+                        <th>{{ _('Value') }}</th>
+                        <th>{{ _('User-adjustable') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="group-row"><td colspan="3">{{ _('Calorie model') }}</td></tr>
+                    <tr><td>{{ _('Calories per person per day') }}</td><td class="val">2,400 kcal</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Month length used for targets') }}</td><td class="val">30 {{ _('days') }}</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Household cooking efficiency (4-person)') }}</td><td class="val">0.85</td><td><span class="tag-no">{{ _('Scales with size') }}</span></td></tr>
+                    <tr><td>{{ _('Cooking wastage factor (4-person)') }}</td><td class="val">1.133</td><td><span class="tag-no">{{ _('Formula, floor 1.05') }}</span></td></tr>
+
+                    <tr class="group-row"><td colspan="3">{{ _('Fuel energy content') }}</td></tr>
+                    <tr><td>{{ _('LPG calorific value') }}</td><td class="val">12.8 kWh/kg</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('PNG calorific value') }}</td><td class="val">10.2 kWh/SCM</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Biomass energy content') }}</td><td class="val">4.5 kWh/kg</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Biogas energy value') }}</td><td class="val">5.5 kWh/m³</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+
+                    <tr class="group-row"><td colspan="3">{{ _('Stove efficiency') }}</td></tr>
+                    <tr><td>{{ _('LPG') }}</td><td class="val">0.60</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('PNG') }}</td><td class="val">0.70</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Grid electricity') }}</td><td class="val">0.90</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Biogas and traditional solid biomass') }}</td><td class="val">0.55</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+
+                    <tr class="group-row"><td colspan="3">{{ _('CO₂ emission factors (kg CO₂ per kWh input)') }}</td></tr>
+                    <tr><td>{{ _('LPG') }}</td><td class="val">0.24</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('PNG') }}</td><td class="val">0.21</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Grid electricity') }}</td><td class="val">0.65</td><td><span class="tag-yes">{{ _('Yes') }}</span></td></tr>
+                    <tr><td>{{ _('Biogas') }}</td><td class="val">0.30</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+                    <tr><td>{{ _('Traditional solid biomass') }}</td><td class="val">0.40</td><td><span class="tag-no">{{ _('No') }}</span></td></tr>
+
+                    <tr class="group-row"><td colspan="3">{{ _('Prices (local defaults)') }}</td></tr>
+                    <tr><td>{{ _('LPG cylinder price') }}</td><td class="val">{{ _('e.g. 922 Rs / 14.2 kg') }}</td><td><span class="tag-yes">{{ _('Yes') }}</span></td></tr>
+                    <tr><td>{{ _('PNG rate') }}</td><td class="val">{{ _('e.g. 48 Rs/SCM') }}</td><td><span class="tag-yes">{{ _('Yes') }}</span></td></tr>
+                    <tr><td>{{ _('Electricity tariff') }}</td><td class="val">{{ _('e.g. 6.5 Rs/kWh') }}</td><td><span class="tag-yes">{{ _('Yes') }}</span></td></tr>
+                    <tr><td>{{ _('Biomass cost') }}</td><td class="val">{{ _('e.g. 5 Rs/kg') }}</td><td><span class="tag-yes">{{ _('Yes') }}</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- 4. HEALTH & INDOOR-AIR MODEL -->
+<section class="homepage-section features-section" id="health-model">
+    <div class="section-container">
+        <span class="section-eyebrow">
+            <i class="bi bi-cloud-haze2"></i>
+            {{ _('Health & Indoor Air') }}
+        </span>
+        <h2 class="section-title">{{ _('How indoor air-quality risk is estimated') }}</h2>
+        <p class="section-lead">
+            {{ _('Indoor PM2.5 exposure is estimated from the fuel, the kitchen ventilation setup, and daily cooking
+            hours, then benchmarked against WHO air-quality guidance. Cleaner fuels and better ventilation lower the
+            modelled exposure, and the presence of sensitive members raises the risk score above the base level.') }}
+        </p>
+        <div class="formula-panel">
+            <h3>{{ _('The exposure estimate') }}</h3>
+            <div class="formula-list">
+                <div class="formula-item">
+                    <code>{{ _('PM2.5_peak = fuel_PM25_factor × kitchen_factor × cooking_hours_factor × scale') }}</code>
+                </div>
+                <div class="formula-item">
+                    <code>{{ _('cooking_hours_factor = min(cooking_hours ÷ 3, 1.5)') }}</code>
+                </div>
+            </div>
+        </div>
+        <div class="specs-table-wrap">
+            <table class="specs-table">
+                <thead>
+                    <tr>
+                        <th>{{ _('Kitchen ventilation scenario') }}</th>
+                        <th>{{ _('Exposure factor') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>{{ _('Open Kitchen') }}</td><td class="val">0.04</td></tr>
+                    <tr><td>{{ _('Chimney') }}</td><td class="val">0.25</td></tr>
+                    <tr><td>{{ _('Exhaust Fan') }}</td><td class="val">0.60</td></tr>
+                    <tr><td>{{ _('No Exhaust') }}</td><td class="val">0.80</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="methodology-note">
+            <strong>{{ _('Reading the factor:') }}</strong>
+            {{ _('A lower kitchen factor means better ventilation and lower modelled exposure. Longer cooking hours
+            raise exposure up to a capped multiplier, and sensitive household members add to the final risk score so
+            vulnerable groups are flagged.') }}
+        </div>
+    </div>
+</section>
+
+<!-- 5. RECOMMENDATION METHOD -->
+<section class="homepage-section" id="recommendations">
+    <div class="section-container">
+        <span class="section-eyebrow">
+            <i class="bi bi-award"></i>
+            {{ _('Recommendations') }}
+        </span>
+        <h2 class="section-title">{{ _('How fuel recommendations are ranked') }}</h2>
+        <p class="section-lead">
+            {{ _('The current setup and every alternative fuel are scored on four weighted criteria, and the
+            highest-scoring options are recommended. The weights below are for the balanced preference; choosing a
+            different budget or priority shifts the weights toward cost, environment, or health.') }}
+        </p>
+        <div class="duo-grid">
+            <div class="specs-table-wrap">
+                <table class="specs-table">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Criterion') }}</th>
+                            <th>{{ _('Weight (balanced)') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>{{ _('Health') }}</td><td class="val">0.40</td></tr>
+                        <tr><td>{{ _('Environmental') }}</td><td class="val">0.25</td></tr>
+                        <tr><td>{{ _('Economic') }}</td><td class="val">0.25</td></tr>
+                        <tr><td>{{ _('Practicality') }}</td><td class="val">0.10</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <article class="methodology-card">
+                <div class="card-icon"><i class="bi bi-calculator"></i></div>
+                <h3>{{ _('The score') }}</h3>
+                <p>
+                    {{ _('recommendation_score = health × 0.40 + environmental × 0.25 + economic × 0.25 +
+                    practicality × 0.10. Every fuel option is scored on these four components, ranked by the combined
+                    score, and the top options are shown as recommendations.') }}
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- 6. ENVIRONMENTAL GRADING BASIS -->
+<section class="homepage-section features-section" id="environmental-grade">
+    <div class="section-container">
+        <span class="section-eyebrow">
+            <i class="bi bi-globe2"></i>
+            {{ _('Environmental Grade') }}
+        </span>
+        <h2 class="section-title">{{ _('How the environmental grade is assigned') }}</h2>
+        <p class="section-lead">
+            {{ _('The environmental grade is based on emissions per unit of use, not on total emissions, so larger
+            households and busier kitchens are judged fairly against smaller ones.') }}
+        </p>
+        <div class="duo-grid">
+            <article class="methodology-card">
+                <div class="card-icon"><i class="bi bi-house-heart"></i></div>
+                <h3>{{ _('Residential') }}</h3>
+                <p>{{ _('The grade is based on annual CO₂ emissions per household member, so per-person emissions decide the grade rather than the household total.') }}</p>
+            </article>
+            <article class="methodology-card">
+                <div class="card-icon"><i class="bi bi-building"></i></div>
+                <h3>{{ _('Commercial') }}</h3>
+                <p>{{ _('The grade is based on annual CO₂ emissions per serving, so a high-throughput kitchen is measured by its per-serving footprint.') }}</p>
+            </article>
+        </div>
+        <div class="cta-row">
+            <a href="{{ url_for('analysis_selection') }}" class="cta-primary">
+                <i class="bi bi-rocket-takeoff"></i>
+                {{ _('Start Analysis') }}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add smooth scroll behavior for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add fade-in animation on scroll for cards and stats
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.stats-container, .methodology-card, .feature-card, .formula-panel, .methodology-note, .specs-table-wrap').forEach((element) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(element);
+    });
+</script>
 {% endblock %}

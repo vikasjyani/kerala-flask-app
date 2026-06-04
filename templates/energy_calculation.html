@@ -751,6 +751,23 @@
         return dish.replace(/[^a-zA-Z0-9_-]/g, '_');
     }
 
+    function dishFuelKey(category, dish) {
+        return `${category}__${dish}`;
+    }
+
+    function dishFuelInputKey(category, dish) {
+        return `${category}_${dish}_fuel`;
+    }
+
+    function inlineFuelContainerId(category, dish) {
+        return `fuel_inline_${slugifyDish(category)}_${slugifyDish(dish)}`;
+    }
+
+    function isVegetarianDish(value) {
+        if (value === undefined || value === null || value === '') return true;
+        return ['yes', 'y', 'true', '1', 'veg', 'vegetarian'].includes(String(value).trim().toLowerCase());
+    }
+
     function displayFuelName(fuel) {
         if (fuelLabelMap && fuelLabelMap[fuel]) {
             return fuelLabelMap[fuel];
@@ -777,7 +794,7 @@
                 const isDishObject = typeof dishObj === 'object' && dishObj !== null;
                 const canonicalDishName = isDishObject ? (dishObj.name || dishObj.dish_name || dishObj.Dishes) : dishObj;
                 const displayDishName = isDishObject ? (dishObj.display_name || dishObj.name_ml || canonicalDishName) : canonicalDishName;
-                const isVeg = isDishObject ? dishObj.is_veg === 'yes' : true;
+                const isVeg = isDishObject ? isVegetarianDish(dishObj.is_veg) : true;
                 const dishSlug = slugifyDish(canonicalDishName);
                 dishDisplayMap[canonicalDishName] = displayDishName;
 
@@ -797,7 +814,7 @@
                         ${vegIndicator}${displayDishName}
                     </label>
                 </div>
-                <div class="fuel-inline small text-muted flex-grow-1" id="fuel_inline_${dishSlug}"></div>
+                <div class="fuel-inline small text-muted flex-grow-1" id="${inlineFuelContainerId(category, canonicalDishName)}"></div>
             `;
                 container.appendChild(dishElement);
             });
@@ -837,14 +854,15 @@
                 selectedDishes[category].push(dish);
             }
             // Show inline fuel dropdown instead of modal
-            showInlineFuelDropdown(dish, checkboxEl);
+            showInlineFuelDropdown(category, dish, checkboxEl);
         } else {
             selectedDishes[category] = selectedDishes[category].filter(d => d !== dish);
             // Remove fuel selection for this dish
-            if (selectedFuels[dish]) {
-                delete selectedFuels[dish];
+            const fuelKey = dishFuelKey(category, dish);
+            if (selectedFuels[fuelKey]) {
+                delete selectedFuels[fuelKey];
             }
-            const inlineContainer = document.getElementById(`fuel_inline_${slugifyDish(dish)}`);
+            const inlineContainer = document.getElementById(inlineFuelContainerId(category, dish));
             if (inlineContainer) {
                 inlineContainer.innerHTML = '';
             }
@@ -904,9 +922,9 @@
         // Legacy fuel selection blocks removed; using inline selectors instead.
     }
 
-    function showInlineFuelDropdown(dish, checkboxEl) {
-        const dishSlug = slugifyDish(dish);
-        const container = document.getElementById(`fuel_inline_${dishSlug}`);
+    function showInlineFuelDropdown(category, dish, checkboxEl) {
+        const fuelKey = dishFuelKey(category, dish);
+        const container = document.getElementById(inlineFuelContainerId(category, dish));
         if (!container) return;
 
         if (currentFuelMix.length === 0) {
@@ -920,10 +938,10 @@
                 <option value="">${localeStrings.selectFuelForDish}</option>
                 ${currentFuelMix.map(fuel => `<option value="${fuel}">${displayFuelName(fuel)}</option>`).join('')}
             `;
-        select.value = selectedFuels[dish] || '';
+        select.value = selectedFuels[fuelKey] || '';
         select.addEventListener('change', function () {
             if (this.value) {
-                selectedFuels[dish] = this.value;
+                selectedFuels[fuelKey] = this.value;
                 // Hide dropdown after selection - show blank space
                 container.innerHTML = '';
                 updateDishSummary();
@@ -938,8 +956,8 @@
     function updateInlineFuelSelectors() {
         Object.entries(selectedDishes).forEach(([category, dishes]) => {
             dishes.forEach(dish => {
-                const dishSlug = slugifyDish(dish);
-                const container = document.getElementById(`fuel_inline_${dishSlug}`);
+                const fuelKey = dishFuelKey(category, dish);
+                const container = document.getElementById(inlineFuelContainerId(category, dish));
                 if (!container) return;
 
                 if (currentFuelMix.length === 0) {
@@ -948,7 +966,7 @@
                 }
 
                 // If fuel is already selected, show blank space instead of dropdown
-                if (selectedFuels[dish]) {
+                if (selectedFuels[fuelKey]) {
                     container.innerHTML = '';
                     return;
                 }
@@ -959,11 +977,11 @@
                         <option value="">${localeStrings.selectFuelForDish}</option>
                         ${currentFuelMix.map(fuel => `<option value="${fuel}">${displayFuelName(fuel)}</option>`).join('')}
                     `;
-                select.value = selectedFuels[dish] || '';
+                select.value = selectedFuels[fuelKey] || '';
 
                 select.addEventListener('change', function () {
                     if (this.value) {
-                        selectedFuels[dish] = this.value;
+                        selectedFuels[fuelKey] = this.value;
                         // Hide dropdown after selection - show blank space
                         container.innerHTML = '';
                         updateDishSummary();
@@ -989,7 +1007,7 @@
         ['Breakfast', 'Lunch', 'Dinner', 'Snacks'].forEach(category => {
             const dishes = selectedDishes[category] || [];
             dishes.forEach(dish => {
-                const fuel = selectedFuels[dish] || localeStrings.notSelected;
+                const fuel = selectedFuels[dishFuelKey(category, dish)] || localeStrings.notSelected;
                 const displayFuel = displayFuelName(fuel);
                 const displayCategory = categoryLabelMap[category] || category;
                 const displayDish = dishDisplayMap[dish] || dish;
@@ -1273,8 +1291,8 @@
             // Check if we have fuels selected and dishes with fuels
             const hasFuels = currentFuelMix.length > 0;
             const hasDishes = Object.values(selectedDishes).some(dishes => dishes.length > 0);
-            const allDishesHaveFuels = Object.values(selectedDishes).every(dishes =>
-                dishes.every(dish => selectedFuels[dish])
+            const allDishesHaveFuels = Object.entries(selectedDishes).every(([category, dishes]) =>
+                dishes.every(dish => selectedFuels[dishFuelKey(category, dish)])
             );
 
             btn.disabled = !(hasFuels && hasDishes && allDishesHaveFuels);
@@ -1306,9 +1324,14 @@
                 data[`${category.toLowerCase()}_dishes`] = dishes;
             });
 
-            // Add fuel selections
-            Object.keys(selectedFuels).forEach(dish => {
-                data[`${dish}_fuel`] = selectedFuels[dish];
+            // Add category-specific fuel selections so duplicate dish names remain independent.
+            Object.entries(selectedDishes).forEach(([category, dishes]) => {
+                dishes.forEach(dish => {
+                    const fuel = selectedFuels[dishFuelKey(category, dish)];
+                    if (fuel) {
+                        data[dishFuelInputKey(category, dish)] = fuel;
+                    }
+                });
             });
 
             showLoadingOverlay('{{ _("Calculating your energy consumption...") }}');
@@ -1462,9 +1485,11 @@
                                 selectedDishes[category].push(dish);
 
                                 // Restore fuel selection for this dish
-                                const fuelKey = `${dish}_fuel`;
-                                if (energyData[fuelKey]) {
-                                    selectedFuels[dish] = energyData[fuelKey];
+                                const categoryFuelKey = dishFuelInputKey(category, dish);
+                                const legacyFuelKey = `${dish}_fuel`;
+                                const selectedFuel = energyData[categoryFuelKey] || energyData[legacyFuelKey];
+                                if (selectedFuel) {
+                                    selectedFuels[dishFuelKey(category, dish)] = selectedFuel;
                                 }
                             }
                         });

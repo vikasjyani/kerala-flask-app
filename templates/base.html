@@ -150,14 +150,20 @@
     <div class="footer-area">
         <div class="footer-content">
             <div class="footer-top">
-                <div>
-                    <div class="footer-logos">
-                        <img src="{{ url_for('static', filename='images/vasudha_logo_100w.png') }}" alt="Vasudha Foundation" width="51" height="50" loading="lazy">
-                        <img src="{{ url_for('static', filename='images/emc_Keralam_logo.png') }}" alt="EMC Keralam" width="135" height="40" loading="lazy">
+                <div class="footer-brand-row">
+                    <div class="footer-brand-block">
+                        <div class="footer-logo">
+                            <img src="{{ url_for('static', filename='images/vasudha_logo_100w.png') }}" alt="Vasudha Foundation" width="51" height="50" loading="lazy">
+                        </div>
+                        <div class="footer-location">{{ _('New Delhi') }}</div>
                     </div>
-                    <div class="footer-location">{{ _('Thiruvananthapuram | Keralam') }}</div>
+                    <div class="footer-brand-block footer-brand-block-end">
+                        <div class="footer-logo footer-logo-end">
+                            <img src="{{ url_for('static', filename='images/emc_Keralam_logo.png') }}" alt="EMC Keralam" width="135" height="40" loading="lazy">
+                        </div>
+                        <div class="footer-location">{{ _('Thiruvananthapuram | Kerala') }}</div>
+                    </div>
                 </div>
-
             </div>
             <div class="footer-copyright">
                 {{ _('© 2025 Vasudha Foundation & EMC Keralam.') }}
