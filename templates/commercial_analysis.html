@@ -83,8 +83,8 @@
                             <tbody>
                                 {% for dish_info in analysis.current.fuel_details.selected_dishes %}
                                 <tr>
-                                    <td><span class="badge bg-secondary">{{ dish_info.category }}</span></td>
-                                    <td>{{ dish_info.dish }}</td>
+                                    <td><span class="badge bg-secondary">{{ _(dish_info.category) }}</span></td>
+                                    <td>{{ localize_db_label(dish_info.dish, dish_info.dish_ml) }}</td>
                                     <td>
                                         {% if dish_info.fuel == 'LPG' %}
                                         <span class="badge bg-warning text-dark">{{ _('LPG') }}</span>

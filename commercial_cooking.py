@@ -956,7 +956,17 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
             })
         
         logger.log_success(f"Loaded {len(dishes)} commercial dishes")
-        
+
+        # Map English dish name -> Malayalam name so the analysis page can localize
+        # the selected-dishes table (the JSON blob otherwise stores English only).
+        dish_ml_map = {}
+        if 'Dishes' in dishes.columns and 'Dishes_ml' in dishes.columns:
+            dish_ml_map = {
+                str(row['Dishes']): row['Dishes_ml']
+                for _, row in dishes.iterrows()
+                if pd.notna(row.get('Dishes_ml'))
+            }
+
         # Extract institution parameters
         servings_per_day = int(data.get('servings_per_day', 100))
         try:
@@ -1001,6 +1011,7 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
                 # Store dish with full details for template
                 dishes_with_details.append({
                     'dish': dish,
+                    'dish_ml': dish_ml_map.get(str(dish)),
                     'category': category,
                     'fuel': fuel_type
                 })
