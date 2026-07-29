@@ -515,6 +515,84 @@ def get_chart_font_properties(locale):
     return font_manager.FontProperties(family=get_chart_font(locale))
 
 
+# ==================== MALAYALAM / LATIN FONT FALLBACK ====================
+# reportlab (unlike matplotlib) has no automatic per-glyph font fallback: a Table cell
+# or Paragraph is drawn with a single font. The Malayalam report font (Noto Sans
+# Malayalam) has no Latin letters, so English text (names, districts, units like kWh/
+# kg, "CO2", "PM2.5") silently disappears in Malayalam reports. We detect glyphs the
+# Malayalam font lacks and wrap those runs in the Latin font via reportlab <font> markup.
+
+from xml.sax.saxutils import escape as _xml_escape
+
+def _load_ml_codepoints():
+    candidates = [
+        FONT_PROFILES.get('chart_ml_path'),
+        'static/fonts/NotoSansMalayalam-Regular.ttf',
+    ]
+    for path in candidates:
+        if path and os.path.exists(path):
+            try:
+                probe = TTFont('probe_ml_coverage', path)
+                return set(probe.face.charToGlyph.keys())
+            except Exception:
+                continue
+    return set()
+
+_ML_CODEPOINTS = _load_ml_codepoints()
+
+def _ml_lacks(ch):
+    """True if the Malayalam report font cannot render this char (so it needs the
+    Latin fallback font). Whitespace is font-agnostic and stays with its neighbour."""
+    if ch.isspace():
+        return False
+    return bool(_ML_CODEPOINTS) and (ord(ch) not in _ML_CODEPOINTS)
+
+def ml_markup(text, latin_font=None):
+    """Return reportlab paragraph markup where runs of glyphs missing from the Malayalam
+    font are wrapped in the Latin fallback font. Content is XML-escaped."""
+    text = '' if text is None else str(text)
+    latin_font = latin_font or FONT_PROFILES.get('default_regular') or 'Helvetica'
+    out, run, run_latin = [], [], False
+    def flush():
+        if not run:
+            return
+        s = _xml_escape(''.join(run))
+        out.append(f'<font face="{latin_font}">{s}</font>' if run_latin else s)
+        run.clear()
+    for ch in text:
+        want = _ml_lacks(ch)
+        if run and want != run_latin:
+            flush()
+        run_latin = want
+        run.append(ch)
+    flush()
+    return ''.join(out)
+
+def localize_matrix(data, locale, styles, has_header=True):
+    """For Malayalam, convert each string cell of a table matrix into a Paragraph whose
+    Latin runs use the Latin fallback font (so English/units render instead of vanishing).
+    Header row -> white style; first column -> label style; others -> value style.
+    Non-string cells (existing flowables) pass through unchanged. En reports are untouched."""
+    if normalize_locale(locale) != 'ml':
+        return data
+    out = []
+    for r, row in enumerate(data):
+        new_row = []
+        for c, cell in enumerate(row):
+            if not isinstance(cell, str):
+                new_row.append(cell)
+                continue
+            if has_header and r == 0:
+                st = styles['CellHead']
+            elif c == 0:
+                st = styles['CellLabel']
+            else:
+                st = styles['CellValue']
+            new_row.append(Paragraph(ml_markup(cell), st))
+        out.append(new_row)
+    return out
+
+
 # ==================== STYLE SYSTEM ====================
 
 def create_styles(locale='en'):
@@ -632,7 +710,25 @@ def create_styles(locale='en'):
         leftIndent=DS.SPACE_MD,
         rightIndent=DS.SPACE_MD
     ))
-    
+
+    # Table-cell styles used by localize_matrix() to render mixed Malayalam/Latin cells
+    # as Paragraphs (background colours still come from each table's TableStyle).
+    styles.add(ParagraphStyle(
+        name='CellHead', parent=styles['Normal'],
+        fontSize=DS.FONT_SIZE_BODY, textColor=colors.white, fontName=font_bold,
+        leading=DS.FONT_SIZE_BODY * 1.3
+    ))
+    styles.add(ParagraphStyle(
+        name='CellLabel', parent=styles['Normal'],
+        fontSize=DS.FONT_SIZE_BODY, textColor=DS.GREY_900, fontName=font_bold,
+        leading=DS.FONT_SIZE_BODY * 1.3
+    ))
+    styles.add(ParagraphStyle(
+        name='CellValue', parent=styles['Normal'],
+        fontSize=DS.FONT_SIZE_BODY, textColor=DS.GREY_900, fontName=font_regular,
+        leading=DS.FONT_SIZE_BODY * 1.3
+    ))
+
     return styles
 
 
@@ -1121,15 +1217,20 @@ def create_fuel_breakdown_table(current, styles, locale='en'):
         wordWrap='CJK'
     )
 
+    def _c(txt):
+        # Wrap Latin runs (units like kWh/kg, English fuel names) in the Latin font so
+        # they render in Malayalam reports instead of vanishing.
+        return Paragraph(ml_markup(txt) if normalize_locale(locale) == 'ml' else str(txt), body_style)
+
     for fuel, details in rows.items():
         annual_emissions = details.get('annual_emissions', details.get('annual_co2_kg', details.get('annual_co2', 0)))
         delivered = details.get('energy_delivered', details.get('delivered_energy_kwh', details.get('monthly_energy_kwh', 0)))
         row = [
-            Paragraph(localize_fuel_name(fuel, locale), body_style),
-            Paragraph(get_quantity_text(details), body_style),
-            Paragraph(f"{float(delivered):,.1f} kWh" if delivered is not None else "-", body_style),
-            Paragraph(format_currency(details.get('monthly_cost', 0)), body_style),
-            Paragraph(f"{float(annual_emissions):,.0f} kg" if annual_emissions is not None else "-", body_style),
+            _c(localize_fuel_name(fuel, locale)),
+            _c(get_quantity_text(details)),
+            _c(f"{float(delivered):,.1f} kWh" if delivered is not None else "-"),
+            _c(format_currency(details.get('monthly_cost', 0))),
+            _c(f"{float(annual_emissions):,.0f} kg" if annual_emissions is not None else "-"),
         ]
         data.append(row)
 
@@ -1150,6 +1251,10 @@ def create_detailed_comparison_table(current, alternatives, styles, locale='en')
         leading=10.5,
         wordWrap='CJK'
     )
+    _is_ml = normalize_locale(locale) == 'ml'
+    def _c(txt):
+        # Latin fallback so fuel names, units (kg, %) and currency render in ml reports.
+        return Paragraph(ml_markup(txt) if _is_ml else str(txt), body_style)
 
     data = [[
         tr(locale, 'comparison_energy_source'),
@@ -1165,12 +1270,12 @@ def create_detailed_comparison_table(current, alternatives, styles, locale='en')
     current_risk = localize_risk_category(current.get('health_risk_category') or get_risk_category(current.get('health_risk_score', 0)), locale)
 
     data.append([
-        Paragraph(tr(locale, 'comparison_current_setup'), body_style),
-        Paragraph(format_currency(current_cost), body_style),
-        Paragraph(f"{current_emissions:,.0f} kg", body_style),
-        Paragraph(format_percent(current.get('overall_thermal_efficiency', 0), digits=0), body_style),
-        Paragraph(current_risk, body_style),
-        Paragraph(tr(locale, 'comparison_current'), body_style)
+        _c(tr(locale, 'comparison_current_setup')),
+        _c(format_currency(current_cost)),
+        _c(f"{current_emissions:,.0f} kg"),
+        _c(format_percent(current.get('overall_thermal_efficiency', 0), digits=0)),
+        _c(current_risk),
+        _c(tr(locale, 'comparison_current'))
     ])
 
     sorted_alts = sorted(normalize_alternatives(alternatives), key=lambda x: x.get('monthly_cost', float('inf')))
@@ -1201,12 +1306,13 @@ def create_detailed_comparison_table(current, alternatives, styles, locale='en')
             status_parts.append(tr(locale, 'status_co2_more', value=f"{emission_diff:,.0f}"))
 
         data.append([
-            Paragraph(fuel, body_style),
-            Paragraph(format_currency(cost), body_style),
-            Paragraph(f"{emissions:,.0f} kg", body_style),
-            Paragraph(format_percent(efficiency, digits=0), body_style),
-            Paragraph(risk_text, body_style),
-            Paragraph("<br/>".join(status_parts), body_style)
+            _c(fuel),
+            _c(format_currency(cost)),
+            _c(f"{emissions:,.0f} kg"),
+            _c(format_percent(efficiency, digits=0)),
+            _c(risk_text),
+            # status parts carry <br/> markup — wrap each part, then join (don't escape the <br/>)
+            Paragraph("<br/>".join((ml_markup(p) if _is_ml else str(p)) for p in status_parts), body_style)
         ])
 
     table = Table(
@@ -1280,7 +1386,9 @@ def create_solar_specs_table(bess_data, locale='en'):
         data.append(['ആകെ പ്രാരംഭ ചെലവ്', f"₹{bess_data.get('total_capital_cost', 0):,.0f}", 'സോളാർ + ബാറ്ററി + ഇൻസ്റ്റലേഷൻ'])
     else:
         data.append(['Total Upfront Cost', f"₹{bess_data.get('total_capital_cost', 0):,.0f}", 'Solar + Battery + Installation'])
-    
+
+    # Localize so Latin units (kW, kWh, m², GHI) render in Malayalam reports.
+    data = localize_matrix(data, locale, create_styles(locale), has_header=True)
     table = Table(data, colWidths=[1.8*inch, 1.4*inch, 3.6*inch])
     table.setStyle(create_table_style(locale=locale))
     return table
@@ -1293,21 +1401,33 @@ def create_health_section(health_impact, locale='en'):
     color_map = {'Low': DS.SUCCESS, 'Moderate': DS.WARNING, 'High': DS.DANGER, 'Very High': DS.DANGER}
     risk_color = color_map.get(risk_cat_en, DS.WARNING)
     font_regular, font_bold = get_font_pair(locale)
-    
+    is_ml = normalize_locale(locale) == 'ml'
+
+    def _hcell(txt, size, color, bold):
+        """Centered health-cell Paragraph with Latin fallback so units (PM2.5, μg/m³)
+        and any English text render in Malayalam reports instead of vanishing."""
+        latin = FONT_PROFILES.get('default_bold' if bold else 'default_regular')
+        content = ml_markup(txt, latin_font=latin) if is_ml else str(txt)
+        st = ParagraphStyle(
+            f'Health_{locale}_{size}_{bold}_{color}',
+            fontName=(font_bold if bold else font_regular),
+            fontSize=size, textColor=color, alignment=TA_CENTER, leading=size * 1.25
+        )
+        return Paragraph(content, st)
+
     data = [
-        [tr(locale, 'health_risk_level'), tr(locale, 'peak_pm25'), tr(locale, 'health_risk_index')],
-        [risk_cat, f"{health_impact.get('pm25_peak', 0):.1f} μg/m³", f"{health_impact.get('health_risk_score', 0):.0f}/100"]
+        [_hcell(tr(locale, 'health_risk_level'), 10, DS.GREY_700, True),
+         _hcell(tr(locale, 'peak_pm25'), 10, DS.GREY_700, True),
+         _hcell(tr(locale, 'health_risk_index'), 10, DS.GREY_700, True)],
+        [_hcell(risk_cat, 12, risk_color, False),
+         _hcell(f"{health_impact.get('pm25_peak', 0):.1f} μg/m³", 12, DS.GREY_900, False),
+         _hcell(f"{health_impact.get('health_risk_score', 0):.0f}/100", 12, DS.GREY_900, False)]
     ]
-    
+
     table = Table(data, colWidths=[2.2*inch, 2.3*inch, 2.3*inch])
     style = TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-        ('FONTNAME', (0,0), (-1,0), font_bold),
-        ('FONTSIZE', (0,0), (-1,0), 10),
-        ('TEXTCOLOR', (0,0), (-1,0), DS.GREY_700),
-        ('FONTSIZE', (0,1), (-1,1), 12),
-        ('FONTNAME', (0,1), (-1,1), font_regular),
-        ('TEXTCOLOR', (0,1), (0,1), risk_color), # Risk Level Color
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('GRID', (0,0), (-1,-1), 0.5, DS.GREY_300),
         ('TOPPADDING', (0,0), (-1,-1), 8),
         ('BOTTOMPADDING', (0,0), (-1,-1), 8),
@@ -1359,7 +1479,7 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
         [tr(locale, 'household_size'), tr(locale, 'household_size_value', size=household_data.get('household_size', 0))],
         [tr(locale, 'main_priority'), str(household_data.get('main_priority', tr(locale, 'not_available'))).title()],
     ]
-    story.append(Table(profile_data, colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)))
+    story.append(Table(localize_matrix(profile_data, locale, styles, has_header=False), colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)))
     story.append(Spacer(1, DS.SPACE_LG))
 
     story.append(Paragraph(tr(locale, 'current_energy_consumption'), styles['SectionHeader']))
@@ -1370,7 +1490,7 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
         [tr(locale, 'annual_co2'), f"{float(current.get('annual_emissions', 0) or 0):,.0f} kg"],
         [tr(locale, 'thermal_efficiency'), format_percent(current.get('overall_thermal_efficiency', 0), digits=0)],
     ]
-    story.append(Table(summary_data, colWidths=[2.5 * inch, 3.0 * inch], style=create_table_style(locale=locale)))
+    story.append(Table(localize_matrix(summary_data, locale, styles, has_header=True), colWidths=[2.5 * inch, 3.0 * inch], style=create_table_style(locale=locale)))
     story.append(Spacer(1, DS.SPACE_MD))
 
     fuel_breakdown_table = create_fuel_breakdown_table(current, styles, locale=locale)
@@ -1444,8 +1564,9 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
             continue
 
         fuel_label = localize_fuel_name(fuel, locale)
+        _rec_title = tr(locale, 'recommendation_title', rank=i, fuel=fuel_label, score=f"{float(score):.1f}")
         story.append(Paragraph(
-            tr(locale, 'recommendation_title', rank=i, fuel=fuel_label, score=f"{float(score):.1f}"),
+            ml_markup(_rec_title, latin_font=FONT_PROFILES.get('default_bold')) if locale == 'ml' else _rec_title,
             styles['SubsectionHeader']
         ))
         rec_data_table = [
@@ -1454,7 +1575,7 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
             [tr(locale, 'payback_period'), f"{float(rec_data.get('payback_period_months', 0) or 0):.0f} {tr(locale, 'months')}"],
             [tr(locale, 'health_risk'), localize_risk_category(rec_data.get('health_risk_category', 'Moderate'), locale)],
         ]
-        story.append(Table(rec_data_table, colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)))
+        story.append(Table(localize_matrix(rec_data_table, locale, styles, has_header=False), colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)))
         story.append(Spacer(1, DS.SPACE_MD))
 
     doc.build(story, onFirstPage=add_page_number, onLaterPages=add_page_number)
@@ -1514,7 +1635,7 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
         [tr(locale, 'daily_servings'), f"{int(institution_data.get('servings_per_day', 0) or 0):,}"],
         [tr(locale, 'working_days_month'), str(institution_data.get('working_days', 0) or 0)],
     ]
-    story.append(Table(inst_profile, colWidths=[2.2 * inch, 3.3 * inch], style=create_summary_table_style(locale=locale)))
+    story.append(Table(localize_matrix(inst_profile, locale, styles, has_header=False), colWidths=[2.2 * inch, 3.3 * inch], style=create_summary_table_style(locale=locale)))
     story.append(Spacer(1, DS.SPACE_LG))
 
     story.append(Paragraph(tr(locale, 'current_energy_consumption'), styles['SectionHeader']))
@@ -1528,7 +1649,7 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
     if current.get('cost_per_serving') is not None:
         ops_summary.append([tr(locale, 'cost_per_serving'), f"₹{float(current.get('cost_per_serving', 0) or 0):.2f}"])
 
-    story.append(Table(ops_summary, colWidths=[2.5 * inch, 3 * inch], style=create_table_style(locale=locale)))
+    story.append(Table(localize_matrix(ops_summary, locale, styles, has_header=True), colWidths=[2.5 * inch, 3 * inch], style=create_table_style(locale=locale)))
     story.append(Spacer(1, DS.SPACE_MD))
 
     fuel_breakdown_table = create_fuel_breakdown_table(current, styles, locale=locale)
@@ -1549,7 +1670,7 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
                 f"{float(meal_values.get('percentage', 0) or 0):.0f}%"
             ])
         story.append(Table(
-            meal_data,
+            localize_matrix(meal_data, locale, styles, has_header=True),
             colWidths=[1.5 * inch, 1.5 * inch, 1.5 * inch, 1.0 * inch],
             style=create_table_style(header_color=DS.DARK_GREEN, locale=locale)
         ))
