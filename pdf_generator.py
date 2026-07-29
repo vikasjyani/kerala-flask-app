@@ -1445,7 +1445,7 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
         rightMargin=DS.MARGIN_HORIZONTAL,
         leftMargin=DS.MARGIN_HORIZONTAL,
         topMargin=DS.MARGIN_VERTICAL + 20,
-        bottomMargin=DS.MARGIN_VERTICAL + 50
+        bottomMargin=DS.MARGIN_VERTICAL + 15  # footer is drawn absolutely at y<=30pt; was +50, leaving ~60pt dead space per page
     )
     doc._report_locale = locale
 
@@ -1602,7 +1602,7 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
         rightMargin=DS.MARGIN_HORIZONTAL,
         leftMargin=DS.MARGIN_HORIZONTAL,
         topMargin=DS.MARGIN_VERTICAL + 20,
-        bottomMargin=DS.MARGIN_VERTICAL + 50
+        bottomMargin=DS.MARGIN_VERTICAL + 15  # footer is drawn absolutely at y<=30pt; was +50, leaving ~60pt dead space per page
     )
     doc._report_locale = locale
 
