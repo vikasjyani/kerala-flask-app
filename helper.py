@@ -1006,19 +1006,19 @@ def get_cooking_analysis(household_id):
 def get_recommendations(household_id):
     """Retrieve recommendations from database"""
     conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute('SELECT * FROM recommendations WHERE household_id = ?', (household_id,))
-    rows = cursor.fetchall()
-    
-    recommendations = []
-    if rows:
-        columns = [description[0] for description in cursor.description]
-        for row in rows:
-            recommendations.append(dict(zip(columns, row)))
-    
-    close_user_connection(conn)
-    return recommendations
+    try:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM recommendations WHERE household_id = ? ORDER BY rank', (household_id,))
+        rows = cursor.fetchall()
+
+        recommendations = []
+        if rows:
+            columns = [description[0] for description in cursor.description]
+            for row in rows:
+                recommendations.append(dict(zip(columns, row)))
+        return recommendations
+    finally:
+        close_user_connection(conn)
 
 def save_institution_data(institution_data):
     """Save commercial institution data to database and return institution_id"""
