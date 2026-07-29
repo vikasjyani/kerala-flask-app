@@ -15,7 +15,7 @@ Branch: `fix/full-audit-remediation`. Backups of the databases, translations and
 
 ---
 
-## Fixed (56 of 72 findings)
+## Fixed (58 of 72 findings)
 
 ### Second pass (deferred items now completed)
 - 🟡 **`commercial_analysis.html` duplicated ~470 lines of chart JS** — removed (507 lines); the page now relies on `static/js/main.js` exactly like residential `analysis.html`. This also fixed the **over-strict chart guard** (cost+emissions now render even when health data is absent; missing health/radar canvases are skipped safely by `main.js`).
@@ -23,6 +23,8 @@ Branch: `fix/full-audit-remediation`. Backups of the databases, translations and
 - 🔵 **`babel.cfg`** — added a `[javascript:]` extractor for future gettext calls in JS.
 - 🟡 **Institution types & fuel names rendered untranslated** — added `institution_type_label()` (maps stored values incl. the `Hotel`→"Hotel/Restaurant" / `Factory`→"Factory Canteen" value-vs-label mismatch to the catalog labels) and routed the commercial displays through it; the fuel checkbox now uses `localize_db_label(fuel.fuel_name, fuel.fuel_name_ml)`. (Dish-name localization still deferred — see below.)
 - 🟡 **`energy_calculation.html` inputs not in a `<form>`** — wrapped in `<form onsubmit="return false;">` so CSRF + `required` are semantically valid; submit stays JS-driven (calculate button is `type="button"`), so no behavior change.
+- 🟡 **Commercial dish names rendered untranslated** — `commercial_cooking.py` now attaches `dish_ml` (from `dishes_commercial.dish_name_ml`) to each selected dish; `commercial_analysis.html` localizes via `localize_db_label`, and meal categories via `_()`. Verified end-to-end (`Sambar` → `സാംബാർ`).
+- 🟡 **`pdf_generator.py` separate translation layer** — `tr()` now bridges to the shared Flask-Babel catalog: overlapping strings use the catalog (the 24 that had drifted now unify to the web wording), report-specific strings keep `REPORT_I18N` (no regression), safe fallback when no app context. Verified: full residential flow generates a valid PDF in both `ml` (261 KB) and `en` (271 KB).
 
 ### First pass
 
@@ -62,14 +64,12 @@ Branch: `fix/full-audit-remediation`. Backups of the databases, translations and
 
 ---
 
-## Deferred (16 findings) — with rationale
+## Deferred (14 findings) — with rationale
 
 These are genuine but were **not** applied because each is either a large refactor with real regression risk on a working government-facing app, or low-value polish better done as its own reviewed change. None is a correctness bug in the paths exercised today.
 
 | Finding | Why deferred |
 |---|---|
-| 🟡 **Dish names** in `commercial_analysis.html` rendered untranslated (`dish_info.dish`) | The `selected_dishes` blob stores only English names; localizing needs the calculation pipeline (`commercial_cooking.py`) to persist the `dish_name_ml` alongside each selected dish. Institution types + fuel names **were** localized this pass. |
-| 🟡 `pdf_generator.py` is a second, non-gettext translation layer | 1,500+ hardcoded Malayalam chars; moving it onto gettext is a large, self-contained task. |
 | 🟡 `analysis.html` charts/Action-Center visually nested inside the Recommendations card | DOM is balanced and renders; the fix is a cosmetic re-grouping with layout-regression risk. |
 | 🟡 Heading order / missing `<h1>` on step pages | A11y polish across many templates; low functional impact, touches visible structure. |
 | 🟡 Polymorphic `entity_id/entity_type` → real FKs | Code now uses a consistent `household`/`institution` vocabulary; converting to dual nullable FKs + CHECK is a schema change with little practical gain at this scale. |
@@ -79,7 +79,10 @@ These are genuine but were **not** applied because each is either a large refact
 | 🔵 `overflow-x:hidden` on html/body masks a real overflow child | Needs finding the offending element; the clip is currently harmless. |
 | 🔵 RTL logical properties; un-tokenized hex; `!important`/Bootstrap-utility duplication | Maintainability; no user-facing bug (app is LTR). |
 | 🔵 f-string SQL identifiers | Confirmed not exploitable (all identifiers are hard-coded literals); flagged only as a pattern. |
-| 🔵 Language switch requires JS / state-changing GET; add JS extractor to `babel.cfg`; wire extract+compile into deploy | Build/deploy hardening, out of app scope. |
+| 🔵 Language switch requires JS / state-changing GET; wire extract+compile into deploy | Build/deploy hardening, out of app scope. (The `babel.cfg` JS extractor part of this finding is **done**.) |
 | ⚪ Catalog uses no parameterized gettext | Informational (means zero placeholder-mismatch risk). |
+
+## Newly discovered during verification (not in the original 72)
+- 🔵 **PDF charts render missing-glyph boxes for Latin units** (`Rs`, `kg`, `CO₂`) when the report is in Malayalam — matplotlib draws Latin unit text using the Malayalam chart font, which lacks Latin glyphs. Pre-existing (unrelated to these changes). Fix: register a Latin fallback font for matplotlib chart tick/axis labels.
 
 To restore pre-change state: `git checkout main`, or restore a DB from `.audit_backup/`.
