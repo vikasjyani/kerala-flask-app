@@ -1,6 +1,6 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}{{ _('Energy Assessment') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+{% block title %}{{ _('Energy Assessment') }} - {{ _('Kerala Clean Cooking Insights Platform') }}{% endblock %}
 
 {% set progress = 50 %}
 {% set progress_text %}{{ _('Step 2 of 4') }} - {{ _('Energy Assessment') }}{% endset %}
@@ -15,14 +15,10 @@
         <h3 class="fw-bold text-primary-green mb-1">
             {{ _('Energy Assessment') }}
         </h3>
-        <p class="mb-3">{{ _('Enter cooking energy data with either detailed menu inputs or existing
-            consumption
-            records') }}</p>
+        <p class="mb-3">{{ _('Enter cooking energy data with either detailed menu inputs or existing consumption records') }}</p>
     </div>
     <div class="row justify-content-center g-4">
         <div class="col-lg-10">
-
-
 
             <!-- Method Selection -->
             <div class="card shadow-green fade-in-up mb-4">
@@ -48,9 +44,7 @@
 
                                     </div>
                                     <h4 class="card-title mb-0">{{ _('Dish-based Modelling') }}</h4>
-                                    <p class="card-text small text-muted ms-0">{{ _('Detailed meal analysis based on
-                                        specific dish
-                                        preparation') }}</p>
+                                    <p class="card-text small text-muted ms-0">{{ _('Detailed meal analysis based on specific dish preparation') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -72,8 +66,7 @@
                                     </div>
                                     <h4 class="card-title mb-0">{{ _('Consumption-based Modelling') }}</h4>
 
-                                    <p class="card-text small text-muted">{{ _('Analysis based on aggregate fuel
-                                        consumption data') }}
+                                    <p class="card-text small text-muted">{{ _('Analysis based on aggregate fuel consumption data') }}
                                     </p>
                                 </div>
                             </div>
@@ -92,9 +85,7 @@
                         </h4>
                         <div class="alert alert-info mb-4">
                             <i class="bi bi-info-circle me-2"></i>
-                            {{ _('Select the dishes you prepare regularly, then specify the energy sources applied to
-                            each
-                            category.') }}
+                            {{ _('Select the dishes you prepare regularly, then specify the energy sources applied to each category.') }}
                         </div>
 
                         <!-- Available Fuels Selection -->
@@ -250,28 +241,26 @@
             <div id="consumption-method" class="method-content {% if dishes_available %}d-none{% endif %}">
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4"><i class="bi bi-fuel-pump me-2"></i>{{ _('Current
-                            Energy Consumption') }}</h4>
+                        <h4 class="card-title text-primary-green mb-4"><i class="bi bi-fuel-pump me-2"></i>{{ _('Current Energy Consumption') }}</h4>
 
                         <!-- Primary Fuel Selection -->
                         <div class="mb-4">
-                            <label for="primary_fuel" class="form-label">{{ _('Enter Your Primary Cooking Fuel?') }}
+                            <label for="primary_fuel" class="form-label">{{ _('Select Your Primary Cooking Fuel') }}
                                 *</label>
                             <select class="form-select" id="primary_fuel" name="primary_fuel" required>
-                                <option value="">{{ _('Select Your Main Cooking Fuel') }}</option>
+                                <option value="">{{ _('Select Your Primary Cooking Fuel') }}</option>
                                 <option value="LPG">{{ _('LPG') }} ({{ _('Liquefied Petroleum Gas') }})</option>
                                 <option value="PNG">{{ _('PNG') }} ({{ _('Piped Natural Gas') }})</option>
                                 <option value="Grid electricity">{{ _('Electricity') }}</option>
                                 <option value="Traditional Solid Biomass">{{ _('Traditional Solid Biomass') }}</option>
                                 <option value="Mixed usage">{{ _('Mixed Usage') }}</option>
                             </select>
-                            <div class="invalid-feedback">{{ _('Please select your primary fuel') }}</div>
+                            <div class="invalid-feedback">{{ _('Please select your primary cooking fuel') }}</div>
                         </div>
 
                         <!-- LPG Details -->
                         <div id="lpg-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-fire me-2"></i>{{ _('LPG Consumption
-                                Details') }}</h4>
+                            <h4 class="text-primary-green mb-3"><i class="bi bi-fire me-2"></i>{{ _('LPG Consumption Details') }}</h4>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="cylinder_size" class="form-label">{{ _('Cylinder Size') }}</label>
@@ -320,7 +309,7 @@
                                     <div class="col-md-3">
                                         <div class="metric-card small">
                                             <div class="metric-value" id="lpg-monthly-cost">{{ lpg_cylinder_price|default(922) }}</div>
-                                            <div class="metric-label">{{ _('Monthly cost (₹)') }}</div>
+                                            <div class="metric-label">{{ _('Monthly Cost (₹)') }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -329,9 +318,7 @@
 
                         <!-- PNG Details -->
                         <div id="png-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-diagram-3 me-2"></i>{{ _('PNG
-                                Consumption
-                                Details') }}</h4>
+                            <h4 class="text-primary-green mb-3"><i class="bi bi-diagram-3 me-2"></i>{{ _('PNG Consumption Details') }}</h4>
 
                             <div class="mb-3">
                                 <label class="form-label">{{ _('How would you like to provide PNG data?') }}</label>
@@ -407,7 +394,7 @@
                                     <div class="col-md-3">
                                         <div class="metric-card small">
                                             <div class="metric-value" id="png-monthly-bill">1500</div>
-                                            <div class="metric-label">{{ _('Monthly bill (₹)') }}</div>
+                                            <div class="metric-label">{{ _('Monthly Bill (₹)') }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -422,17 +409,14 @@
 
                         <!-- Electricity Details -->
                         <div id="electricity-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-lightning me-2"></i>{{ _('Electricity
-                                Consumption for Cooking') }}</h4>
+                            <h4 class="text-primary-green mb-3"><i class="bi bi-lightning me-2"></i>{{ _('Electricity Consumption for Cooking') }}</h4>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="monthly_kwh_cooking" class="form-label">{{ _('Monthly Electricity for
-                                        Cooking') }} (kWh)</label>
+                                    <label for="monthly_kwh_cooking" class="form-label">{{ _('Monthly Electricity for Cooking') }} (kWh)</label>
                                     <input type="number" class="form-control" id="monthly_kwh_cooking" min="10"
                                         max="500" value="80" step="5">
-                                    <div class="form-text">{{ _('Check electricity bill or estimate based on appliance
-                                        usage') }}</div>
+                                    <div class="form-text">{{ _('Check electricity bill or estimate based on appliance usage') }}</div>
                                 </div>
                             </div>
 
@@ -448,7 +432,7 @@
                                     <div class="col-md-4">
                                         <div class="metric-card small">
                                             <div class="metric-value" id="elec-monthly-cost">520</div>
-                                            <div class="metric-label">{{ _('Monthly cost (₹)') }}</div>
+                                            <div class="metric-label">{{ _('Monthly Cost (₹)') }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -463,8 +447,7 @@
 
                         <!-- Biomass Details -->
                         <div id="biomass-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-tree me-2"></i>{{ _('Biomass Consumption
-                                Details') }}</h4>
+                            <h4 class="text-primary-green mb-3"><i class="bi bi-tree me-2"></i>{{ _('Biomass Consumption Details') }}</h4>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -487,9 +470,7 @@
 
                             <div class="alert alert-warning mt-3">
                                 <i class="bi bi-exclamation-triangle me-2"></i>
-                                <strong>{{ _('Warning:') }}</strong> {{ _('Traditional biomass cooking has severe health
-                                and
-                                environmental impacts!') }}
+                                <strong>{{ _('Warning:') }}</strong> {{ _('Traditional biomass cooking has severe health and environmental impacts!') }}
                             </div>
                         </div>
 
@@ -498,7 +479,7 @@
                             <h4 class="text-primary-green mb-3"><i class="bi bi-collection me-2"></i>{{ _('Mixed Fuel Usage Details') }}</h4>
                             <div class="alert alert-info mb-3">
                                 <i class="bi bi-info-circle me-2"></i>
-                                {{ _('Select and enter the consumption details for each fuel type you use for cooking.') }}
+                                {{ _('Enter the consumption details for each fuel type you use for cooking.') }}
                             </div>
 
                             <div class="row g-3">
@@ -1311,7 +1292,7 @@
                 data[`${dish}_fuel`] = selectedFuels[dish];
             });
 
-            showLoadingOverlay('{{ _("Calculating your energy consumption...") }}');
+            showLoadingOverlay('{{ _("Calculating your energy consumption…") }}');
             goToNextStep('/calculate_consumption', data);
 
         } else if (selectedMethod === 'consumption') {
@@ -1376,7 +1357,7 @@
                 }
             }
 
-            showLoadingOverlay('{{ _("Calculating your energy consumption...") }}');
+            showLoadingOverlay('{{ _("Calculating your energy consumption…") }}');
             goToNextStep('/calculate_consumption', data);
         }
     }

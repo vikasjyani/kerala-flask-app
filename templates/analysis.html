@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Analysis Results') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+{% block title %}{{ _('Analysis Results') }} - {{ _('Kerala Clean Cooking Insights Platform') }}{% endblock %}
 
 {% set progress = 100 %}
 {% set progress_text %}{{ _('Step 4 of 4') }} - {{ _('Analysis Complete') }}{% endset %}
@@ -35,8 +35,7 @@
             <!-- Current Consumption Summary -->
             <div class="card shadow-green fade-in-up mb-4">
                 <div class="card-body">
-                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-speedometer2 me-2"></i>{{ _('Current
-                        Usage') }}</h4>
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-speedometer2 me-2"></i>{{ _('Current Usage') }}</h4>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
@@ -45,7 +44,7 @@
                                     <th>{{ _('Quantity') }}</th>
                                     <th>{{ _('Consumption') }} ({{ _('Joules') }})</th>
                                     <th>{{ _('Monthly Cost') }} (₹)</th>
-                                    <th>{{ _('Annual Emission') }} (kg CO₂)</th>
+                                    <th>{{ _('Annual Emissions') }} (kg CO₂)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,7 +98,7 @@
             <div class="card shadow-green fade-in-up mb-4">
                 <div class="card-body">
                     <h4 class="card-title text-primary-green mb-1">
-                        <i class="bi bi-table me-2"></i>{{ _('Cooking with an energy source') }}
+                        <i class="bi bi-table me-2"></i>{{ _('Cooking Energy Use by Fuel') }}
                     </h4>
                     <p class="text-muted small mb-4">{{ _('Comparative Cost and Emission Estimates') }}</p>
                     <div class="table-responsive">
@@ -111,8 +110,7 @@
                                         }} <i class="bi bi-arrow-down-up"></i></th>
                                     <th scope="col" class="sortable" data-sort-key="annual_co2">{{ _('Annual CO₂') }} <i
                                             class="bi bi-arrow-down-up"></i></th>
-                                    <th scope="col" class="sortable" data-sort-key="efficiency">{{ _('Thermal
-                                        Efficiency') }} <i class="bi bi-arrow-down-up"></i></th>
+                                    <th scope="col" class="sortable" data-sort-key="efficiency">{{ _('Thermal Efficiency') }} <i class="bi bi-arrow-down-up"></i></th>
                                     <th scope="col" class="sortable" data-sort-key="health_risk">{{ _('Health Risk') }}
                                         <i class="bi bi-arrow-down-up"></i>
                                     </th>
@@ -121,7 +119,7 @@
                             </thead>
                             <tbody>
                                 <tr class="table-info">
-                                    <td><strong>{{ _('Your Current Setup') }}</strong></td>
+                                    <td><strong>{{ _('Your Current Fuel Use') }}</strong></td>
                                     <td><strong>₹{{ "%.0f"|format(analysis.current.monthly_cost|default(0)) }}</strong>
                                     </td>
                                     <td><strong>{{ "%.0f"|format(analysis.current.annual_emissions|default(0)) }}
@@ -192,15 +190,12 @@
                 </div>
             </div>
 
-
             <!-- Solar + BESS Specifications -->
             {% if analysis.alternatives['Solar + BESS'] and analysis.alternatives['Solar + BESS'].bess_system %}
             {% set bess = analysis.alternatives['Solar + BESS'].bess_system %}
             <div class="card shadow-green fade-in-up mb-4">
                 <div class="card-body">
-                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-sun me-2"></i>{{ _('Technical
-                        Specifications: Solar +
-                        BESS') }}</h4>
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-sun me-2"></i>{{ _('Technical Specifications: Solar PV + BESS System') }}</h4>
                     <div class="table-responsive">
                         <table class="table table-clean-cooking table-hover align-middle mb-0">
                             <thead class="table-light">
@@ -230,14 +225,13 @@
                                 <tr>
                                     <td><strong>{{ _('Daily Generation') }}</strong></td>
                                     <td>{{ "%.1f"|format(bess.daily_solar_generation) }} kWh</td>
-                                    <td>{{ _('Based on Keralam GHI') }} (5.5 kWh/m²/day)</td>
+                                    <td>{{ _('Based on Kerala GHI') }} (5.5 kWh/m²/day)</td>
                                 </tr>
                                 {% if bess.grid_backup and bess.grid_backup.needed_kwh_daily > 0.1 %}
                                 <tr class="table-warning">
-                                    <td><strong>{{ _('Grid Backup Needed') }}</strong></td>
+                                    <td><strong>{{ _('Grid Backup Required') }}</strong></td>
                                     <td>{{ "%.1f"|format(bess.grid_backup.needed_kwh_daily) }} kWh</td>
-                                    <td>{{ "%.0f"|format(bess.grid_backup.percentage) }}% {{ _('of daily energy drawn
-                                        from grid due to area limit') }}</td>
+                                    <td>{{ "%.0f"|format(bess.grid_backup.percentage) }}% {{ _('of daily energy drawn from grid due to area limit') }}</td>
                                 </tr>
                                 {% endif %}
                                 <tr>
@@ -250,7 +244,7 @@
                                 <tr>
                                     <td><strong>{{ _('Monthly EMI / Cost') }}</strong></td>
                                     <td>₹{{ "%.0f"|format(solar_alt.levelized_monthly_cost|default(0)) }}</td>
-                                    <td>{{ _('Levelized cost over 25 years') }} ({{ _('Loan') }}: {{
+                                    <td>{{ _('Levelised cost over 25 years') }} ({{ _('Loan') }}: {{
                                         "%.0f"|format(solar_alt.levelized_costs.loan_tenure_years) }} {{ _('years') }} @
                                         7.0%)</td>
                                 </tr>
@@ -265,8 +259,7 @@
             <!-- Strategic Recommendations -->
             <div class="card shadow-green fade-in-up mb-4">
                 <div class="card-body">
-                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-lightbulb me-2"></i>{{ _('Strategic
-                        Recommendations') }}
+                    <h4 class="card-title text-primary-green mb-4"><i class="bi bi-lightbulb me-2"></i>{{ _('Strategic Recommendations') }}
                     </h4>
                     {% if analysis.alternatives %}
                     {% set best_cost_fuel = namespace(name='', cost=999999, data={}) %}
@@ -282,13 +275,13 @@
                             <thead class="table-light">
                                 <tr>
                                     <th width="33%" class="text-center">
-                                        <i class="bi bi-currency-rupee"></i> {{ _('Cost Effective') }}
+                                        <i class="bi bi-currency-rupee"></i> {{ _('Most Cost-Effective') }}
                                     </th>
                                     <th width="33%" class="text-center">
-                                        <i class="bi bi-tree-fill"></i> {{ _('Environmentally Friendly') }}
+                                        <i class="bi bi-tree-fill"></i> {{ _('Lowest Emissions') }}
                                     </th>
                                     <th width="34%" class="text-center">
-                                        <i class="bi bi-award-fill"></i> {{ _('Top Rated') }}
+                                        <i class="bi bi-award-fill"></i> {{ _('Best Overall') }}
                                     </th>
                                 </tr>
                             </thead>
@@ -353,7 +346,6 @@
                                                     "%.0f"|format(best_emission_fuel.data.annual_co2|default(0)) }} kg
                                                 </td>
                                             </tr>
-
 
                                             <tr>
                                                 <td><strong>{{ _('Efficiency') }}:</strong></td>
@@ -442,13 +434,12 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="chart-title mb-0">{{ _('Monthly OpEx Comparison') }}</h6>
+                            <h6 class="chart-title mb-0">{{ _('Monthly Operating Cost Comparison') }}</h6>
                             <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
                         </div>
                         <canvas id="costChart" height="300"
-                            aria-label="{{ _('Bar chart comparing monthly operating costs across fuels') }}"></canvas>
-                        <div class="chart-footnote small text-muted mt-2">{{ _('Lower bars indicate lower monthly
-                            operating expense (₹/month).') }}</div>
+                            aria-label="{{ _('Bar chart comparing monthly operating costs across fuel types') }}"></canvas>
+                        <div class="chart-footnote small text-muted mt-2">{{ _('Lower bars indicate a lower monthly operating cost (₹/month).') }}</div>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -458,23 +449,18 @@
                             <span class="badge bg-light text-dark">{{ _('Baseline: Current setup') }}</span>
                         </div>
                         <canvas id="emissionsChart" height="300"
-                            aria-label="{{ _('Bar chart comparing annual CO₂ emissions across fuels') }}"></canvas>
-                        <div class="chart-footnote small text-muted mt-2">{{ _('Values shown as kg CO₂ per year; lower
-                            is better.') }}</div>
+                            aria-label="{{ _('Bar chart comparing annual CO₂ emissions across fuel types') }}"></canvas>
+                        <div class="chart-footnote small text-muted mt-2">{{ _('Values shown as kg CO₂ per year; lower is better.') }}</div>
                     </div>
                 </div>
             </div>
 
-
-
         </div>
-
 
         <!-- Action Center -->
         <div class="card shadow-green fade-in-up mb-4">
             <div class="card-body">
-                <h4 class="card-title text-primary-green mb-4"><i class="bi bi-gear me-2"></i>{{ _('Next Steps &
-                    Actions') }}</h4>
+                <h4 class="card-title text-primary-green mb-4"><i class="bi bi-gear me-2"></i>{{ _('Next Steps & Actions') }}</h4>
                 <div class="row g-3">
                     <div class="col-md-4">
                         <button type="button" class="btn btn-success w-100" onclick="downloadReport('residential')">
@@ -500,9 +486,9 @@
                             <i class="bi bi-lightbulb me-2"></i>
                             <strong>{{ _('Next Steps:') }}</strong>
                             <ul class="mb-0 mt-2">
-                                <li>{{ _('Contact local suppliers for price quotes on recommended solutions') }}</li>
+                                <li>{{ _('Contact local suppliers for price quotations on the recommended solutions') }}</li>
                                 <li>{{ _('Consult with energy professionals for installation planning') }}</li>
-                                <li>{{ _('Check government subsidy schemes for clean cooking solutions') }}</li>
+                                <li>{{ _('Review the applicable government subsidy schemes for clean cooking') }}</li>
                                 <li>{{ _('Monitor your energy consumption and costs over time') }}</li>
                             </ul>
                         </div>
@@ -516,11 +502,10 @@
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h4 class="card-title text-primary-green mb-2">{{ _('Contributing to Clean Cooking Research') }}
+                        <h4 class="card-title text-primary-green mb-2">{{ _('Contributing to Clean Cooking Energy Research') }}
                         </h4>
                         <p class="mb-0 small text-muted">
-                            {{ _(' anonymised data helps strengthen cooking-energy policies in Keralam using
-                            research-backed methods that support a sustainable energy transition') }}
+                            {{ _('anonymised data helps strengthen cooking-energy policy in Kerala through research-backed methods that support a sustainable energy transition') }}
                         </p>
                     </div>
                     <div class="col-md-4 text-md-end">
@@ -543,10 +528,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        console.debug('DEBUG: analysis loaded', {
-            analysisType: 'residential',
-            fuelDetails: {{ analysis.current.fuel_details | tojson | safe }}
-        });
 
     // Initialize Bootstrap tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

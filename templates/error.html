@@ -3,6 +3,7 @@
 {% block title %}{{ _('Error') }} - {{ error_code }}{% endblock %}
 
 {% block content %}
+<div class="container my-4">
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card shadow-green fade-in-up text-center">
@@ -32,20 +33,20 @@
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle me-2"></i>
                     <strong>{{ _('Page not found') }}</strong><br>
-                    {{ _('The page you are looking for might have been moved or deleted.') }}
+                    {{ _('The requested page may have been moved or deleted.') }}
                 </div>
                 {% elif error_code == 500 %}
                 <div class="alert alert-warning">
                     <i class="bi bi-exclamation-triangle me-2"></i>
                     <strong>{{ _('Server Error') }}</strong><br>
-                    {{ _('Something went wrong on our end. Our team has been notified and is working to fix the issue.')
+                    {{ _('A system error occurred. Our technical team has been notified and is working to resolve it.')
                     }}
                 </div>
                 {% elif error_code == 403 %}
                 <div class="alert alert-danger">
                     <i class="bi bi-shield-x me-2"></i>
                     <strong>{{ _('Access Denied') }}</strong><br>
-                    {{ _('You do not have permission to access this page.') }}
+                    {{ _('You are not authorised to access this page.') }}
                 </div>
                 {% endif %}
 
@@ -85,7 +86,7 @@
                             <a href="{{ url_for('commercial_selection') }}" class="text-decoration-none">
                                 <div class="quick-link-card">
                                     <i class="bi bi-building mb-2"></i>
-                                    <p class="mb-0">{{ _('Commercial Analysis') }}</p>
+                                    <p class="mb-0">{{ _('Commercial & Institutional Analysis') }}</p>
                                 </div>
                             </a>
                         </div>
@@ -104,6 +105,6 @@
         </div>
     </div>
 </div>
-
+</div>
 
 {% endblock %}

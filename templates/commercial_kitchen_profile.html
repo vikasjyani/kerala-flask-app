@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Kitchen & Facility Profile') }} - {{ _('Keralam Clean Cooking Platform') }}{% endblock %}
+{% block title %}{{ _('Kitchen & Facility Profile') }} - {{ _('Kerala Clean Cooking Platform') }}{% endblock %}
 
 {% set progress = 50 %}
 {% set progress_text %}{{ _('Step 2 of 4') }} - {{ _('Kitchen & Facility Profile') }}{% endset %}
@@ -10,18 +10,16 @@
 
 {% block content %}
 <script>
-    console.debug("DEBUG: Commercial Kitchen Profile Context", {
-        scenarios: {{ scenarios| tojson }}
-    });
+
 </script>
 <div class="container my-2.5 py-3 analysis-container-custom">
     <div class="text-center mb-2.5">
-        <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial Cooking') }}</p>
+        <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial & Institutional Cooking') }}</p>
         <h3 class="fw-bold text-primary-green mb-1">
             <img src="{{ url_for('static', filename='icons/house-heart1.svg') }}" alt="{{ _('Kitchen Icon') }}"
                 class="me-2 icon-xxl align-middle">{{ _('Kitchen & Facility Profile') }}
         </h3>
-        <p class="mb-0 text-muted">{{ _('Describe your kitchen setup for accurate commercial analysis') }}</p>
+        <p class="mb-0 text-muted">{{ _('Describe your kitchen setup for an accurate analysis') }}</p>
     </div>
 
     <div class="row justify-content-center g-4">
@@ -83,7 +81,7 @@
                                 </label>
                                 <input type="number" class="form-control" id="staff_exposed" name="staff_exposed"
                                     min="1" max="50" value="2" step="1" required data-bs-toggle="tooltip"
-                                    title="{{ _('Workers regularly in the cooking area') }}">
+                                    title="{{ _('Workers regularly present in the cooking area') }}">
                                 <div class="invalid-feedback">{{ _('Please enter staff count') }}</div>
                                 <div class="form-text">{{ _('Number of workers in the cooking area') }}</div>
                             </div>
@@ -105,10 +103,10 @@
                                 </label>
                                 <select class="form-select" id="budget_preference" name="budget_preference" required>
                                     <option value="">{{ _('Select Priority') }}</option>
-                                    <option value="Low upfront cost">{{ _('Minimize Upfront Cost') }}</option>
-                                    <option value="Balanced approach">{{ _('Balanced ROI') }}</option>
-                                    <option value="Long-term savings">{{ _('Maximize Long-term Savings') }}</option>
-                                    <option value="Environmental priority">{{ _('Maximize Environmental Benefit') }}
+                                    <option value="Low upfront cost">{{ _('Minimise Upfront Cost') }}</option>
+                                    <option value="Balanced approach">{{ _('Balanced Return on Investment') }}</option>
+                                    <option value="Long-term savings">{{ _('Maximise Long-term Savings') }}</option>
+                                    <option value="Environmental priority">{{ _('Maximise Environmental Benefit') }}
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">{{ _('Please select budget preference') }}</div>
@@ -117,7 +115,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <!-- Navigation -->
                 <div class="d-flex justify-content-between">
@@ -140,9 +137,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('kitchenForm');
         const submitBtn = document.getElementById('submitBtn');
-        console.debug('DEBUG: commercial_kitchen_profile loaded', {
-            scenariosCount: {{ scenarios| length if scenarios is defined else 0 }}
-        });
 
     // Form submission
     form.addEventListener('submit', function (e) {
@@ -159,8 +153,6 @@
 
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>{{ _("Processing") }}...';
-
-        console.log('DEBUG: Submitting kitchen profile data', data);
 
         fetch("{{ url_for('commercial_submit_kitchen') }}", {
             method: 'POST',

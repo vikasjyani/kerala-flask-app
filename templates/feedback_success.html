@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Thank You') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+{% block title %}{{ _('Thank You') }} - {{ _('Kerala Clean Cooking Insights Platform') }}{% endblock %}
 
 {% block progress_bar %}{% endblock %}
 
@@ -25,10 +25,9 @@
                     <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>{{ _('What Happens Next?') }}</h6>
                     <ul class="mb-0">
                         {% if allow_contact %}
-                        <li class="small">{{ _('Government authorities will contact you regarding your selected
-                            schemes') }}</li>
+                        <li class="small">{{ _('Government authorities will contact you regarding your selected schemes') }}</li>
                         {% endif %}
-                        <li class="small">{{ _('Your anonymized data helps improve clean cooking policies in Keralam')
+                        <li class="small">{{ _('Your anonymised data helps improve clean cooking policy in Kerala')
                             }}
                         </li>
                         <li class="small">{{ _('You can start a new analysis to explore more scenarios') }}</li>
@@ -49,8 +48,7 @@
     <div class="col-lg-5">
         <div class="card shadow-green fade-in-up h-100">
             <div class="card-body p-3 p-md-4">
-                <h4 class="card-title text-primary-green mb-3"><i class="bi bi-list-check me-2"></i>{{ _('Schemes You
-                    Selected') }}</h4>
+                <h4 class="card-title text-primary-green mb-3"><i class="bi bi-list-check me-2"></i>{{ _('Schemes You Selected') }}</h4>
                 <div class="d-flex flex-column gap-2 text-start">
                     {% if solar_scheme %}
                     <div class="p-2 border rounded bg-light d-flex align-items-center transition-hover">
@@ -104,6 +102,5 @@
         }
     });
 </script>
-
 
 {% endblock %}

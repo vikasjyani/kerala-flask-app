@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Household Profile') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+{% block title %}{{ _('Household Profile') }} - {{ _('Kerala Clean Cooking Insights Platform') }}{% endblock %}
 
 {% set progress = 25 %}
 {% set progress_text %}{{ _('Step 1 of 4') }} - {{ _('Household Profile') }}{% endset %}
@@ -14,7 +14,6 @@
         </h3>
     </div>
     <div class="row justify-content-center g-4">
-
 
         <!-- Form -->
         <form id="householdForm" class="needs-validation" novalidate>
@@ -69,7 +68,7 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="household_size" class="form-label">{{ _('Number of members') }}
+                            <label for="household_size" class="form-label">{{ _('Number of Household Members') }}
                                 *</label>
                             <input type="number" class="form-control" id="household_size" name="household_size" min="1"
                                 max="20" value="{{ household_data.household_size | default(4) }}" required
@@ -94,9 +93,9 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="area_type" class="form-label">{{ _('Area classification') }} *</label>
+                            <label for="area_type" class="form-label">{{ _('Area Classification') }} *</label>
                             <select class="form-select" id="area_type" name="area_type" required>
-                                <option value="">{{ _('Select Classification') }}</option>
+                                <option value="">{{ _('Select Area Classification') }}</option>
                                 <option value="Urban" {% if (household_data.area_type | default(''))=='Urban'
                                     %}selected{% endif %}>{{ _('Urban') }} ({{ _('Municipal/Corporation') }})</option>
                                 <option value="Rural" {% if (household_data.area_type | default(''))=='Rural'
@@ -167,8 +166,8 @@
                             <label for="lpg_subsidy" class="form-label">{{ _('LPG Subsidy Status') }} *</label>
                             <select class="form-select" id="lpg_subsidy" name="lpg_subsidy" required>
                                 <option value="">{{ _('Select Status') }}</option>
-                                <option value="No">{{ _('Non-Subsidized') }}</option>
-                                <option value="Yes">{{ _('Subsidized') }}</option>
+                                <option value="No">{{ _('Non-Subsidised') }}</option>
+                                <option value="Yes">{{ _('Subsidised') }}</option>
                             </select>
                             <div class="invalid-feedback">{{ _('Please select LPG subsidy status') }}</div>
                         </div>
@@ -196,17 +195,15 @@
                             <div class="invalid-feedback">{{ _('Please select loan tenure') }}</div>
                         </div>
                         <div class="col-12">
-                            <label for="main_priority" class="form-label">{{ _('Primary Optimization Goal') }} *</label>
+                            <label for="main_priority" class="form-label">{{ _('Primary Optimisation Goal') }} *</label>
                             <select class="form-select" id="main_priority" name="main_priority" required>
                                 <option value="balanced" selected>{{ _('Balanced Approach') }}</option>
-                                <option value="cost">{{ _('Cost Minimization') }}</option>
+                                <option value="cost">{{ _('Cost Minimisation') }}</option>
                                 <option value="health">{{ _('Health & Safety') }}</option>
                                 <option value="environment">{{ _('Environmental Impact') }}</option>
                             </select>
-                            <div class="form-text">{{ _('Determines how the final recommendation is weighted across
-                                cost,
-                                health, and sustainability factors.') }}</div>
-                            <div class="invalid-feedback">{{ _('Please select your main priority') }}</div>
+                            <div class="form-text">{{ _('Determines how the final recommendation is weighted across cost, health, and sustainability factors.') }}</div>
+                            <div class="invalid-feedback">{{ _('Please select your priority') }}</div>
                         </div>
                     </div>
                 </div>
@@ -221,8 +218,7 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="solar_willingness" class="form-label">{{ _('Are you willing to consider solar
-                                rooftop?') }} *</label>
+                            <label for="solar_willingness" class="form-label">{{ _('Are you willing to consider a solar rooftop?') }} *</label>
                             <select class="form-select" id="solar_willingness" name="solar_willingness" required>
                                 <option value="">{{ _('Select an option') }}</option>
                                 <option value="Yes" {% if (household_data.solar_willingness | default(''))=='Yes'
@@ -230,7 +226,7 @@
                                 <option value="No" {% if (household_data.solar_willingness | default(''))=='No'
                                     %}selected{% endif %}>{{ _('No') }}</option>
                             </select>
-                            <div class="invalid-feedback">{{ _('Please select your willingness for solar rooftop') }}
+                            <div class="invalid-feedback">{{ _('Please indicate your preference for a solar rooftop') }}
                             </div>
                         </div>
 
@@ -258,8 +254,7 @@
                     <h5 class="card-title text-primary-green mb-1">
                         <i class="bi bi-currency-rupee me-2"></i>{{ _('Fuel Price Overrides') }}
                     </h5>
-                    <p class="text-muted small mb-3">{{ _('Optional — defaults are loaded from the database. Changes
-                        apply only to this session.') }}</p>
+                    <p class="text-muted small mb-3">{{ _('Optional. Defaults are loaded from the database; changes apply to this session only.') }}</p>
 
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -293,7 +288,7 @@
                             <input type="number" class="form-control" id="fp_biomass" name="fp_biomass" min="0"
                                 max="100" step="0.5" value="{{ default_fuel_prices.Biomass_unit_price | default(5) }}"
                                 placeholder="{{ default_fuel_prices.Biomass_unit_price | default(5) }}">
-                            <div class="form-text">{{ _('Average cost per kg of firewood/biomass') }}</div>
+                            <div class="form-text">{{ _('Average cost per kg of firewood or biomass') }}</div>
                         </div>
 
                         <div class="col-md-6">
@@ -302,7 +297,7 @@
                                 max="1.0" step="0.01"
                                 value="{{ default_fuel_prices.Grid_emission_factor | default(0.65) }}"
                                 placeholder="{{ default_fuel_prices.Grid_emission_factor | default(0.65) }}">
-                            <div class="form-text">{{ _('Kerala grid CO₂ intensity — affects emission estimates') }}
+                            <div class="form-text">{{ _('Kerala grid CO₂ intensity — affects the emission estimates') }}
                             </div>
                         </div>
                     </div>
@@ -460,12 +455,11 @@
         }
 
         if (efficiencyGain > 0) {
-            efficiencyInfo.innerHTML = `<i class="bi bi-lightbulb text-success me-1"></i>${efficiencyGain}% {{ _('energy efficiency gain from economies of scale') }}`;
+            efficiencyInfo.innerHTML = `<i class="bi bi-lightbulb text-success me-1"></i>${efficiencyGain}% {{ _('Energy efficiency gain from economies of scale') }}`;
         } else {
             efficiencyInfo.innerHTML = '';
         }
     }
-
 
 </script>
 {% endblock %}

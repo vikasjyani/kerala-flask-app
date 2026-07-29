@@ -9,7 +9,7 @@
 <div class="container my-2.5 py-3 analysis-container-custom">
     <div class="text-center mb-2.5">
         <h3 class="fw-bold text-primary-green mb-1.5">
-            {{ _('Select the Cooking Pathway that Best Reflects Your Usage') }}
+            {{ _('Select the cooking category that best reflects your usage') }}
         </h3>
     </div>
 
@@ -28,8 +28,8 @@
 
                 <p class="text-muted font-bold flex-grow-1">&nbsp;</p>
 
-                <a href="{{ url_for('household_profile') }}" class="btn btn-lg w-100 rounded-pill shadow-sm 
-                            btn-outline-success text-success bg-white 
+                <a href="{{ url_for('household_profile') }}" class="btn btn-lg w-100 rounded-pill shadow-sm
+                            btn-outline-success text-success bg-white
                             proceed-btn-custom">
                     {{ _('Select') }}
                     <i class="bi bi-arrow-right ms-2"></i>
@@ -37,23 +37,21 @@
             </div>
         </div>
 
-
         <!-- Commercial Cooking - Now perfectly matching & relatable -->
 
         <div class="col-md-6">
             <div class="card-body text-center pt-3 pt-md-5 px-3 px-md-5 pb-2 pb-md-3">
 
                 <img src="{{ url_for('static', filename='icons/commercial_selection.svg') }}"
-                    alt="{{ _('Commercial Cooking') }}"
+                    alt="{{ _('Commercial & Institutional Cooking') }}"
                     class="icon-xxl mb-2">
                 <h4 class="fw-bold text-success">
-                    {{ _('Commercial Cooking') }}
+                    {{ _('Commercial & Institutional Cooking') }}
                 </h4>
-                <p class="text-muted font-bold flex-grow-1">{{ _('(Schools, Hotels, Factories, and Community
-                    Kitchens)') }}</p>
+                <p class="text-muted font-bold flex-grow-1">{{ _('(Schools, Hotels, Factories, and Community Kitchens)') }}</p>
 
-                <a href="{{ url_for('commercial_selection') }}" class="btn btn-lg w-100 rounded-pill shadow-sm 
-                            btn-outline-success text-success bg-white 
+                <a href="{{ url_for('commercial_selection') }}" class="btn btn-lg w-100 rounded-pill shadow-sm
+                            btn-outline-success text-success bg-white
                             proceed-btn-custom">
                     {{ _('Select') }}
                     <i class="bi bi-arrow-right ms-2"></i>
@@ -62,8 +60,5 @@
         </div>
     </div>
 </div>
-
-
-
 
 {% endblock %}

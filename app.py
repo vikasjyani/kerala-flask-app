@@ -45,8 +45,9 @@ def add_security_headers(response):
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
 
-# Initialize Babel
-babel = Babel(app)
+# Initialize Babel (bound below via init_app once get_locale is defined, to avoid a
+# double initialization — previously Babel(app) here AND babel.init_app(app, ...) later).
+babel = Babel()
 
 # Translation setup
 app.config['LANGUAGES'] = {
@@ -1011,7 +1012,7 @@ def commercial_institution_profile():
                 pass
 
         if not institution_data['institution_type'] or not institution_data['institution_name']:
-            flash('Please provide institution type and name', 'error')
+            flash(_('Please provide institution type and name'), 'error')
             return redirect(url_for('commercial_selection'))
         
         # Save to database
@@ -1028,7 +1029,7 @@ def commercial_institution_profile():
         logger.log_error(f"ERROR in commercial_institution_profile: {e}")
         import traceback
         logger.log_error(traceback.format_exc())
-        flash('Error processing institution profile', 'error')
+        flash(_('Error processing institution profile'), 'error')
         return redirect(url_for('commercial_selection'))
 
 @app.route('/commercial/kitchen-profile', methods=['GET'])
@@ -1058,7 +1059,7 @@ def commercial_kitchen_profile():
         logger.log_error(f"Error in commercial_kitchen_profile: {e}")
         import traceback
         logger.log_error(traceback.format_exc())
-        flash('Error loading kitchen profile page', 'error')
+        flash(_('Error loading kitchen profile page'), 'error')
         return redirect(url_for('commercial_selection'))
 
 @app.route('/commercial/submit_kitchen', methods=['POST'])
@@ -1112,7 +1113,7 @@ def commercial_submit_kitchen():
         if request.is_json:
             return jsonify({'success': False, 'message': str(e)}), 500
         else:
-            flash('Error processing kitchen profile', 'error')
+            flash(_('Error processing kitchen profile'), 'error')
             return redirect(url_for('commercial_kitchen_profile'))
 
 @app.route('/commercial_energy_calculation', methods=['GET', 'POST'])
@@ -1161,7 +1162,7 @@ def commercial_energy_calculation():
                 )
             
             if result.get('status') == 'error':
-                flash(result.get('message', 'Calculation failed'), 'error')
+                flash(result.get('message') or _('Calculation failed'), 'error')
                 return redirect(url_for('commercial_energy_calculation'))
             
             # Save results to database
@@ -1176,7 +1177,7 @@ def commercial_energy_calculation():
             logger.log_error(f"Error in commercial calculation: {e}")
             import traceback
             logger.log_error(traceback.format_exc())
-            flash('Error processing calculation', 'error')
+            flash(_('Error processing calculation'), 'error')
             return redirect(url_for('commercial_energy_calculation'))
     
     # GET: Show combined form
@@ -1284,7 +1285,7 @@ def commercial_energy_calculation():
         logger.log_error(f"Error loading commercial energy calculation: {e}")
         import traceback
         logger.log_error(traceback.format_exc())
-        flash('Error loading page', 'error')
+        flash(_('Error loading page'), 'error')
         return redirect(url_for('commercial_selection'))
 
 

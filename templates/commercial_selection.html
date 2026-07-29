@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Commercial Analysis') }} - {{ _('Keralam Clean Cooking Platform') }}{% endblock %}
+{% block title %}{{ _('Commercial & Institutional Analysis') }} - {{ _('Kerala Clean Cooking Platform') }}{% endblock %}
 
 {% set progress = 25 %}
 {% set progress_text %}{{ _('Step 1 of 4') }} - {{ _('Institution Profile') }}{% endset %}
@@ -10,21 +10,17 @@
 
 {% block content %}
 <script>
-    console.debug("DEBUG: Commercial Selection Defaults", {
-        progressText: "{{ _('Step 1 of 4') }}",
-        defaultWorkingDays: 26,
-        hasProgressBar: true
-    });
+
 </script>
 <div class="container my-2.5 py-3 analysis-container-custom">
     <div class="text-center mb-2.5">
-        <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial Cooking') }}</p>
+        <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial & Institutional Cooking') }}</p>
         <div class="mb-2">
             <img src="{{ url_for('static', filename='icons/commercial_selection.svg') }}"
                 alt="{{ _('Institution Icon') }}" class="icon-xxl">
         </div>
         <h3 class="fw-bold text-primary-green mb-1">{{ _('Institution Profile') }}</h3>
-        <p class="mb-0 text-muted">{{ _('Tell us about your institution to get a customized energy analysis') }}</p>
+        <p class="mb-0 text-muted">{{ _('Please provide your institution\'s details for a customised energy analysis') }}</p>
     </div>
 
     <div class="row justify-content-center g-4">
@@ -108,7 +104,7 @@
                                 <div class="col-md-6">
                                     <label for="contact_person" class="form-label">{{ _('Contact Person') }} *</label>
                                     <input type="text" class="form-control" id="contact_person" name="contact_person"
-                                        required placeholder="{{ _('Full name') }}">
+                                        required placeholder="{{ _('Full Name') }}">
                                     <div class="invalid-feedback">{{ _('Please enter contact person name') }}</div>
                                 </div>
 
@@ -216,7 +212,7 @@
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="budget" class="form-label">{{ _('Budget Priority') }}</label>
+                                    <label for="budget" class="form-label">{{ _('Investment Priority') }}</label>
                                     <select class="form-select" id="budget" name="budget">
                                         <option value="">{{ _('Not specified') }}</option>
                                         <option value="Low">{{ _('Low') }}</option>
@@ -228,7 +224,7 @@
 
                                 <div class="col-md-6">
                                     <label for="solar_willing" class="form-label">
-                                        {{ _('Interested in Solar Rooftop?') }}
+                                        {{ _('Are you interested in a solar rooftop?') }}
                                     </label>
                                     <select class="form-select" id="solar_willing" name="solar_willing"
                                         onchange="toggleSolarArea()">
@@ -260,8 +256,7 @@
                             <h5 class="card-title text-primary-green mb-1">
                                 <i class="bi bi-currency-rupee me-2"></i>{{ _('Fuel Price Overrides') }}
                             </h5>
-                            <p class="text-muted small mb-3">{{ _('Optional — defaults are loaded from the database.
-                                Changes apply only to this session.') }}</p>
+                            <p class="text-muted small mb-3">{{ _('Optional. Defaults are loaded from the database; changes apply to this session only.') }}</p>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -299,7 +294,7 @@
                                         max="100" step="0.5"
                                         value="{{ default_fuel_prices.Biomass_unit_price | default(5) }}"
                                         placeholder="{{ default_fuel_prices.Biomass_unit_price | default(5) }}">
-                                    <div class="form-text">{{ _('Average cost per kg of firewood/biomass') }}</div>
+                                    <div class="form-text">{{ _('Average cost per kg of firewood or biomass') }}</div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -309,8 +304,7 @@
                                         max="1.0" step="0.01"
                                         value="{{ default_fuel_prices.Grid_emission_factor | default(0.65) }}"
                                         placeholder="{{ default_fuel_prices.Grid_emission_factor | default(0.65) }}">
-                                    <div class="form-text">{{ _('Kerala grid CO₂ intensity — affects emission
-                                        estimates') }}</div>
+                                    <div class="form-text">{{ _('Kerala grid CO₂ intensity — affects the emission estimates') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -367,10 +361,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('institutionForm');
         const formDetails = document.getElementById('formDetails');
-        console.debug('DEBUG: commercial_selection page ready', {
-            defaultElectricityRate: {{ default_electricity_rate | default(9.5) }},
-        districtsCount: {{ districts| length if districts is defined else 0 }}
-        });
 
     // Show form details when institution type is selected
     document.querySelectorAll('input[name="institution_type"]').forEach(radio => {
@@ -418,10 +408,7 @@
 
     // Submit the form — reset unsaved-changes flag before programmatic submit
     // so main.js's beforeunload handler does not show "Leave site?" dialog.
-    console.log('DEBUG: Submitting institution form', {
-        institution_type: form.querySelector('input[name="institution_type"]:checked')?.value,
-        customFuelPrices
-    });
+
     if (typeof window.markFormSubmitting === 'function') {
         window.markFormSubmitting();
     }

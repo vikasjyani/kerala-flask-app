@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Kitchen & Health Details') }} - {{ _('Keralam Clean Cooking Insights Platform') }}{% endblock %}
+{% block title %}{{ _('Kitchen & Health Details') }} - {{ _('Kerala Clean Cooking Insights Platform') }}{% endblock %}
 
 {% set progress = 75 %}
 {% set progress_text %}{{ _('Step 3 of 4') }} - {{ _('Kitchen & Health Details') }}{% endset %}
@@ -9,14 +9,14 @@
 {% set total_steps = 4 %}
 
 {% block content %}
-<div class="container my-2.5 py-3 analysis-container-custom">
+<div class="container my-2 py-3 analysis-container-custom">
     <!-- <div class="text-center mb-2">
         <h3 class="fw-bold text-primary-green mb-1">
             <img src="{{ url_for('static', filename='icons/house-heart1.svg') }}" alt="{{ _('Kitchen Icon') }}"
                 class="me-1 mb-2"
                 style="width: 2rem; height: 2rem;">{{ _('Kitchen & Health Details') }}
         </h3>
-        <p class="mb-3">{{ _('Describe your kitchen details and health considerations for accurate analysis.') }}</p>
+        <p class="mb-3">{{ _('Describe your kitchen details and health considerations for an accurate analysis.') }}</p>
 
     </div> -->
     <div class="text-center mb-2">
@@ -27,12 +27,11 @@
         </h3>
 
         <p class="mb-1">
-            {{ _('Describe your kitchen details and health considerations for accurate analysis.') }}
+            {{ _('Describe your kitchen details and health considerations for an accurate analysis.') }}
         </p>
     </div>
     <div class="row justify-content-center g-4">
         <div class="col-lg-10">
-
 
             <!-- Form -->
             <form id="kitchenForm" class="needs-validation" novalidate>
@@ -41,7 +40,7 @@
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
                         <h4 class="card-title text-primary-green mb-4">
-                            <i class="bi bi-layout-wtf me-2"></i>{{ _('Kitchen details') }}
+                            <i class="bi bi-layout-wtf me-2"></i>{{ _('Kitchen Details') }}
                         </h4>
 
                         <div class="row g-3">
@@ -91,8 +90,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="sensitive_members" class="form-label">{{ _('No. of members sensitive to
-                                    smoke') }} *</label>
+                                <label for="sensitive_members" class="form-label">{{ _('No. of Members Sensitive to Smoke') }} *</label>
                                 <input type="number" class="form-control" id="sensitive_members"
                                     name="sensitive_members" min="0" max="10" value="1" step="1" required
                                     data-bs-toggle="tooltip" title="{{ _('Children <5 years or elderly >65 years') }}">
@@ -107,17 +105,17 @@
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
                         <h4 class="card-title text-primary-green mb-4">
-                            <i class="bi bi-sun me-2"></i>{{ _('Budget & Renewable Preferences') }}
+                            <i class="bi bi-sun me-2"></i>{{ _('Budget & Renewable Energy Preferences') }}
                         </h4>
 
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="budget_preference" class="form-label">{{ _('Investment priority') }}
+                                <label for="budget_preference" class="form-label">{{ _('Investment Priority') }}
                                     *</label>
                                 <select class="form-select" id="budget_preference" name="budget_preference" required>
                                     <option value="">{{ _('Select Priority') }}</option>
                                     <option value="Low upfront cost">{{ _('Minimise Upfront Cost') }}</option>
-                                    <option value="Balanced approach">{{ _('Balanced ROI') }}</option>
+                                    <option value="Balanced approach">{{ _('Balanced Return on Investment') }}</option>
                                     <option value="Long-term savings">{{ _('Maximise Long-term Savings') }}</option>
                                     <option value="Environmental priority">{{ _('Maximise Environmental Benefit') }}
                                     </option>
@@ -141,6 +139,7 @@
             </form>
         </div>
     </div>
+</div><!-- /.container -->
 
     {% endblock %}
 
@@ -198,8 +197,6 @@
 
             // Initialise (currently no solar preview needed)
         });
-
-
 
         function updateHealthRisk() {
             const kitchenType = document.getElementById('kitchen_type').value;
