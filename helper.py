@@ -644,6 +644,29 @@ def _money(value, default=0.0):
         return round(float(default), 2)
 
 
+def _canonical_fuel_breakdown(energy_data):
+    """Return (calc_method, fuel_breakdown_dict, fuels_used), robust to BOTH result
+    shapes the calculators produce:
+      - dish-based:        fuel_details = {'type','fuels_used','calculation_method',
+                            'fuel_breakdown': {Fuel: {...}}, 'selected_dishes': [...]}
+      - consumption-based: fuel_details = {Fuel: {...}} directly, with
+                            calculation_method at the TOP level of the result.
+    Without this, consumption-based analyses left residential_fuel_selections empty and
+    households.current_fuels/calculation_method blank."""
+    fd = energy_data.get('fuel_details', {}) or {}
+    calc_method = fd.get('calculation_method') or energy_data.get('calculation_method') or ''
+    fuel_bd = fd.get('fuel_breakdown')
+    if not isinstance(fuel_bd, dict) or not fuel_bd:
+        meta = {'type', 'fuels_used', 'calculation_method', 'fuel_breakdown', 'selected_dishes'}
+        fuel_bd = {k: v for k, v in fd.items() if k not in meta and isinstance(v, dict)}
+    fuels_used = fd.get('fuels_used') or list(fuel_bd.keys())
+    # Infer the method from structure when it isn't set yet (the internal save can run
+    # before the top-level calculation_method is attached to the result).
+    if not calc_method:
+        calc_method = 'dish_based' if fd.get('selected_dishes') else ('consumption_based' if fuel_bd else '')
+    return calc_method, fuel_bd, fuels_used
+
+
 def _normalize_selected_dishes(selected_dishes):
     """Map the JSON blob's selected-dish rows to the columns of *_dish_selections.
     Accepts the app's shapes (e.g. {"Dishes": "Puttu", "Category": "Breakfast", "stoves": "LPG"})."""
@@ -722,7 +745,7 @@ def save_cooking_analysis(household_id, kitchen_data, energy_data):
             return
 
         fuel_details = energy_data.get('fuel_details', {}) or {}
-        calc_method = fuel_details.get('calculation_method', '')
+        calc_method, _fuel_bd, fuels_used = _canonical_fuel_breakdown(energy_data)
         kitchen_scenario = kitchen_data.get('kitchen_type', kitchen_data.get('kitchen_scenario', ''))
 
         # Upsert: one current analysis per household (UNIQUE(household_id) enables this).
@@ -757,7 +780,6 @@ def save_cooking_analysis(household_id, kitchen_data, energy_data):
         ))
 
         # Populate the households row's summary columns (previously left empty).
-        fuels_used = fuel_details.get('fuels_used') or list((fuel_details.get('fuel_breakdown') or {}).keys())
         cursor.execute('''
             UPDATE households
                SET current_fuels = ?, calculation_method = ?, kitchen_scenario = ?
@@ -779,7 +801,8 @@ def save_cooking_analysis(household_id, kitchen_data, energy_data):
     # Persist the normalized fuel & dish selections (source of truth, best-effort).
     try:
         fuel_details = energy_data.get('fuel_details', {}) or {}
-        save_fuel_selections(household_id, fuel_details.get('fuel_breakdown'), is_residential=True)
+        _cm, fuel_bd, _fu = _canonical_fuel_breakdown(energy_data)
+        save_fuel_selections(household_id, fuel_bd, is_residential=True)
         save_dish_selections(household_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')), is_residential=True)
     except Exception as e:
         try:
@@ -1122,7 +1145,8 @@ def save_commercial_analysis(institution_id, result):
 
     # Persist normalized commercial fuel & dish selections (source of truth, best-effort).
     try:
-        save_fuel_selections(institution_id, fuel_details.get('fuel_breakdown'), is_residential=False)
+        _cm, _fuel_bd, _fu = _canonical_fuel_breakdown(result)
+        save_fuel_selections(institution_id, _fuel_bd, is_residential=False)
         save_dish_selections(institution_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')), is_residential=False)
     except Exception as e:
         try:
