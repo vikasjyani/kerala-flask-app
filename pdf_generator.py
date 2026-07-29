@@ -299,6 +299,69 @@ def normalize_locale(locale):
     return locale if locale in SUPPORTED_REPORT_LOCALES else 'en'
 
 
+# ==================== MALAYALAM VISUAL REORDERING ====================
+# Neither reportlab nor matplotlib apply complex-script (OpenType) shaping, and no
+# HarfBuzz/raqm engine is installed. Both are "dumb" left-to-right renderers that
+# place each glyph by its advance width. Malayalam stores vowel signs in *logical*
+# order, so pre-base signs (െ േ ൈ) and the two-part signs (ൊ ോ ൌ) end up drawn on the
+# wrong side of their consonant cluster (e.g. "പ്രൊഫൈൽ" broke). We convert logical
+# order to *visual* order — moving pre-base signs before their cluster and splitting
+# the two-part signs — which a dumb, advance-based renderer then draws correctly
+# (pre-base Malayalam vowel signs are spacing glyphs with positive advance).
+_ML_VIRAMA = '്'
+_ML_PRE_SIGNS = {'െ', 'േ', 'ൈ'}                 # e, ee, ai (pre-base)
+_ML_TWO_PART = {                                              # split into (pre, post)
+    'ൊ': ('െ', 'ാ'),                           # o  = e  + aa
+    'ോ': ('േ', 'ാ'),                           # oo = ee + aa
+    'ൌ': ('െ', 'ൗ'),                           # au = e  + au-length
+}
+
+def _ml_is_consonant(ch):
+    return 'ക' <= ch <= 'ഺ' or 'ൺ' <= ch <= 'ൿ'  # consonants + chillus
+
+def _ml_is_matra(ch):
+    return 'ാ' <= ch <= 'ൌ' or ch in ('ൗ', 'ൢ', 'ൣ')
+
+def _ml_is_sign(ch):
+    return ch in ('ഁ', 'ം', 'ഃ')  # candrabindu, anusvara, visarga
+
+def reorder_malayalam(text):
+    """Logical -> visual order for Malayalam so non-shaping renderers place vowel
+    signs correctly. Non-Malayalam characters (Latin, digits, punctuation) pass
+    through untouched, so it is safe to run on mixed strings. Idempotent enough for
+    our single-application pipeline (applied once, in tr()/localize_fuel_name)."""
+    if not text or not any('ഀ' <= c <= 'ൿ' for c in text):
+        return text
+    i, n, out = 0, len(text), []
+    while i < n:
+        ch = text[i]
+        if _ml_is_consonant(ch):
+            j = i + 1
+            # absorb conjunct sequences (virama + consonant), e.g. പ + ് + ര
+            while j + 1 < n and text[j] == _ML_VIRAMA and _ml_is_consonant(text[j + 1]):
+                j += 2
+            base = text[i:j]
+            pre, post = '', ''
+            k = j
+            while k < n and (_ml_is_matra(text[k]) or _ml_is_sign(text[k]) or text[k] == _ML_VIRAMA):
+                c = text[k]
+                if c in _ML_TWO_PART:
+                    p, q = _ML_TWO_PART[c]
+                    pre += p
+                    post += q
+                elif c in _ML_PRE_SIGNS:
+                    pre += c
+                else:
+                    post += c
+                k += 1
+            out.append(pre + base + post)
+            i = k
+        else:
+            out.append(ch)
+            i += 1
+    return ''.join(out)
+
+
 def tr(locale, key, **kwargs):
     locale = normalize_locale(locale)
     english = REPORT_I18N['en'].get(key, key)
@@ -322,9 +385,13 @@ def tr(locale, key, **kwargs):
 
     if kwargs:
         try:
-            return text.format(**kwargs)
+            text = text.format(**kwargs)
         except Exception:
-            return text
+            pass
+    # Reorder Malayalam to visual order so the non-shaping PDF/chart renderer places
+    # vowel signs correctly. Single application point for all tr()-sourced strings.
+    if locale == 'ml':
+        text = reorder_malayalam(text)
     return text
 
 
@@ -334,7 +401,7 @@ def localize_fuel_name(fuel_name, locale):
     locale = normalize_locale(locale)
     if locale == 'ml':
         translated = FUEL_NAME_I18N.get(fuel_name, {}).get('ml')
-        return translated or fuel_name
+        return reorder_malayalam(translated) if translated else fuel_name
     return fuel_name
 
 
@@ -1387,6 +1454,10 @@ def create_solar_specs_table(bess_data, locale='en'):
     else:
         data.append(['Total Upfront Cost', f"₹{bess_data.get('total_capital_cost', 0):,.0f}", 'Solar + Battery + Installation'])
 
+    # These ml strings are inline literals (not from tr()), so reorder them here to
+    # visual order too before the Latin-fallback wrapping.
+    if normalize_locale(locale) == 'ml':
+        data = [[reorder_malayalam(c) if isinstance(c, str) else c for c in row] for row in data]
     # Localize so Latin units (kW, kWh, m², GHI) render in Malayalam reports.
     data = localize_matrix(data, locale, create_styles(locale), has_header=True)
     table = Table(data, colWidths=[1.8*inch, 1.4*inch, 3.6*inch])
