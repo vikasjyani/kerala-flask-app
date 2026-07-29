@@ -82,7 +82,7 @@ These are genuine but were **not** applied because each is either a large refact
 | 🔵 Language switch requires JS / state-changing GET; wire extract+compile into deploy | Build/deploy hardening, out of app scope. (The `babel.cfg` JS extractor part of this finding is **done**.) |
 | ⚪ Catalog uses no parameterized gettext | Informational (means zero placeholder-mismatch risk). |
 
-## Newly discovered during verification (not in the original 72)
-- 🔵 **PDF charts render missing-glyph boxes for Latin units** (`Rs`, `kg`, `CO₂`) when the report is in Malayalam — matplotlib draws Latin unit text using the Malayalam chart font, which lacks Latin glyphs. Pre-existing (unrelated to these changes). Fix: register a Latin fallback font for matplotlib chart tick/axis labels.
+## Newly discovered during verification (not in the original 72) — FIXED
+- 🔵 **PDF charts rendered missing-glyph boxes for Latin units** (`Rs`, `kg`, `CO₂`, `µg/m³`) when the report was in Malayalam — matplotlib drew Latin unit text using the single, `fname`-pinned Malayalam chart font. **Fixed**: `get_chart_font` now returns an ordered family list `['Noto Sans Malayalam', 'DejaVu Sans']` and `get_chart_font_properties` uses `family=` (not `fname=`), enabling matplotlib per-glyph fallback. Verified: Malayalam render now emits **0** missing-glyph warnings (was ~24); PDF still generates in both locales.
 
 To restore pre-change state: `git checkout main`, or restore a DB from `.audit_backup/`.
