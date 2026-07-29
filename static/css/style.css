@@ -6,10 +6,12 @@
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────────── */
 :root {
-  /* Brand */
-  --primary-green:  #228B22;
-  --dark-green:     #388E3C;
-  --light-green:    #70C170;
+  /* Brand — primary-green darkened from #228B22 (4.39:1, failed AA for small text)
+     to #1b7a1b (5.46:1 on white) so labels, links, chart titles and h4-h6 all pass
+     WCAG AA. dark/light-green aligned with the served Material palette. */
+  --primary-green:  #1b7a1b;
+  --dark-green:     #1b5e20;
+  --light-green:    #4CAF50;
   --bg-green:       #DEFBDD;
   --bg-mint:        #BEF8BA;
 
@@ -286,8 +288,10 @@ p:last-child { margin-bottom: 0; }
 
 /* Language button */
 .lang-btn {
-  background: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.3);
+  /* dark overlay (not translucent white) so white label keeps >=4.5:1 on the green strip
+     (was rgba(255,255,255,0.2) -> effective #4ea24e = 3.18:1, failed AA) */
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.5);
   color: #fff;
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-pill);
@@ -300,7 +304,7 @@ p:last-child { margin-bottom: 0; }
   cursor: pointer;
 }
 
-.lang-btn:hover { background: rgba(255,255,255,0.32); }
+.lang-btn:hover { background: rgba(0,0,0,0.34); }
 
 .lang-text {
   /* Hidden on very small screens, shown at 360px+ */
@@ -479,7 +483,7 @@ p:last-child { margin-bottom: 0; }
 
 .btn-nav-back:hover {
   background: var(--accent-yellow);
-  color: #fff;
+  color: var(--text-grey);            /* dark text on yellow (white was 1.60:1, failed AA) */
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(242,200,81,0.30);
 }
@@ -493,7 +497,7 @@ p:last-child { margin-bottom: 0; }
 .btn-sm {
   padding: 0.45rem 1rem;
   font-size: 0.85rem;
-  min-height: 36px;
+  min-height: var(--touch-min);   /* 44px touch target (was 36px) */
 }
 
 /* Full-width on mobile for nav buttons */
@@ -721,7 +725,7 @@ p:last-child { margin-bottom: 0; }
   margin-left: 0.15rem;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .comparison-table th,
   .comparison-table td {
     padding: 0.65rem var(--sp-2);
@@ -1045,7 +1049,7 @@ p:last-child { margin-bottom: 0; }
 
 /* CTA Buttons */
 .cta-primary {
-  background: var(--light-green);
+  background: var(--primary-green);   /* was --light-green: white text was 2.78:1, failed AA */
   color: #fff;
   border: none;
   border-radius: var(--radius-pill);
@@ -1065,7 +1069,7 @@ p:last-child { margin-bottom: 0; }
 }
 
 .cta-primary:hover {
-  background: #5da55d;
+  background: var(--dark-green);   /* keep >=4.5:1 with white on hover (was #5da55d = 3.00:1) */
   color: #fff;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(112,193,112,0.40);
@@ -1118,7 +1122,7 @@ p:last-child { margin-bottom: 0; }
 .stat-value {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--accent-yellow);
+  color: var(--primary-green);   /* was --accent-yellow on white = 1.60:1 (invisible) */
   display: block;
 }
 
@@ -1409,7 +1413,7 @@ p:last-child { margin-bottom: 0; }
   margin-right: auto;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .icon-xxl  { font-size: 3rem;  width: 3rem;  height: 3rem; }
   .icon-giant{ font-size: 3.5rem; }
 }
@@ -1442,7 +1446,7 @@ p:last-child { margin-bottom: 0; }
   margin-bottom: var(--sp-6);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .footer-top {
     flex-direction: column;
     gap: var(--sp-6);
@@ -1465,7 +1469,7 @@ p:last-child { margin-bottom: 0; }
 
 .footer-logos img:hover { transform: scale(1.05); }
 
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .footer-logos img { height: 28px; }
 }
 
@@ -1540,7 +1544,7 @@ p:last-child { margin-bottom: 0; }
   font-size: 5rem;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .error-icon i { font-size: 3.5rem; }
   h1.display-3  { font-size: 3rem; }
 }
@@ -1669,7 +1673,7 @@ p:last-child { margin-bottom: 0; }
 }
 
 /* Ensure interactive elements have adequate tap target on mobile */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .form-check {
     min-height: var(--touch-min);
     display: flex;
@@ -1677,4 +1681,72 @@ p:last-child { margin-bottom: 0; }
     padding-top: var(--sp-2);
     padding-bottom: var(--sp-2);
   }
+}
+
+
+/* ── 20. REDUCED MOTION ───────────────────────────────────────────
+   Respect users who ask the OS to minimise motion (vestibular safety):
+   disable the entrance animations and hover transforms. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+
+/* ── 21. PRINT ────────────────────────────────────────────────────
+   The analysis / recommendation pages are exported and printed. Flatten
+   backgrounds, drop shadows/blur/animation, un-clip wide tables, and hide
+   chrome (header, footer, nav + language controls) so results print cleanly. */
+@media print {
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    overflow: visible !important;
+  }
+  .header-container,
+  .green-strip,
+  .footer-area,
+  .lang-btn,
+  .dropdown,
+  .btn-nav-next,
+  .btn-nav-back,
+  #navConfirmModal,
+  .no-print {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  .card,
+  .metric-card,
+  .recommendation-card,
+  .chart-container,
+  .stats-container {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .comparison-table,
+  .table-responsive {
+    width: auto !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+  a[href]::after { content: ""; }   /* don't append raw URLs after links */
 }
