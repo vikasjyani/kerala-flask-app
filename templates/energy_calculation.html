@@ -9,8 +9,12 @@
 {% set total_steps = 4 %}
 
 {% block content %}
+<!-- Inputs live in a real <form> so CSRF + required attributes are semantically valid.
+     Submission stays JS-driven (calculate button is type="button"); onsubmit is prevented
+     so an Enter keypress cannot trigger a native navigation. -->
+<form id="energyForm" onsubmit="return false;">
 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-<div class="container my-2.5 py-3 analysis-container-custom">
+<div class="container my-2 py-3 analysis-container-custom">
     <div class="text-center mb-2">
         <h3 class="fw-bold text-primary-green mb-1">
             {{ _('Energy Assessment') }}
@@ -592,6 +596,7 @@
         </div>
     </div>
 </div>
+</form>
 
 {% endblock %}
 

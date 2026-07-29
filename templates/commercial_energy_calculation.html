@@ -20,7 +20,7 @@
                 class="me-2 icon-xxl align-middle">
             {{ _('Energy Assessment') }}
         </h3>
-        <p class="mb-0 text-muted">{{ _('For') }} <strong>{{ institution.institution_type }}: {{
+        <p class="mb-0 text-muted">{{ _('For') }} <strong>{{ institution_type_label(institution.institution_type) }}: {{
                 institution.institution_name }}</strong></p>
         <p class="mb-3 text-muted"><small>{{ institution.servings_per_day }} {{ _('servings/day') }} | {{
                 institution.working_days }} {{ _('working days/month') }}</small></p>
@@ -107,7 +107,7 @@
                                                 {% if fuel.fuel_name == 'Grid electricity' %}
                                                 {{ _('Electricity') }}
                                                 {% else %}
-                                                {{ _(fuel.fuel_name) }}
+                                                {{ localize_db_label(fuel.fuel_name, fuel.fuel_name_ml) }}
                                                 {% endif %}
                                             </label>
                                         </div>

@@ -15,12 +15,14 @@ Branch: `fix/full-audit-remediation`. Backups of the databases, translations and
 
 ---
 
-## Fixed (54 of 72 findings)
+## Fixed (56 of 72 findings)
 
 ### Second pass (deferred items now completed)
 - 🟡 **`commercial_analysis.html` duplicated ~470 lines of chart JS** — removed (507 lines); the page now relies on `static/js/main.js` exactly like residential `analysis.html`. This also fixed the **over-strict chart guard** (cost+emissions now render even when health data is absent; missing health/radar canvases are skipped safely by `main.js`).
 - 🔵 **Unlabeled method radios** (`energy_calculation`, `commercial_energy_calculation`) and **`country_code` selects** (`household_profile`, `commercial_selection`) — `aria-label` added.
 - 🔵 **`babel.cfg`** — added a `[javascript:]` extractor for future gettext calls in JS.
+- 🟡 **Institution types & fuel names rendered untranslated** — added `institution_type_label()` (maps stored values incl. the `Hotel`→"Hotel/Restaurant" / `Factory`→"Factory Canteen" value-vs-label mismatch to the catalog labels) and routed the commercial displays through it; the fuel checkbox now uses `localize_db_label(fuel.fuel_name, fuel.fuel_name_ml)`. (Dish-name localization still deferred — see below.)
+- 🟡 **`energy_calculation.html` inputs not in a `<form>`** — wrapped in `<form onsubmit="return false;">` so CSRF + `required` are semantically valid; submit stays JS-driven (calculate button is `type="button"`), so no behavior change.
 
 ### First pass
 
@@ -60,14 +62,13 @@ Branch: `fix/full-audit-remediation`. Backups of the databases, translations and
 
 ---
 
-## Deferred (18 findings) — with rationale
+## Deferred (16 findings) — with rationale
 
 These are genuine but were **not** applied because each is either a large refactor with real regression risk on a working government-facing app, or low-value polish better done as its own reviewed change. None is a correctness bug in the paths exercised today.
 
 | Finding | Why deferred |
 |---|---|
-| 🟡 `energy_calculation.html` inputs not in a `<form>` | Submission is intentionally JS-driven; wrapping in a real `<form>` changes submit semantics and needs full flow re-testing. |
-| 🟠/🟡 Dynamic `_(fuel)` / `_(scenario.health_risk_category)` not extractable; institution/dish DB labels rendered untranslated | Architectural — needs `localize_db_label()` / `_en`/`_ml` columns applied consistently across templates + reference data. Larger i18n workstream. |
+| 🟡 **Dish names** in `commercial_analysis.html` rendered untranslated (`dish_info.dish`) | The `selected_dishes` blob stores only English names; localizing needs the calculation pipeline (`commercial_cooking.py`) to persist the `dish_name_ml` alongside each selected dish. Institution types + fuel names **were** localized this pass. |
 | 🟡 `pdf_generator.py` is a second, non-gettext translation layer | 1,500+ hardcoded Malayalam chars; moving it onto gettext is a large, self-contained task. |
 | 🟡 `analysis.html` charts/Action-Center visually nested inside the Recommendations card | DOM is balanced and renders; the fix is a cosmetic re-grouping with layout-regression risk. |
 | 🟡 Heading order / missing `<h1>` on step pages | A11y polish across many templates; low functional impact, touches visible structure. |

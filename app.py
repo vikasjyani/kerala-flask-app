@@ -2,7 +2,7 @@
 import sys
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file, flash, make_response, g
-from flask_babel import Babel, _
+from flask_babel import Babel, _, lazy_gettext as _l
 from flask_compress import Compress
 from flask_wtf.csrf import CSRFProtect, CSRFError
 import json
@@ -97,6 +97,24 @@ def localize_db_label(label_en, label_ml=None):
     if get_locale() == 'ml' and label_ml and str(label_ml).strip():
         return label_ml
     return label_en
+
+# Stored institution_type VALUES ('Hotel', 'Factory', ...) differ from the display
+# labels used in the selection UI ('Hotel/Restaurant', 'Factory Canteen'). Map each
+# stored value to the same translatable label so it localizes consistently instead of
+# rendering raw English in Malayalam. lazy_gettext defers resolution to render time.
+INSTITUTION_TYPE_LABELS = {
+    'School': _l('School'),
+    'Anganwadi': _l('Anganwadi'),
+    'Hotel': _l('Hotel/Restaurant'),
+    'Factory': _l('Factory Canteen'),
+    'Community Kitchen': _l('Community Kitchen'),
+}
+
+def institution_type_label(value):
+    """Localized display label for a stored institution_type value."""
+    if not value:
+        return value
+    return INSTITUTION_TYPE_LABELS.get(value, value)
 
 def get_district_options_with_fallback():
     """Load district options, using a static fallback when reference DB access fails."""
@@ -223,7 +241,8 @@ def inject_template_context():
         '_': _,
         'districts': [d['value'] for d in district_options],
         'district_options': district_options,
-        'localize_db_label': localize_db_label
+        'localize_db_label': localize_db_label,
+        'institution_type_label': institution_type_label
     }
 
 @app.template_filter('moment')

@@ -33,7 +33,7 @@
         </h3>
         <p class="mb-0 text-muted">{{ _('Assessment with key recommendations') }}</p>
         <p class="mb-0 text-muted"><small>{{ _('Institution Type') }}: {{
-                analysis.current.fuel_details.institution_type }}</small></p>
+                institution_type_label(analysis.current.fuel_details.institution_type) }}</small></p>
     </div>
 
     <div class="row justify-content-center g-4">
@@ -45,7 +45,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="text-muted small">{{ _('Institution Type') }}</div>
-                            <div class="fw-bold">{{ analysis.current.fuel_details.institution_type }}</div>
+                            <div class="fw-bold">{{ institution_type_label(analysis.current.fuel_details.institution_type) }}</div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-muted small">{{ _('Daily Servings') }}</div>

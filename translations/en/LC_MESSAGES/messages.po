@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kerala Clean Cooking Tool 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-29 10:02+0530\n"
+"POT-Creation-Date: 2026-07-29 10:38+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -20,106 +20,106 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: app.py:416 app.py:482
+#: app.py:435 app.py:501
 msgid "An error occurred. Please try again."
 msgstr ""
 
-#: app.py:690 app.py:695
+#: app.py:709 app.py:714
 msgid "An error occurred during the calculation. Please try again."
 msgstr ""
 
-#: app.py:778
+#: app.py:797
 msgid "Your session has expired. Please start a new analysis."
 msgstr ""
 
-#: app.py:829
+#: app.py:848
 msgid "An error occurred while submitting your feedback. Please try again."
 msgstr ""
 
-#: app.py:880
+#: app.py:899
 msgid "No analysis data is available. Please complete an analysis first."
 msgstr ""
 
-#: app.py:918
+#: app.py:937
 msgid "An error occurred while generating the report. Please try again."
 msgstr ""
 
-#: app.py:1015
+#: app.py:1034
 msgid "Please provide institution type and name"
 msgstr ""
 
-#: app.py:1032
+#: app.py:1051
 msgid "Error processing institution profile"
 msgstr ""
 
-#: app.py:1062
+#: app.py:1081
 msgid "Error loading kitchen profile page"
 msgstr ""
 
-#: app.py:1116
+#: app.py:1135
 msgid "Error processing kitchen profile"
 msgstr ""
 
-#: app.py:1165
+#: app.py:1184
 msgid "Calculation failed"
 msgstr ""
 
-#: app.py:1180
+#: app.py:1199
 msgid "Error processing calculation"
 msgstr ""
 
-#: app.py:1288
+#: app.py:1307
 msgid "Error loading page"
 msgstr ""
 
-#: app.py:1383 app.py:1385 app.py:1387 templates/analysis.html:138
+#: app.py:1402 app.py:1404 app.py:1406 templates/analysis.html:138
 #: templates/commercial_analysis.html:292
 msgid "Current"
 msgstr ""
 
-#: app.py:1495
+#: app.py:1514
 msgid "Page Not Found"
 msgstr ""
 
-#: app.py:1496
+#: app.py:1515
 msgid "The requested page does not exist. It may have been moved or deleted."
 msgstr ""
 
-#: app.py:1507
+#: app.py:1526
 msgid "A system error occurred. Please try again."
 msgstr ""
 
-#: app.py:1513
+#: app.py:1532
 msgid "Internal Server Error"
 msgstr ""
 
-#: app.py:1514 templates/error.html:42
+#: app.py:1533 templates/error.html:42
 msgid ""
 "A system error occurred. Our technical team has been notified and is "
 "working to resolve it."
 msgstr ""
 
-#: app.py:1521 templates/error.html:48
+#: app.py:1540 templates/error.html:48
 msgid "Access Denied"
 msgstr ""
 
-#: app.py:1522 templates/error.html:49
+#: app.py:1541 templates/error.html:49
 msgid "You are not authorised to access this page."
 msgstr ""
 
-#: app.py:1530 app.py:1536
+#: app.py:1549 app.py:1555
 msgid "Your session has expired. Please refresh the page and try again."
 msgstr ""
 
-#: app.py:1535
+#: app.py:1554
 msgid "Session Expired"
 msgstr ""
 
-#: app.py:1544 app.py:1549
+#: app.py:1563 app.py:1568
 msgid "Bad Request"
 msgstr ""
 
-#: app.py:1550
+#: app.py:1569
 msgid ""
 "The request could not be processed because required information was "
 "missing."
@@ -565,7 +565,7 @@ msgid "English"
 msgstr ""
 
 #: templates/base.html:157 templates/commercial_energy_calculation.html:562
-#: templates/energy_calculation.html:578
+#: templates/energy_calculation.html:582
 msgid "Close"
 msgstr ""
 
@@ -629,7 +629,7 @@ msgstr ""
 
 #: templates/commercial_analysis.html:78
 #: templates/commercial_energy_calculation.html:226
-#: templates/energy_calculation.html:226
+#: templates/energy_calculation.html:230
 msgid "Category"
 msgstr ""
 
@@ -639,19 +639,19 @@ msgstr ""
 
 #: templates/commercial_analysis.html:80
 #: templates/commercial_energy_calculation.html:228
-#: templates/energy_calculation.html:228
+#: templates/energy_calculation.html:232
 msgid "Fuel Type"
 msgstr ""
 
 #: templates/commercial_analysis.html:90
 #: templates/commercial_energy_calculation.html:259
-#: templates/energy_calculation.html:253 templates/energy_calculation.html:493
+#: templates/energy_calculation.html:257 templates/energy_calculation.html:497
 msgid "LPG"
 msgstr ""
 
 #: templates/commercial_analysis.html:92
 #: templates/commercial_energy_calculation.html:260
-#: templates/energy_calculation.html:254
+#: templates/energy_calculation.html:258
 msgid "PNG"
 msgstr ""
 
@@ -769,7 +769,7 @@ msgstr ""
 #: templates/commercial_energy_calculation.html:7
 #: templates/commercial_energy_calculation.html:21
 #: templates/energy_calculation.html:3 templates/energy_calculation.html:6
-#: templates/energy_calculation.html:7 templates/energy_calculation.html:16
+#: templates/energy_calculation.html:7 templates/energy_calculation.html:20
 msgid "Energy Assessment"
 msgstr ""
 
@@ -791,56 +791,56 @@ msgid "working days/month"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:35
-#: templates/energy_calculation.html:27
+#: templates/energy_calculation.html:31
 msgid "Select a Calculation Method"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:45
 #: templates/commercial_energy_calculation.html:52
-#: templates/energy_calculation.html:38 templates/energy_calculation.html:46
+#: templates/energy_calculation.html:42 templates/energy_calculation.html:50
 msgid "Dish-based Modelling"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:49
-#: templates/energy_calculation.html:42
+#: templates/energy_calculation.html:46
 msgid "Dish Method"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:53
-#: templates/energy_calculation.html:47
+#: templates/energy_calculation.html:51
 msgid "Detailed meal analysis based on specific dish preparation"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:65
 #: templates/commercial_energy_calculation.html:73
-#: templates/energy_calculation.html:60 templates/energy_calculation.html:68
+#: templates/energy_calculation.html:64 templates/energy_calculation.html:72
 msgid "Consumption-based Modelling"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:70
-#: templates/energy_calculation.html:65
+#: templates/energy_calculation.html:69
 msgid "Consumption Method"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:74
-#: templates/energy_calculation.html:70
+#: templates/energy_calculation.html:74
 msgid "Analysis based on aggregate fuel consumption data"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:89
-#: templates/energy_calculation.html:85
+#: templates/energy_calculation.html:89
 msgid "Dish Selection & Current Fuel Usage"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:93
-#: templates/energy_calculation.html:89
+#: templates/energy_calculation.html:93
 msgid ""
 "Select the dishes you prepare regularly, then specify the energy sources "
 "applied to each category."
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:98
-#: templates/energy_calculation.html:94
+#: templates/energy_calculation.html:98
 msgid "All fuels"
 msgstr ""
 
@@ -848,106 +848,106 @@ msgstr ""
 #: templates/commercial_energy_calculation.html:261
 #: templates/commercial_energy_calculation.html:507
 #: templates/commercial_energy_calculation.html:603
-#: templates/energy_calculation.html:105 templates/energy_calculation.html:255
-#: templates/energy_calculation.html:525 templates/energy_calculation.html:621
+#: templates/energy_calculation.html:109 templates/energy_calculation.html:259
+#: templates/energy_calculation.html:529 templates/energy_calculation.html:626
 msgid "Electricity"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:127
 #: templates/commercial_energy_calculation.html:594
-#: templates/energy_calculation.html:124 templates/energy_calculation.html:610
+#: templates/energy_calculation.html:128 templates/energy_calculation.html:615
 msgid "Breakfast"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:130
-#: templates/energy_calculation.html:127
+#: templates/energy_calculation.html:131
 msgid "Breakfast Type"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:133
 #: templates/commercial_energy_calculation.html:158
 #: templates/commercial_energy_calculation.html:185
-#: templates/energy_calculation.html:130 templates/energy_calculation.html:156
-#: templates/energy_calculation.html:183
+#: templates/energy_calculation.html:134 templates/energy_calculation.html:160
+#: templates/energy_calculation.html:187
 msgid "Normal"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:134
 #: templates/commercial_energy_calculation.html:159
 #: templates/commercial_energy_calculation.html:186
-#: templates/energy_calculation.html:131 templates/energy_calculation.html:157
-#: templates/energy_calculation.html:184
+#: templates/energy_calculation.html:135 templates/energy_calculation.html:161
+#: templates/energy_calculation.html:188
 msgid "Heavy"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:135
 #: templates/commercial_energy_calculation.html:160
 #: templates/commercial_energy_calculation.html:187
-#: templates/energy_calculation.html:132 templates/energy_calculation.html:158
-#: templates/energy_calculation.html:185
+#: templates/energy_calculation.html:136 templates/energy_calculation.html:162
+#: templates/energy_calculation.html:189
 msgid "Light"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:140
-#: templates/energy_calculation.html:137
+#: templates/energy_calculation.html:141
 msgid "Select Breakfast Dishes (Multiple choices)"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:154
 #: templates/commercial_energy_calculation.html:595
-#: templates/energy_calculation.html:152 templates/energy_calculation.html:611
+#: templates/energy_calculation.html:156 templates/energy_calculation.html:616
 msgid "Lunch"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:156
-#: templates/energy_calculation.html:154
+#: templates/energy_calculation.html:158
 msgid "Lunch Type"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:165
-#: templates/energy_calculation.html:163
+#: templates/energy_calculation.html:167
 msgid "Select Lunch Dishes (Multiple choices)"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:180
 #: templates/commercial_energy_calculation.html:596
-#: templates/energy_calculation.html:178 templates/energy_calculation.html:612
+#: templates/energy_calculation.html:182 templates/energy_calculation.html:617
 msgid "Dinner"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:182
-#: templates/energy_calculation.html:181
+#: templates/energy_calculation.html:185
 msgid "Dinner Type"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:192
-#: templates/energy_calculation.html:190
+#: templates/energy_calculation.html:194
 msgid "Select Dinner Dishes (Multiple choices)"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:206
 #: templates/commercial_energy_calculation.html:597
-#: templates/energy_calculation.html:205 templates/energy_calculation.html:613
+#: templates/energy_calculation.html:209 templates/energy_calculation.html:618
 msgid "Snacks"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:208
-#: templates/energy_calculation.html:208
+#: templates/energy_calculation.html:212
 msgid "Select Snacks (Multiple choices)"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:221
-#: templates/energy_calculation.html:221
+#: templates/energy_calculation.html:225
 msgid "Selected Dishes Summary"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:227
-#: templates/energy_calculation.html:227
+#: templates/energy_calculation.html:231
 msgid "Dish"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:246
-#: templates/energy_calculation.html:245
+#: templates/energy_calculation.html:249
 msgid "Current Energy Consumption"
 msgstr ""
 
@@ -957,38 +957,38 @@ msgstr ""
 
 #: templates/commercial_energy_calculation.html:255
 #: templates/commercial_energy_calculation.html:258
-#: templates/energy_calculation.html:249 templates/energy_calculation.html:252
+#: templates/energy_calculation.html:253 templates/energy_calculation.html:256
 msgid "Select Your Primary Cooking Fuel"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:259
-#: templates/energy_calculation.html:253
+#: templates/energy_calculation.html:257
 msgid "Liquefied Petroleum Gas"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:260
-#: templates/energy_calculation.html:254
+#: templates/energy_calculation.html:258
 msgid "Piped Natural Gas"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:263
 #: templates/commercial_energy_calculation.html:523
-#: templates/energy_calculation.html:256 templates/energy_calculation.html:541
+#: templates/energy_calculation.html:260 templates/energy_calculation.html:545
 msgid "Traditional Solid Biomass"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:265
-#: templates/energy_calculation.html:257
+#: templates/energy_calculation.html:261
 msgid "Mixed Usage"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:267
-#: templates/energy_calculation.html:259
+#: templates/energy_calculation.html:263
 msgid "Please select your primary cooking fuel"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:272
-#: templates/energy_calculation.html:264
+#: templates/energy_calculation.html:268
 msgid "LPG Consumption Details"
 msgstr ""
 
@@ -1029,28 +1029,28 @@ msgid "e.g., 5"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:326
-#: templates/energy_calculation.html:322
+#: templates/energy_calculation.html:326
 msgid "PNG Consumption Details"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:329
-#: templates/energy_calculation.html:325
+#: templates/energy_calculation.html:329
 msgid "How would you like to provide PNG data?"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:336
-#: templates/energy_calculation.html:332
+#: templates/energy_calculation.html:336
 msgid "Monthly bill amount"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:345
-#: templates/energy_calculation.html:341
+#: templates/energy_calculation.html:345
 msgid "Monthly consumption (SCM)"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:353
 #: templates/commercial_energy_calculation.html:494
-#: templates/energy_calculation.html:358 templates/energy_calculation.html:512
+#: templates/energy_calculation.html:362 templates/energy_calculation.html:516
 msgid "Monthly PNG Bill"
 msgstr ""
 
@@ -1059,12 +1059,12 @@ msgid "e.g., 8500"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:357
-#: templates/energy_calculation.html:361
+#: templates/energy_calculation.html:365
 msgid "Enter your typical monthly PNG bill amount"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:363
-#: templates/energy_calculation.html:365
+#: templates/energy_calculation.html:369
 msgid "Monthly PNG Consumption"
 msgstr ""
 
@@ -1073,7 +1073,7 @@ msgid "e.g., 250"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:368
-#: templates/energy_calculation.html:369
+#: templates/energy_calculation.html:373
 msgid "Standard Cubic Meters per month"
 msgstr ""
 
@@ -1082,13 +1082,13 @@ msgid "Rate per SCM"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:383
-#: templates/energy_calculation.html:413
+#: templates/energy_calculation.html:417
 msgid "Electricity Consumption for Cooking"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:387
 #: templates/commercial_energy_calculation.html:510
-#: templates/energy_calculation.html:417 templates/energy_calculation.html:528
+#: templates/energy_calculation.html:421 templates/energy_calculation.html:532
 msgid "Monthly Electricity for Cooking"
 msgstr ""
 
@@ -1097,7 +1097,7 @@ msgid "e.g., 1200"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:390
-#: templates/energy_calculation.html:420
+#: templates/energy_calculation.html:424
 msgid "Check electricity bill or estimate based on appliance usage"
 msgstr ""
 
@@ -1126,7 +1126,7 @@ msgid "e.g., 2000"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:426
-#: templates/energy_calculation.html:451
+#: templates/energy_calculation.html:455
 msgid "Biomass Consumption Details"
 msgstr ""
 
@@ -1143,7 +1143,7 @@ msgid "Biomass Type"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:439
-#: templates/energy_calculation.html:457
+#: templates/energy_calculation.html:461
 msgid "Firewood"
 msgstr ""
 
@@ -1164,22 +1164,22 @@ msgid "Cost per kg"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:456
-#: templates/energy_calculation.html:474
+#: templates/energy_calculation.html:478
 msgid "Warning:"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:456
-#: templates/energy_calculation.html:474
+#: templates/energy_calculation.html:478
 msgid "Traditional biomass cooking has severe health and environmental impacts!"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:462
-#: templates/energy_calculation.html:480
+#: templates/energy_calculation.html:484
 msgid "Mixed Fuel Usage Details"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:465
-#: templates/energy_calculation.html:483
+#: templates/energy_calculation.html:487
 msgid "Enter the consumption details for each fuel type you use for cooking."
 msgstr ""
 
@@ -1188,24 +1188,24 @@ msgid "LPG (Commercial 19 kg)"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:491
-#: templates/energy_calculation.html:509
+#: templates/energy_calculation.html:513
 msgid "PNG (Piped Natural Gas)"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:526
-#: templates/energy_calculation.html:544
+#: templates/energy_calculation.html:548
 msgid "Monthly Consumption"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:529
-#: templates/energy_calculation.html:547
+#: templates/energy_calculation.html:551
 msgid "Biomass cooking has health impacts"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:544
 #: templates/commercial_kitchen_profile.html:122
 #: templates/commercial_selection.html:316
-#: templates/energy_calculation.html:563 templates/household_profile.html:310
+#: templates/energy_calculation.html:567 templates/household_profile.html:310
 #: templates/kitchen_profile.html:133
 msgid "Back"
 msgstr ""
@@ -1215,58 +1215,58 @@ msgstr ""
 #: templates/commercial_kitchen_profile.html:172
 #: templates/commercial_kitchen_profile.html:178
 #: templates/commercial_selection.html:319
-#: templates/energy_calculation.html:566 templates/household_profile.html:313
+#: templates/energy_calculation.html:570 templates/household_profile.html:313
 #: templates/kitchen_profile.html:136
 msgid "Next"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:561
-#: templates/energy_calculation.html:577
+#: templates/energy_calculation.html:581
 msgid "Select fuel for"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:565
-#: templates/energy_calculation.html:581
+#: templates/energy_calculation.html:585
 msgid "Choose a fuel from your current mix"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:567
-#: templates/energy_calculation.html:584
+#: templates/energy_calculation.html:588
 msgid "Select fuel"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:571
-#: templates/energy_calculation.html:588
+#: templates/energy_calculation.html:592
 msgid "Cancel"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:573
-#: templates/energy_calculation.html:590
+#: templates/energy_calculation.html:594
 msgid "Save"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:600
-#: templates/energy_calculation.html:618
+#: templates/energy_calculation.html:623
 msgid "Select fuel for this dish"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:601
-#: templates/energy_calculation.html:619
+#: templates/energy_calculation.html:624
 msgid "Select fuels above to assign for this dish"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:602
-#: templates/energy_calculation.html:620
+#: templates/energy_calculation.html:625
 msgid "Not selected"
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:890
-#: templates/energy_calculation.html:815
+#: templates/energy_calculation.html:820
 msgid "Please select your current cooking fuels first."
 msgstr ""
 
 #: templates/commercial_energy_calculation.html:937
-#: templates/energy_calculation.html:866
+#: templates/energy_calculation.html:871
 msgid "Please select a fuel for this dish."
 msgstr ""
 
@@ -1760,142 +1760,142 @@ msgstr ""
 msgid "We welcome your queries. Please contact us using the details below."
 msgstr ""
 
-#: templates/energy_calculation.html:18
+#: templates/energy_calculation.html:22
 msgid ""
 "Enter cooking energy data with either detailed menu inputs or existing "
 "consumption records"
 msgstr ""
 
-#: templates/energy_calculation.html:267
+#: templates/energy_calculation.html:271
 msgid "Cylinder Size"
 msgstr ""
 
-#: templates/energy_calculation.html:269
+#: templates/energy_calculation.html:273
 msgid "Domestic"
 msgstr ""
 
-#: templates/energy_calculation.html:270
+#: templates/energy_calculation.html:274
 msgid "Commercial"
 msgstr ""
 
-#: templates/energy_calculation.html:271
+#: templates/energy_calculation.html:275
 msgid "Small"
 msgstr ""
 
-#: templates/energy_calculation.html:275 templates/energy_calculation.html:496
+#: templates/energy_calculation.html:279 templates/energy_calculation.html:500
 msgid "Cylinder Lasts (Days)"
 msgstr ""
 
-#: templates/energy_calculation.html:278
+#: templates/energy_calculation.html:282
 msgid "How many days does one cylinder last"
 msgstr ""
 
-#: templates/energy_calculation.html:281
+#: templates/energy_calculation.html:285
 msgid "Price of a Cylinder"
 msgstr ""
 
-#: templates/energy_calculation.html:290
+#: templates/energy_calculation.html:294
 msgid "LPG Consumption Analysis"
 msgstr ""
 
-#: templates/energy_calculation.html:295
+#: templates/energy_calculation.html:299
 msgid "kWh per cylinder"
 msgstr ""
 
-#: templates/energy_calculation.html:301 templates/energy_calculation.html:392
+#: templates/energy_calculation.html:305 templates/energy_calculation.html:396
 msgid "Monthly energy (kWh)"
 msgstr ""
 
-#: templates/energy_calculation.html:307
+#: templates/energy_calculation.html:311
 msgid "Cylinders/month"
 msgstr ""
 
-#: templates/energy_calculation.html:313 templates/energy_calculation.html:436
+#: templates/energy_calculation.html:317 templates/energy_calculation.html:440
 msgid "Monthly Cost (₹)"
 msgstr ""
 
-#: templates/energy_calculation.html:350
+#: templates/energy_calculation.html:354
 msgid "Daily average"
 msgstr ""
 
-#: templates/energy_calculation.html:373
+#: templates/energy_calculation.html:377
 msgid "Daily Average Consumption"
 msgstr ""
 
-#: templates/energy_calculation.html:377
+#: templates/energy_calculation.html:381
 msgid "Daily average consumption"
 msgstr ""
 
-#: templates/energy_calculation.html:381
+#: templates/energy_calculation.html:385
 msgid "PNG Consumption Analysis"
 msgstr ""
 
-#: templates/energy_calculation.html:386
+#: templates/energy_calculation.html:390
 msgid "Monthly SCM"
 msgstr ""
 
-#: templates/energy_calculation.html:398
+#: templates/energy_calculation.html:402
 msgid "Monthly Bill (₹)"
 msgstr ""
 
-#: templates/energy_calculation.html:404
+#: templates/energy_calculation.html:408
 msgid "Avg rate (₹/SCM)"
 msgstr ""
 
-#: templates/energy_calculation.html:425
+#: templates/energy_calculation.html:429
 msgid "Electricity Consumption Analysis"
 msgstr ""
 
-#: templates/energy_calculation.html:430
+#: templates/energy_calculation.html:434
 msgid "Cooking energy (kWh)"
 msgstr ""
 
-#: templates/energy_calculation.html:442
+#: templates/energy_calculation.html:446
 msgid "Annual CO₂ (kg)"
 msgstr ""
 
-#: templates/energy_calculation.html:455
+#: templates/energy_calculation.html:459
 msgid "Type of biomass"
 msgstr ""
 
-#: templates/energy_calculation.html:458
+#: templates/energy_calculation.html:462
 msgid "Agricultural waste"
 msgstr ""
 
-#: templates/energy_calculation.html:459
+#: templates/energy_calculation.html:463
 msgid "Cow dung cake"
 msgstr ""
 
-#: templates/energy_calculation.html:460
+#: templates/energy_calculation.html:464
 msgid "Mixed"
 msgstr ""
 
-#: templates/energy_calculation.html:464
+#: templates/energy_calculation.html:468
 msgid "Monthly consumption"
 msgstr ""
 
-#: templates/energy_calculation.html:468
+#: templates/energy_calculation.html:472
 msgid "Estimate monthly biomass consumption in kg"
 msgstr ""
 
-#: templates/energy_calculation.html:616
+#: templates/energy_calculation.html:621
 msgid "Vegetarian"
 msgstr ""
 
-#: templates/energy_calculation.html:617
+#: templates/energy_calculation.html:622
 msgid "Non-Vegetarian"
 msgstr ""
 
-#: templates/energy_calculation.html:1296
-#: templates/energy_calculation.html:1361
+#: templates/energy_calculation.html:1301
+#: templates/energy_calculation.html:1366
 msgid "Calculating your energy consumption…"
 msgstr ""
 
-#: templates/energy_calculation.html:1302
+#: templates/energy_calculation.html:1307
 msgid "Please select primary fuel"
 msgstr ""
 
-#: templates/energy_calculation.html:1356
+#: templates/energy_calculation.html:1361
 msgid "Please select at least one fuel type"
 msgstr ""
 
