@@ -70,15 +70,18 @@ class DatabaseHelper:
         self._cache = {}
 
     def get_connection(self):
-        """Get database connection (thread-safe - creates new connection each time)."""
+        """Get a READ-ONLY connection to the reference database (cooking_webapp.db).
+
+        This DB holds master data (fuels, dishes, pricing, factors) and must never be
+        mutated at runtime. Opening it read-only (URI mode=ro) enforces that invariant —
+        previously it was opened read-write and even issued PRAGMA journal_mode=WAL (a write),
+        so a stray _execute() could have silently corrupted master data.
+        """
         # Always create a new connection to avoid threading issues
         # SQLite connections cannot be shared across threads
-        conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA busy_timeout=3000")
-        conn.execute("PRAGMA synchronous=NORMAL")
+        conn = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True,
+                               check_same_thread=False, timeout=10.0)
         conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA foreign_keys = ON")
         return conn
 
     def get_user_connection(self):

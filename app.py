@@ -686,12 +686,12 @@ def calculate_consumption():
         logger.log_error(f"Error in calculate_consumption: {e}")
         import traceback
         logger.log_error(traceback.format_exc())
-        error_msg = str(e) if is_json_request else _('An error occurred during calculation. Please try again.')
+        error_msg = str(e) if is_json_request else _('An error occurred during the calculation. Please try again.')
         
         if is_json_request:
             return jsonify({'status': 'error', 'message': error_msg}), 500
         else:
-            flash(_('An error occurred during calculation. Please try again.'), 'error')
+            flash(_('An error occurred during the calculation. Please try again.'), 'error')
             return redirect(url_for('energy_calculation'))
 
 @app.route('/analysis')
@@ -774,7 +774,7 @@ def submit_feedback():
         entity_id = session.get('commercial_analysis_id') if is_commercial else session.get('household_id')
         
         if not entity_id:
-            flash(_('Session expired. Please start a new analysis.'), 'error')
+            flash(_('Your session has expired. Please start a new analysis.'), 'error')
             return redirect(url_for('index'))
         
         # Collect feedback data from the redesigned form
@@ -825,7 +825,7 @@ def submit_feedback():
         logger.log_error(f"Error submitting feedback: {e}")
         import traceback
         logger.log_error(traceback.format_exc())
-        flash(_('An error occurred while submitting feedback. Please try again.'), 'error')
+        flash(_('An error occurred while submitting your feedback. Please try again.'), 'error')
         return redirect(url_for('feedback'))
 
 @app.route('/feedback_success')
@@ -876,7 +876,7 @@ def download_report():
             analysis_type = 'commercial' if is_commercial else 'residential'
 
         if not analysis_data:
-            flash(_('No analysis data available. Please complete an analysis first.'), 'error')
+            flash(_('No analysis data is available. Please complete an analysis first.'), 'error')
             return redirect(url_for('index'))
             
         # Determine is_commercial for filename
@@ -1310,9 +1310,11 @@ def commercial_analysis():
     # Generate recommendations
     recommendations = helper.generate_recommendations(alternatives, institution_data, kitchen_data, energy_data)
     
-    # Save recommendations to database
+    # Save recommendations to database (commercial recs live in alternative_recommendations,
+    # keyed to the institution — routing them through the household-keyed save_recommendations
+    # silently dropped them).
     if institution_id:
-        helper.save_recommendations(institution_id, recommendations)
+        helper.save_commercial_recommendations(institution_id, recommendations)
     
     # Prepare complete analysis result (SAME structure as residential)
     analysis_result = build_analysis_result(energy_data, alternatives, health_impact, recommendations)
@@ -1490,7 +1492,7 @@ def page_not_found(e):
     return render_template('error.html',
                           error_code=404,
                           error_title=_('Page Not Found'),
-                          error_message=_('The page you are looking for does not exist. It may have been moved or deleted.')), 404
+                          error_message=_('The requested page does not exist. It may have been moved or deleted.')), 404
 
 @app.errorhandler(500)
 def internal_server_error(e):
@@ -1501,14 +1503,14 @@ def internal_server_error(e):
     if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({
             'status': 'error',
-            'message': _('Something went wrong on our end. Please try again.'),
+            'message': _('A system error occurred. Please try again.'),
             'error_code': 500
         }), 500
         
     return render_template('error.html',
                           error_code=500,
                           error_title=_('Internal Server Error'),
-                          error_message=_('Something went wrong on our end. Our team has been notified and is working to fix the issue.')), 500
+                          error_message=_('A system error occurred. Our technical team has been notified and is working to resolve it.')), 500
 
 @app.errorhandler(403)
 def forbidden(e):
@@ -1516,7 +1518,7 @@ def forbidden(e):
     return render_template('error.html',
                           error_code=403,
                           error_title=_('Access Denied'),
-                          error_message=_('You do not have permission to access this page.')), 403
+                          error_message=_('You are not authorised to access this page.')), 403
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
@@ -1524,7 +1526,7 @@ def handle_csrf_error(e):
     if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({
             'status': 'error',
-            'message': _('Session expired. Please refresh the page and try again.'),
+            'message': _('Your session has expired. Please refresh the page and try again.'),
             'error_code': 'CSRF_ERROR'
         }), 400
     return render_template('error.html',
@@ -1544,7 +1546,7 @@ def bad_request(e):
     return render_template('error.html',
                           error_code=400,
                           error_title=_('Bad Request'),
-                          error_message=_('The request could not be understood or was missing required parameters.')), 400
+                          error_message=_('The request could not be processed because required information was missing.')), 400
 
 
 if __name__ == '__main__':

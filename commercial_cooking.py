@@ -1215,12 +1215,10 @@ def calculate_dish_based(data, institution_data, kitchen_data, institution_id):
         logger.log_result("Overall Efficiency", f"{result['overall_thermal_efficiency']:.1f}%")
         logger.log_result("Environmental Grade", f"{grade} ({label})", f"Based on {co2_per_serving:.3f} kg/serving")
         
-        # Save to database
-        if institution_id:
-            logger.log_step(f"Saving commercial analysis for institution {institution_id}")
-            save_commercial_analysis(institution_id, kitchen_data, result)
-            logger.log_success("Commercial analysis saved")
-        
+        # NOTE: persistence is handled once by the caller (app.py -> helper.save_commercial_analysis)
+        # for BOTH dish-based and consumption-based methods. The previous in-function save here
+        # caused a duplicate, timestamp-mismatched row per dish-based run. Do not re-add it.
+
         logger.log_success("Commercial dish-based calculation completed")
 
         # Store calculation_method at top level for reliable method-switch detection in app.py

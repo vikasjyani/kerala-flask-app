@@ -320,9 +320,11 @@ def init_user_database():
     ''')
     
     # Cooking analysis table - stores residential cooking behavior and results
+    # One current record per household (UNIQUE) with a surrogate primary key.
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS cooking_analysis (
-            household_id TEXT,
+            analysis_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            household_id TEXT NOT NULL,
             monthly_energy_kwh DECIMAL(8,2),
             calculation_method TEXT,
             kitchen_type TEXT,
@@ -330,11 +332,11 @@ def init_user_database():
             cooking_hours_daily DECIMAL(4,2),
             sensitive_members INTEGER,
             roof_area DECIMAL(6,2),
-            breakfast_timing TEXT,
-            budget_preference TEXT,
             current_monthly_cost DECIMAL(8,2),
             fuel_breakdown TEXT,
-            FOREIGN KEY (household_id) REFERENCES households (household_id)
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(household_id),
+            FOREIGN KEY (household_id) REFERENCES households (household_id) ON DELETE CASCADE
         )
     ''')
     
@@ -371,22 +373,24 @@ def init_user_database():
         )
     ''')
 
-    # Commercial Analysis table
+    # Commercial Analysis table - one current record per institution (UNIQUE) with a surrogate PK.
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS commercial_analysis (
-            institution_id TEXT,
+            analysis_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            institution_id TEXT NOT NULL,
             monthly_energy_kwh DECIMAL(10,2),
             monthly_cost DECIMAL(10,2),
             annual_emissions DECIMAL(10,2),
             calculation_method TEXT,
             fuel_breakdown TEXT,
-            
+
             primary_fuel TEXT,
             health_risk_score DECIMAL(5,2),
             environmental_grade TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            
-            FOREIGN KEY (institution_id) REFERENCES commercial_institutions (institution_id)
+
+            UNIQUE(institution_id),
+            FOREIGN KEY (institution_id) REFERENCES commercial_institutions (institution_id) ON DELETE CASCADE
         )
     ''')
     # Ensure created_at column exists for legacy databases
@@ -450,6 +454,24 @@ def init_user_database():
         )
     ''')
     
+    # Commercial dish selections table (references commercial_institutions)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS commercial_dish_selections (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            institution_id TEXT NOT NULL,
+            meal_category TEXT,
+            dish_name TEXT,
+            meal_type VARCHAR(50),
+            fuel_used VARCHAR(100),
+            quantity_kg REAL,
+            servings INTEGER,
+            energy_kwh REAL,
+            cost REAL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (institution_id) REFERENCES commercial_institutions(institution_id) ON DELETE CASCADE
+        )
+    ''')
+
     # Alternative recommendations table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS alternative_recommendations (
@@ -473,6 +495,7 @@ def init_user_database():
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS recommendations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             household_id TEXT,
             recommended_solution TEXT,
             recommendation_score DECIMAL(5,2),
@@ -480,7 +503,9 @@ def init_user_database():
             estimated_payback_years DECIMAL(4,2),
             health_risk_score DECIMAL(5,2),
             environmental_grade TEXT,
-            FOREIGN KEY (household_id) REFERENCES households (household_id)
+            rank INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (household_id) REFERENCES households (household_id) ON DELETE CASCADE
         )
     ''')
     
@@ -553,6 +578,12 @@ def init_user_database():
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_commercial_fuel_type ON commercial_fuel_selections(fuel_type)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_alt_entity ON alternative_recommendations(entity_id, entity_type)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_feedback_entity ON user_feedback(entity_id, entity_type)')
+    # Indexes on the FK columns that are actually queried by get_cooking_analysis/get_recommendations/get_commercial_analysis
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_cooking_household ON cooking_analysis(household_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_reco_household ON recommendations(household_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_commanalysis_inst ON commercial_analysis(institution_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_commercial_dish_institution ON commercial_dish_selections(institution_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_commercial_dish_category ON commercial_dish_selections(meal_category)')
 
     ensure_table_columns(cursor, 'households', {
         'kitchen_scenario': 'kitchen_scenario TEXT',
@@ -601,6 +632,37 @@ def init_databases():
 init_databases()
 
 # Database helper functions
+def _money(value, default=0.0):
+    """Round a monetary/emissions/energy value to 2 dp before persisting.
+    SQLite has no fixed-point type, so we round in Python to avoid storing
+    long IEEE-754 tails (e.g. 596.6195738533768) in currency columns."""
+    try:
+        if value is None:
+            return round(float(default), 2)
+        return round(float(value), 2)
+    except (ValueError, TypeError):
+        return round(float(default), 2)
+
+
+def _normalize_selected_dishes(selected_dishes):
+    """Map the JSON blob's selected-dish rows to the columns of *_dish_selections.
+    Accepts the app's shapes (e.g. {"Dishes": "Puttu", "Category": "Breakfast", "stoves": "LPG"})."""
+    normalized = []
+    for d in (selected_dishes or []):
+        if not isinstance(d, dict):
+            continue
+        normalized.append({
+            'meal_category': d.get('meal_category') or d.get('Category') or d.get('category') or '',
+            'dish_name': d.get('dish_name') or d.get('Dishes') or d.get('dish') or d.get('name') or '',
+            'fuel_used': d.get('fuel_used') or d.get('stoves') or d.get('fuel') or '',
+            'servings': d.get('servings') or d.get('portions_per_meal') or d.get('portions'),
+            'frequency_per_week': d.get('frequency_per_week'),
+            'calories_per_portion': d.get('calories_per_portion'),
+            'energy_per_serving_kwh': d.get('energy_per_serving_kwh') or d.get('energy_kwh'),
+        })
+    return normalized
+
+
 def save_household_data(household_data):
     """Save household data to database and return household_id"""
     household_id = str(uuid.uuid4())
@@ -659,23 +721,52 @@ def save_cooking_analysis(household_id, kitchen_data, energy_data):
             # Household doesn't exist - skip saving analysis
             return
 
+        fuel_details = energy_data.get('fuel_details', {}) or {}
+        calc_method = fuel_details.get('calculation_method', '')
+        kitchen_scenario = kitchen_data.get('kitchen_type', kitchen_data.get('kitchen_scenario', ''))
+
+        # Upsert: one current analysis per household (UNIQUE(household_id) enables this).
         cursor.execute('''
             INSERT INTO cooking_analysis (
                 household_id, monthly_energy_kwh, calculation_method, kitchen_type,
                 ventilation_quality, cooking_hours_daily, sensitive_members,
                 roof_area, current_monthly_cost, fuel_breakdown
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(household_id) DO UPDATE SET
+                monthly_energy_kwh=excluded.monthly_energy_kwh,
+                calculation_method=excluded.calculation_method,
+                kitchen_type=excluded.kitchen_type,
+                ventilation_quality=excluded.ventilation_quality,
+                cooking_hours_daily=excluded.cooking_hours_daily,
+                sensitive_members=excluded.sensitive_members,
+                roof_area=excluded.roof_area,
+                current_monthly_cost=excluded.current_monthly_cost,
+                fuel_breakdown=excluded.fuel_breakdown,
+                created_at=CURRENT_TIMESTAMP
         ''', (
             household_id,
-            energy_data.get('monthly_energy_kwh', 0),
-            energy_data.get('fuel_details', {}).get('calculation_method', ''),
-            kitchen_data.get('kitchen_type', kitchen_data.get('kitchen_scenario', '')),  # Support both old and new
+            _money(energy_data.get('monthly_energy_kwh', 0)),
+            calc_method,
+            kitchen_scenario,
             kitchen_data.get('ventilation_quality', 'Average'),
             kitchen_data.get('cooking_hours_daily', 3.0),
             kitchen_data.get('sensitive_members', 1),
             kitchen_data.get('roof_area_available', 50),
-            energy_data.get('monthly_cost', 0),
-            json.dumps(energy_data.get('fuel_details', {}))
+            _money(energy_data.get('monthly_cost', 0)),
+            json.dumps(fuel_details)
+        ))
+
+        # Populate the households row's summary columns (previously left empty).
+        fuels_used = fuel_details.get('fuels_used') or list((fuel_details.get('fuel_breakdown') or {}).keys())
+        cursor.execute('''
+            UPDATE households
+               SET current_fuels = ?, calculation_method = ?, kitchen_scenario = ?
+             WHERE household_id = ?
+        ''', (
+            ', '.join(str(f) for f in fuels_used) if fuels_used else '',
+            calc_method,
+            kitchen_scenario,
+            household_id
         ))
 
         conn.commit()
@@ -685,11 +776,27 @@ def save_cooking_analysis(household_id, kitchen_data, energy_data):
     finally:
         close_user_connection(conn)
 
+    # Persist the normalized fuel & dish selections (source of truth, best-effort).
+    try:
+        fuel_details = energy_data.get('fuel_details', {}) or {}
+        save_fuel_selections(household_id, fuel_details.get('fuel_breakdown'), is_residential=True)
+        save_dish_selections(household_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')), is_residential=True)
+    except Exception as e:
+        try:
+            get_logger().log_error(f"Error saving residential selections: {e}")
+        except Exception:
+            pass
+
     # Log this analysis to history
     log_user_history(household_id, 'residential_analysis', f"Calculated energy: {energy_data.get('monthly_energy_kwh', 0)} kWh")
 
 def save_user_feedback(feedback_data):
-    """Save user feedback to database"""
+    """Save user feedback to database (canonical schema; validates entity_type)."""
+    # Validate entity_type against the table's CHECK constraint before hitting the DB.
+    entity_type = feedback_data.get('entity_type') or 'household'
+    if entity_type not in ('household', 'institution'):
+        entity_type = 'household'
+
     conn = get_user_connection()
     try:
         feedback_id = str(uuid.uuid4())
@@ -699,14 +806,12 @@ def save_user_feedback(feedback_data):
                 feedback_id, entity_id, entity_type, name, email, phone,
                 interest_clean_cooking, allow_authority_contact,
                 support_solar, support_electric_cooking, support_png,
-                support_govt_schemes, support_none,
-                png_scheme_interested, solar_scheme_interested,
-                ujjwala_scheme_interested, feedback_text
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                support_govt_schemes, support_none, feedback_text
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             feedback_id,
             feedback_data.get('entity_id', ''),
-            feedback_data.get('entity_type', ''),
+            entity_type,
             feedback_data.get('name', ''),
             feedback_data.get('email', ''),
             feedback_data.get('phone', ''),
@@ -717,24 +822,21 @@ def save_user_feedback(feedback_data):
             feedback_data.get('support_png', False),
             feedback_data.get('support_govt_schemes', False),
             feedback_data.get('support_none', False),
-            feedback_data.get('support_png', False),
-            feedback_data.get('support_solar', False),
-            feedback_data.get('support_govt_schemes', False),
             feedback_data.get('feedback_text', '')
         ))
         conn.commit()
-        
+
         # Log action
         log_user_history(feedback_data.get('entity_id', 'anonymous'), 'feedback_submitted', "Feedback submitted")
-        
-    except Exception as e:
-        logger = get_logger()
-        logger.log_error(f"Error saving feedback: {e}")
+
+    except Exception:
+        conn.rollback()
+        raise
     finally:
         close_user_connection(conn)
 
 def log_user_history(user_id, activity_type, details=''):
-    """Log user activity event to history"""
+    """Log user activity event to history (best-effort; never disrupts the request)."""
     conn = get_user_connection()
     try:
         cursor = conn.cursor()
@@ -744,7 +846,10 @@ def log_user_history(user_id, activity_type, details=''):
         ''', (str(user_id), activity_type, str(details)))
         conn.commit()
     except Exception as e:
-        print(f"Error logging history: {e}") # Silent fail to not disrupt flow
+        try:
+            get_logger().log_error(f"Error logging user history: {e}")
+        except Exception:
+            pass  # logging must never break the flow
     finally:
         close_user_connection(conn)
 
@@ -761,27 +866,101 @@ def save_recommendations(household_id, recommendations):
             # This can happen if database was reset or household wasn't saved yet
             return
 
-        for fuel, score, data in recommendations:
+        # Replace-on-save: clear this household's previous recommendation set so
+        # re-running an analysis does not accumulate stale rows from earlier runs.
+        cursor.execute('DELETE FROM recommendations WHERE household_id = ?', (household_id,))
+
+        for rank, (fuel, score, data) in enumerate(recommendations, 1):
             cursor.execute('''
                 INSERT INTO recommendations (
                     household_id, recommended_solution, recommendation_score,
                     estimated_monthly_savings, estimated_payback_years,
-                    health_risk_score, environmental_grade
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    health_risk_score, environmental_grade, rank
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 household_id,
                 fuel,
-                score,
-                data.get('monthly_savings', 0),
-                data.get('payback_years', 0),
-                data.get('health_risk_score', 0),
-                data.get('environmental_grade', 'C')
+                _money(score),
+                _money(data.get('monthly_savings', 0)),
+                _money(data.get('payback_years', 0)),
+                _money(data.get('health_risk_score', 0)),
+                data.get('environmental_grade', 'C'),
+                rank
             ))
 
         conn.commit()
     except Exception:
         conn.rollback()
         raise
+    finally:
+        close_user_connection(conn)
+
+def save_commercial_recommendations(institution_id, recommendations):
+    """Persist commercial recommendations.
+
+    The residential `recommendations` table is keyed to `households`, so routing an
+    institution_id there silently dropped every commercial recommendation. Commercial
+    recommendations belong in `alternative_recommendations` (entity_type='institution').
+    Accepts the same (fuel, score, data) tuple shape as generate_recommendations().
+    """
+    if not recommendations:
+        return
+    conn = get_user_connection()
+    try:
+        cursor = conn.cursor()
+        # Only persist for a real institution (FK-less table, so guard explicitly).
+        cursor.execute('SELECT institution_id FROM commercial_institutions WHERE institution_id = ?', (institution_id,))
+        if not cursor.fetchone():
+            return
+
+        # Replace-on-save for this institution.
+        cursor.execute(
+            'DELETE FROM alternative_recommendations WHERE entity_id = ? AND entity_type = ?',
+            (institution_id, 'institution')
+        )
+
+        for rank, item in enumerate(recommendations, 1):
+            # Support both the (fuel, score, data) tuple and a plain dict.
+            if isinstance(item, (list, tuple)) and len(item) == 3:
+                fuel, score, data = item
+            elif isinstance(item, dict):
+                fuel = item.get('fuel', item.get('alternative_fuel', 'Unknown'))
+                score = item.get('recommendation_score', 0)
+                data = item
+            else:
+                continue
+            data = data or {}
+            cursor.execute('''
+                INSERT INTO alternative_recommendations (
+                    entity_id, entity_type, alternative_fuel, rank,
+                    monthly_cost, monthly_savings, annual_savings,
+                    payback_period_months, upfront_cost,
+                    annual_emissions_kg, emissions_reduction_kg,
+                    health_risk_score, environmental_grade, recommendation_reason
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                institution_id,
+                'institution',
+                fuel,
+                rank,
+                _money(data.get('monthly_cost', 0)),
+                _money(data.get('monthly_savings', 0)),
+                _money(data.get('annual_savings', data.get('monthly_savings', 0) * 12)),
+                _money(data.get('payback_period_months', data.get('payback_years', 0) * 12)),
+                _money(data.get('upfront_cost', data.get('capital_cost', 0))),
+                _money(data.get('annual_emissions_kg', 0)),
+                _money(data.get('emissions_reduction_kg', 0)),
+                _money(data.get('health_risk_score', 0)),
+                data.get('environmental_grade', ''),
+                data.get('recommendation_reason', data.get('reason', ''))
+            ))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        try:
+            get_logger().log_error(f"Error saving commercial recommendations: {e}")
+        except Exception:
+            pass
     finally:
         close_user_connection(conn)
 
@@ -805,22 +984,24 @@ def get_household_data(household_id):
 def get_cooking_analysis(household_id):
     """Retrieve cooking analysis data from database"""
     conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute('SELECT * FROM cooking_analysis WHERE household_id = ?', (household_id,))
-    row = cursor.fetchone()
-    
-    if row:
-        columns = [description[0] for description in cursor.description]
-        analysis_data = dict(zip(columns, row))
-        # Parse JSON fuel_breakdown
-        if analysis_data.get('fuel_breakdown'):
-            analysis_data['fuel_breakdown'] = json.loads(analysis_data['fuel_breakdown'])
+    try:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM cooking_analysis WHERE household_id = ?', (household_id,))
+        row = cursor.fetchone()
+
+        if row:
+            columns = [description[0] for description in cursor.description]
+            analysis_data = dict(zip(columns, row))
+            # Parse JSON fuel_breakdown
+            if analysis_data.get('fuel_breakdown'):
+                try:
+                    analysis_data['fuel_breakdown'] = json.loads(analysis_data['fuel_breakdown'])
+                except (ValueError, TypeError):
+                    pass
+            return analysis_data
+        return None
+    finally:
         close_user_connection(conn)
-        return analysis_data
-    
-    close_user_connection(conn)
-    return None
 
 def get_recommendations(household_id):
     """Retrieve recommendations from database"""
@@ -887,8 +1068,9 @@ def save_institution_data(institution_data):
     return institution_id
 
 def save_commercial_analysis(institution_id, result):
-    """Save commercial analysis results to database"""
+    """Save commercial analysis results (single upsert path for dish- and consumption-based)."""
     conn = get_db_connection()
+    fuel_details = result.get('fuel_details', {}) or {}
     try:
         cursor = conn.cursor()
 
@@ -897,21 +1079,37 @@ def save_commercial_analysis(institution_id, result):
         if not cursor.fetchone():
             return
 
+        primary_fuel = fuel_details.get('type')
+        if not primary_fuel:
+            fuels_list = fuel_details.get('fuels_used', []) or []
+            primary_fuel = 'Multiple' if len(fuels_list) > 1 else (fuels_list[0] if fuels_list else 'Unknown')
+
+        # Upsert: one current analysis per institution (UNIQUE(institution_id)).
         cursor.execute('''
             INSERT INTO commercial_analysis (
                 institution_id, monthly_energy_kwh, monthly_cost, annual_emissions,
                 calculation_method, fuel_breakdown, primary_fuel,
-                health_risk_score, environmental_grade
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                health_risk_score, environmental_grade, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(institution_id) DO UPDATE SET
+                monthly_energy_kwh=excluded.monthly_energy_kwh,
+                monthly_cost=excluded.monthly_cost,
+                annual_emissions=excluded.annual_emissions,
+                calculation_method=excluded.calculation_method,
+                fuel_breakdown=excluded.fuel_breakdown,
+                primary_fuel=excluded.primary_fuel,
+                health_risk_score=excluded.health_risk_score,
+                environmental_grade=excluded.environmental_grade,
+                created_at=CURRENT_TIMESTAMP
         ''', (
             institution_id,
-            result.get('monthly_energy_kwh', 0),
-            result.get('monthly_cost', 0),
-            result.get('annual_emissions', 0) or result.get('annual_co2_kg', 0),
-            result.get('fuel_details', {}).get('calculation_method', ''),
-            json.dumps(result.get('fuel_details', {})),
-            result.get('fuel_details', {}).get('type', 'Unknown'),
-            result.get('health_risk_score', 0),
+            _money(result.get('monthly_energy_kwh', 0)),
+            _money(result.get('monthly_cost', 0)),
+            _money(result.get('annual_emissions', 0) or result.get('annual_co2_kg', 0)),
+            fuel_details.get('calculation_method', ''),
+            json.dumps(fuel_details),
+            primary_fuel,
+            _money(result.get('health_risk_score', 0)),
             result.get('environmental_grade', 'C')
         ))
 
@@ -921,6 +1119,16 @@ def save_commercial_analysis(institution_id, result):
         raise
     finally:
         close_user_connection(conn)
+
+    # Persist normalized commercial fuel & dish selections (source of truth, best-effort).
+    try:
+        save_fuel_selections(institution_id, fuel_details.get('fuel_breakdown'), is_residential=False)
+        save_dish_selections(institution_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')), is_residential=False)
+    except Exception as e:
+        try:
+            get_logger().log_error(f"Error saving commercial selections: {e}")
+        except Exception:
+            pass
 
 # New helper functions for saving detailed selections
 
@@ -933,15 +1141,18 @@ def save_dish_selections(entity_id, dishes, is_residential=True):
         dishes: List of dicts with dish details
         is_residential: True for households, False for institutions
     """
-    if not dishes:
-        return
-    
     conn = get_user_connection()
     try:
         cursor = conn.cursor()
-        
+
+        # Replace-on-save: clear prior selections for this entity so re-runs don't duplicate.
         if is_residential:
-            for dish in dishes:
+            cursor.execute('DELETE FROM residential_dish_selections WHERE household_id = ?', (entity_id,))
+        else:
+            cursor.execute('DELETE FROM commercial_dish_selections WHERE institution_id = ?', (entity_id,))
+
+        for dish in (dishes or []):
+            if is_residential:
                 cursor.execute('''
                     INSERT INTO residential_dish_selections (
                         household_id, meal_category, dish_name, frequency_per_week,
@@ -956,9 +1167,26 @@ def save_dish_selections(entity_id, dishes, is_residential=True):
                     dish.get('portions_per_meal', 1),
                     dish.get('calories_per_portion', 0),
                     dish.get('water_content_percentage', 0),
-                    dish.get('energy_per_serving_kwh', 0)
+                    _money(dish.get('energy_per_serving_kwh', 0))
                 ))
-        
+            else:  # Commercial
+                cursor.execute('''
+                    INSERT INTO commercial_dish_selections (
+                        institution_id, meal_category, dish_name, meal_type,
+                        fuel_used, quantity_kg, servings, energy_kwh, cost
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    entity_id,
+                    dish.get('meal_category', ''),
+                    dish.get('dish_name', ''),
+                    dish.get('meal_type', dish.get('meal_category', '')),
+                    dish.get('fuel_used', ''),
+                    dish.get('quantity_kg'),
+                    dish.get('servings'),
+                    _money(dish.get('energy_per_serving_kwh', dish.get('energy_kwh', 0))),
+                    _money(dish.get('cost', 0))
+                ))
+
         conn.commit()
     finally:
         close_user_connection(conn)
@@ -972,24 +1200,27 @@ def save_fuel_selections(entity_id, fuels, is_residential=True):
         fuels: Dict or list of fuel details
         is_residential: True for households, False for institutions
     """
-    if not fuels:
-        return
-    
     conn = get_user_connection()
     try:
         cursor = conn.cursor()
-        
+
+        # Replace-on-save: clear prior selections for this entity so re-runs don't duplicate.
+        if is_residential:
+            cursor.execute('DELETE FROM residential_fuel_selections WHERE household_id = ?', (entity_id,))
+        else:
+            cursor.execute('DELETE FROM commercial_fuel_selections WHERE institution_id = ?', (entity_id,))
+
         # Handle both dict (fuel_breakdown) and list formats
         fuel_list = []
         if isinstance(fuels, dict):
             # Convert dict to list
             for fuel_type, details in fuels.items():
-                fuel_list.append({
-                    'fuel_type': fuel_type,
-                    **details
-                })
+                entry = {'fuel_type': fuel_type}
+                if isinstance(details, dict):
+                    entry.update(details)
+                fuel_list.append(entry)
         else:
-            fuel_list = fuels
+            fuel_list = fuels or []
         
         for fuel in fuel_list:
             if is_residential:
@@ -1003,11 +1234,11 @@ def save_fuel_selections(entity_id, fuels, is_residential=True):
                     entity_id,
                     fuel.get('fuel_type', fuel.get('type', 'Unknown')),
                     fuel.get('percentage_usage', fuel.get('percentage', 0)),
-                    fuel.get('monthly_quantity', fuel.get('quantity', 0)),
+                    _money(fuel.get('monthly_quantity', fuel.get('quantity', 0))),
                     fuel.get('quantity_unit', fuel.get('unit', '')),
-                    fuel.get('monthly_cost', 0),
-                    fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0)),
-                    fuel.get('monthly_emissions_kg', 0),
+                    _money(fuel.get('monthly_cost', 0)),
+                    _money(fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0))),
+                    _money(fuel.get('monthly_emissions_kg', 0)),
                     fuel.get('is_current_fuel', 1)
                 ))
             else:  # Commercial
@@ -1021,11 +1252,11 @@ def save_fuel_selections(entity_id, fuels, is_residential=True):
                     entity_id,
                     fuel.get('fuel_type', fuel.get('type', 'Unknown')),
                     fuel.get('percentage_usage', fuel.get('percentage', 0)),
-                    fuel.get('monthly_quantity', fuel.get('quantity', 0)),
+                    _money(fuel.get('monthly_quantity', fuel.get('quantity', 0))),
                     fuel.get('quantity_unit', fuel.get('unit', '')),
-                    fuel.get('monthly_cost', 0),
-                    fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0)),
-                    fuel.get('monthly_emissions_kg', 0),
+                    _money(fuel.get('monthly_cost', 0)),
+                    _money(fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0))),
+                    _money(fuel.get('monthly_emissions_kg', 0)),
                     fuel.get('is_current_fuel', 1)
                 ))
         
