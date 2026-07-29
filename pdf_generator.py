@@ -493,17 +493,25 @@ def get_font_pair(locale):
 
 
 def get_chart_font(locale):
+    """Return the matplotlib font family as an ordered list so matplotlib (>=3.6) can
+    do per-glyph fallback. For Malayalam the Malayalam face is primary with a Latin
+    face (DejaVu Sans) as fallback, so Latin unit text in chart labels (Rs, kg, CO2,
+    μg/m³) renders properly instead of missing-glyph boxes."""
     locale = normalize_locale(locale)
-    if locale == 'ml':
-        return FONT_PROFILES['chart_ml_name']
-    return FONT_PROFILES['chart_default_name']
+    ml_name = FONT_PROFILES.get('chart_ml_name')
+    default_name = FONT_PROFILES.get('chart_default_name') or 'DejaVu Sans'
+    families = [ml_name, default_name] if locale == 'ml' else [default_name]
+    ordered = []
+    for fam in families:
+        if fam and fam not in ordered:
+            ordered.append(fam)
+    return ordered or ['DejaVu Sans']
 
 
 def get_chart_font_properties(locale):
-    locale = normalize_locale(locale)
-    font_path = FONT_PROFILES['chart_ml_path'] if locale == 'ml' else FONT_PROFILES['chart_default_path']
-    if font_path and os.path.exists(font_path):
-        return font_manager.FontProperties(fname=font_path)
+    """FontProperties built from a family LIST (not a pinned fname) so matplotlib can
+    substitute the Latin fallback for glyphs the primary (Malayalam) font lacks.
+    Pinning via fname= would bind to a single font file and disable that fallback."""
     return font_manager.FontProperties(family=get_chart_font(locale))
 
 
