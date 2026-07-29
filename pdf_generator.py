@@ -301,9 +301,30 @@ def normalize_locale(locale):
 
 def tr(locale, key, **kwargs):
     locale = normalize_locale(locale)
-    text = REPORT_I18N.get(locale, REPORT_I18N['en']).get(key, REPORT_I18N['en'].get(key, key))
+    english = REPORT_I18N['en'].get(key, key)
+    text = REPORT_I18N.get(locale, REPORT_I18N['en']).get(key, english)
+
+    # Keep PDF terminology in sync with the web UI. When the shared Flask-Babel
+    # catalog already has a translation for this exact English string, prefer it so
+    # the report and the website never drift (the report previously maintained its
+    # own separate Malayalam wording). Report-specific strings that are not in the
+    # shared catalog keep the report's own translation. Falls back safely to
+    # REPORT_I18N when there is no app context or Babel is unavailable.
+    if locale != 'en':
+        try:
+            from flask_babel import force_locale, gettext as _gettext
+            with force_locale(locale):
+                catalog_text = _gettext(english)
+            if catalog_text and catalog_text != english:
+                text = catalog_text
+        except Exception:
+            pass
+
     if kwargs:
-        return text.format(**kwargs)
+        try:
+            return text.format(**kwargs)
+        except Exception:
+            return text
     return text
 
 
