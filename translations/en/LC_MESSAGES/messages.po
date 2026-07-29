@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kerala Clean Cooking Tool 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-29 10:38+0530\n"
+"POT-Creation-Date: 2026-07-29 15:01+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -2483,7 +2483,7 @@ msgid "Multi-criteria decision analysis"
 msgstr ""
 
 #: templates/info.html:87
-msgid "ROI & Payback calculation"
+msgid "Cost & savings comparison"
 msgstr ""
 
 #: templates/info.html:88
@@ -2523,7 +2523,7 @@ msgid "RBI interest rates and inflation"
 msgstr ""
 
 #: templates/info.html:117
-msgid "NPV and payback calculations"
+msgid "NPV & levelized 25-year cost"
 msgstr ""
 
 #: templates/info.html:118
@@ -2636,5 +2636,11 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Overall Rating"
+#~ msgstr ""
+
+#~ msgid "ROI & Payback calculation"
+#~ msgstr ""
+
+#~ msgid "NPV and payback calculations"
 #~ msgstr ""
 

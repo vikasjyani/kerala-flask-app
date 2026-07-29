@@ -1572,7 +1572,8 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
         rec_data_table = [
             [tr(locale, 'monthly_cost'), format_currency(rec_data.get('monthly_cost', 0))],
             [tr(locale, 'annual_co2'), f"{float(rec_data.get('annual_co2', rec_data.get('annual_emissions_kg', 0)) or 0):,.0f} kg"],
-            [tr(locale, 'payback_period'), f"{float(rec_data.get('payback_period_months', 0) or 0):.0f} {tr(locale, 'months')}"],
+            # Payback period intentionally omitted: it is not currently computed
+            # (would otherwise always print "0 months"). See REMEDIATION_STATUS.md.
             [tr(locale, 'health_risk'), localize_risk_category(rec_data.get('health_risk_category', 'Moderate'), locale)],
         ]
         story.append(Table(localize_matrix(rec_data_table, locale, styles, has_header=False), colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)))
