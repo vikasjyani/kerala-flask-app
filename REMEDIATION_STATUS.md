@@ -8,12 +8,21 @@ Branch: `fix/full-audit-remediation`. Backups of the databases, translations and
 | Commit | Scope |
 |---|---|
 | `fix(db)` | Database schema + integrity + normalization (migration + `helper.py`, `db_helper.py`, `commercial_cooking.py`, `app.py`) |
+| `fix(db)` (2) | `get_recommendations` try/finally; this status doc |
 | `fix(css)` | WCAG contrast, real minification, print + reduced-motion, breakpoints |
 | `fix(frontend+i18n)` | Feedback-form bug, template structure, a11y, Malayalam catalog |
+| `fix(frontend+i18n)` (2) | Chart-JS de-duplication, a11y labels, JS extractor |
 
 ---
 
-## Fixed (48 of 72 findings)
+## Fixed (54 of 72 findings)
+
+### Second pass (deferred items now completed)
+- 🟡 **`commercial_analysis.html` duplicated ~470 lines of chart JS** — removed (507 lines); the page now relies on `static/js/main.js` exactly like residential `analysis.html`. This also fixed the **over-strict chart guard** (cost+emissions now render even when health data is absent; missing health/radar canvases are skipped safely by `main.js`).
+- 🔵 **Unlabeled method radios** (`energy_calculation`, `commercial_energy_calculation`) and **`country_code` selects** (`household_profile`, `commercial_selection`) — `aria-label` added.
+- 🔵 **`babel.cfg`** — added a `[javascript:]` extractor for future gettext calls in JS.
+
+### First pass
 
 ### Database — architecture & integrity (all Critical + High + most Medium)
 - 🔴 **`user_analysis_history` 100% write failure** — table rebuilt to the schema the code writes (`user_id, activity_type, details, timestamp`); `log_user_history` now records (verified: table populates) and logs via the real logger, not `print`.
@@ -51,20 +60,19 @@ Branch: `fix/full-audit-remediation`. Backups of the databases, translations and
 
 ---
 
-## Deferred (24 findings) — with rationale
+## Deferred (18 findings) — with rationale
 
 These are genuine but were **not** applied because each is either a large refactor with real regression risk on a working government-facing app, or low-value polish better done as its own reviewed change. None is a correctness bug in the paths exercised today.
 
 | Finding | Why deferred |
 |---|---|
-| 🟡 `commercial_analysis.html` duplicates ~470 lines of chart JS from `main.js` | Deleting the inline copy risks breaking commercial charts if `main.js` coverage differs; needs a focused before/after visual test. Structure/`<div>` bugs in this file **were** fixed. |
 | 🟡 `energy_calculation.html` inputs not in a `<form>` | Submission is intentionally JS-driven; wrapping in a real `<form>` changes submit semantics and needs full flow re-testing. |
 | 🟠/🟡 Dynamic `_(fuel)` / `_(scenario.health_risk_category)` not extractable; institution/dish DB labels rendered untranslated | Architectural — needs `localize_db_label()` / `_en`/`_ml` columns applied consistently across templates + reference data. Larger i18n workstream. |
 | 🟡 `pdf_generator.py` is a second, non-gettext translation layer | 1,500+ hardcoded Malayalam chars; moving it onto gettext is a large, self-contained task. |
 | 🟡 `analysis.html` charts/Action-Center visually nested inside the Recommendations card | DOM is balanced and renders; the fix is a cosmetic re-grouping with layout-regression risk. |
 | 🟡 Heading order / missing `<h1>` on step pages | A11y polish across many templates; low functional impact, touches visible structure. |
 | 🟡 Polymorphic `entity_id/entity_type` → real FKs | Code now uses a consistent `household`/`institution` vocabulary; converting to dual nullable FKs + CHECK is a schema change with little practical gain at this scale. |
-| 🔵 Method cards keyboard-operability; radio/checkbox `fieldset`/`legend`; `country_code`/method-radio labels; decorative-icon `aria-hidden` | A11y polish; safe but numerous small edits best done as a dedicated a11y pass. |
+| 🔵 Method-card keyboard operability; radio/checkbox `fieldset`/`legend`; decorative-icon `aria-hidden`; per-page `<h1>`/heading order | Remaining a11y polish. Control **labels** (method radios, `country_code`) are now done; the rest is numerous small edits best done as a dedicated a11y pass (the `<h1>` change touches visible structure). |
 | 🔵 Duplicated markup → Jinja macros (meal cards, recommendation columns, logos) | Refactor-only; no behavior change; risk of subtle rendering diffs. |
 | 🔵 SRI on CDN assets; duplicate Bootstrap-Icons load (CDN + self-host) | Requires choosing a CSP/offline strategy; informational. |
 | 🔵 `overflow-x:hidden` on html/body masks a real overflow child | Needs finding the offending element; the clip is currently harmless. |
