@@ -2419,7 +2419,7 @@ msgstr ""
 
 #: templates/household_profile.html:458
 msgid "%(gain)s%% energy efficiency gain through large-scale operation"
-msgstr "വലിയ തോതിൽ ഉപയോഗിച്ചാൽ %(gain)s%% വരെ ഊർജ ലാഭം ലഭിക്കും"
+msgstr "വലിയ തോതിൽ ഉപയോഗിച്ചാൽ %(gain)s%% വരെ ഊർജ ലാഭം ലഭിക്കും."
 
 #: templates/index.html:3
 msgid "Kerala Clean Cooking Tool - Home"
