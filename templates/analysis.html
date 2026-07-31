@@ -244,9 +244,9 @@
                                 <tr>
                                     <td><strong>{{ _('Monthly EMI / Cost') }}</strong></td>
                                     <td>₹{{ "%.0f"|format(solar_alt.levelized_monthly_cost|default(0)) }}</td>
-                                    <td>{{ _('Levelised cost over 25 years') }} ({{ _('Loan') }}: {{
-                                        "%.0f"|format(solar_alt.levelized_costs.loan_tenure_years) }} {{ _('years') }} @
-                                        7.0%)</td>
+                                    <td>{{ _('Levelised cost over 25 years (Loan: %(years)s years @ %(rate)s%%)',
+                                        years="%.0f"|format(solar_alt.levelized_costs.loan_tenure_years),
+                                        rate='7.0') }}</td>
                                 </tr>
                                 {% endif %}
                             </tbody>

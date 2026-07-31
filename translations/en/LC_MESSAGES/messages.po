@@ -359,7 +359,7 @@ msgid "Monthly EMI / Cost"
 msgstr ""
 
 #: templates/analysis.html:247 templates/commercial_analysis.html:408
-msgid "Levelised cost over 25 years"
+msgid "Levelised cost over 25 years (Loan: %(years)s years @ %(rate)s%%)"
 msgstr ""
 
 #: templates/analysis.html:247 templates/commercial_analysis.html:408
@@ -2363,7 +2363,7 @@ msgid "Check your electricity bill for the applicable slab rate"
 msgstr ""
 
 #: templates/household_profile.html:458
-msgid "Energy efficiency gain from economies of scale"
+msgid "%(gain)s%% energy efficiency gain through large-scale operation"
 msgstr ""
 
 #: templates/index.html:3

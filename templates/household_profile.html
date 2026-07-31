@@ -455,7 +455,12 @@
         }
 
         if (efficiencyGain > 0) {
-            efficiencyInfo.innerHTML = `<i class="bi bi-lightbulb text-success me-1"></i>${efficiencyGain}% {{ _('Energy efficiency gain from economies of scale') }}`;
+            // The gain is a placeholder inside the translated sentence, not a prefix, so
+            // Malayalam can place the number where its own word order needs it. gettext
+            // fills in the '{gain}' token, which is then swapped for the computed value.
+            const gainTemplate = `{{ _('%(gain)s%% energy efficiency gain through large-scale operation', gain='{gain}') }}`;
+            efficiencyInfo.innerHTML = `<i class="bi bi-lightbulb text-success me-1"></i>` +
+                gainTemplate.replace('{gain}', efficiencyGain);
         } else {
             efficiencyInfo.innerHTML = '';
         }

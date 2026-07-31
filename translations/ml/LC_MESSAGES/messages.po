@@ -141,7 +141,7 @@ msgstr "വിശകലന ഫലങ്ങൾ"
 #: templates/feedback_success.html:3 templates/household_profile.html:3
 #: templates/kitchen_profile.html:3
 msgid "Kerala Clean Cooking Insights Platform"
-msgstr "കേരള ശുദ്ധ ഇന്ധന പാചക വിവര പ്ലാറ്റ്ഫോം"
+msgstr "കേരള ക്ലീൻ കുക്കിംഗ് ഇൻസൈറ്റ്സ് പ്ലാറ്റ്ഫോം"
 
 #: templates/analysis.html:6 templates/commercial_analysis.html:7
 msgid "Step 4 of 4"
@@ -172,7 +172,7 @@ msgstr "അത്യന്തം ഉയർന്ന"
 
 #: templates/analysis.html:27
 msgid "Clean Cooking Analysis Report"
-msgstr "ശുദ്ധ ഇന്ധന പാചക ഊർജ്ജ വിശകലന റിപ്പോർട്ട്"
+msgstr "ക്ലീൻ കുക്കിംഗ് വിശകലന റിപ്പോർട്ട്"
 
 #: templates/analysis.html:29 templates/commercial_analysis.html:34
 msgid "Assessment with key recommendations"
@@ -206,7 +206,7 @@ msgstr "ജൂൾസ്"
 #: templates/commercial_analysis.html:501
 #: templates/commercial_analysis.html:558
 msgid "Monthly Cost"
-msgstr "മാസിക ചെലവ്"
+msgstr "പ്രതിമാസ ചെലവ്"
 
 #: templates/analysis.html:47 templates/commercial_analysis.html:124
 msgid "Annual Emissions"
@@ -222,7 +222,7 @@ msgstr "ഇന്ധനം അനുസരിച്ചുള്ള പാചക 
 
 #: templates/analysis.html:103 templates/commercial_analysis.html:255
 msgid "Comparative Cost and Emission Estimates"
-msgstr "താരതമ്യ ചെലവ്, ഉദ്‌വമന കണക്കുകൾ"
+msgstr "ചെലവുകളുടെയും എമിഷന്റെയും കണക്കുകൾ"
 
 #: templates/analysis.html:108 templates/commercial_analysis.html:261
 msgid "Energy Source"
@@ -317,7 +317,7 @@ msgstr "സോളാർ PV സംവിധാനത്തിന്റെ ശേ�
 
 #: templates/analysis.html:212 templates/commercial_analysis.html:373
 msgid "Capacity required based on daily load"
-msgstr "ദൈനംദിന ഭാരത്തെ അടിസ്ഥാനമാക്കിയുള്ള ആവശ്യ ശേഷി"
+msgstr "ഡെയ്‌ലി ലോഡിന് ആവശ്യമായ കപ്പാസിറ്റി"
 
 #: templates/analysis.html:215 templates/commercial_analysis.html:376
 msgid "Battery Storage"
@@ -365,11 +365,12 @@ msgstr "സോളാർ പാനലുകൾ + ഇൻവെർട്ടർ + �
 
 #: templates/analysis.html:245 templates/commercial_analysis.html:406
 msgid "Monthly EMI / Cost"
-msgstr "മാസിക EMI / ചെലവ്"
+msgstr "മാസ EMI / ചെലവ്"
 
 #: templates/analysis.html:247 templates/commercial_analysis.html:408
-msgid "Levelised cost over 25 years"
-msgstr "25 വർഷത്തെ ലെവലൈസ്ഡ് ചെലവ്"
+msgid "Levelised cost over 25 years (Loan: %(years)s years @ %(rate)s%%)"
+msgstr ""
+"25 വർഷത്തെ ശരാശരി ചെലവ് (വായ്പ: %(rate)s%% പലിശയിൽ %(years)s വർഷത്തേക്ക്)"
 
 #: templates/analysis.html:247 templates/commercial_analysis.html:408
 msgid "Loan"
@@ -385,7 +386,7 @@ msgstr "വർഷം"
 #: templates/analysis.html:262 templates/commercial_analysis.html:423
 #: templates/info.html:82
 msgid "Strategic Recommendations"
-msgstr "തന്ത്രപരമായ ശുപാർശകൾ"
+msgstr "പ്രധാന നിർദ്ദേശങ്ങൾ"
 
 #: templates/analysis.html:278 templates/commercial_analysis.html:439
 msgid "Most Cost-Effective"
@@ -410,11 +411,11 @@ msgstr "ഊർജ്ജ കാര്യക്ഷമത"
 
 #: templates/analysis.html:323 templates/commercial_analysis.html:485
 msgid "You Save"
-msgstr "പ്രതീക്ഷിക്കുന്ന സമ്പാദ്യം"
+msgstr "നിങ്ങൾ ലാഭിക്കുന്നത്"
 
 #: templates/analysis.html:368 templates/commercial_analysis.html:531
 msgid "You Reduce"
-msgstr "ലഘൂകരണം"
+msgstr "നിങ്ങൾ കുറയ്ക്കുന്നത്"
 
 #: templates/analysis.html:385 templates/commercial_analysis.html:553
 msgid "Score"
@@ -422,7 +423,7 @@ msgstr "സ്കോർ"
 
 #: templates/analysis.html:416 templates/commercial_analysis.html:584
 msgid "Balance"
-msgstr "സന്തുലിതാവസ്ഥ"
+msgstr "സന്തുലനം"
 
 #: templates/analysis.html:421 templates/commercial_analysis.html:591
 msgid "No rating available"
@@ -434,7 +435,7 @@ msgstr "ബദൽ ശുപാർശകൾ നിലവിൽ ലഭ്യമല
 
 #: templates/analysis.html:437 templates/commercial_analysis.html:608
 msgid "Monthly Operating Cost Comparison"
-msgstr "മാസിക പ്രവർത്തന ചെലവ് താരതമ്യം"
+msgstr "പ്രതിമാസ പ്രവർത്തന ചെലവിന്റെ താരതമ്യം"
 
 #: templates/analysis.html:438 templates/analysis.html:449
 #: templates/commercial_analysis.html:609
@@ -454,7 +455,7 @@ msgstr "താഴ്ന്ന ബാറുകൾ കുറഞ്ഞ മാസി
 
 #: templates/analysis.html:448 templates/commercial_analysis.html:619
 msgid "Annual Carbon Footprint Comparison"
-msgstr "വാർഷിക കാർബൺ കാൽപ്പാട് താരതമ്യം"
+msgstr "വാർഷിക കാർബൺ പുറന്തള്ളലിന്റെ താരതമ്യം"
 
 #: templates/analysis.html:452 templates/commercial_analysis.html:623
 msgid "Bar chart comparing annual CO₂ emissions across fuel types"
@@ -489,20 +490,20 @@ msgstr "അടുത്ത ഘട്ടങ്ങൾ:"
 #: templates/analysis.html:489 templates/commercial_analysis.html:721
 msgid "Contact local suppliers for price quotations on the recommended solutions"
 msgstr ""
-"ശുപാർശ ചെയ്ത പരിഹാരങ്ങളുടെ വില ക്വട്ടേഷനുകൾക്കായി പ്രാദേശിക വിതരണക്കാരെ "
+"നിർദ്ദേശിച്ച ഓപ്ഷനുകളുടെ വിലവിവരങ്ങൾക്കായി ലോക്കൽ സപ്ലയർമാരുമായി "
 "ബന്ധപ്പെടുക"
 
 #: templates/analysis.html:490 templates/commercial_analysis.html:722
 msgid "Consult with energy professionals for installation planning"
-msgstr "ഇൻസ്റ്റലേഷൻ ആസൂത്രണത്തിനായി ഊർജ്ജ വിദഗ്ധരുമായി കൂടിയാലോചിക്കുക"
+msgstr "ഇൻസ്റ്റാളേഷൻ പ്ലാൻ ചെയ്യുന്നതിനായി എനർജി വിദഗ്ദ്ധരുമായി സംസാരിക്കുക"
 
 #: templates/analysis.html:491 templates/commercial_analysis.html:723
 msgid "Review the applicable government subsidy schemes for clean cooking"
-msgstr "ശുദ്ധ ഇന്ധന പാചകത്തിന് ബാധകമായ സർക്കാർ സബ്സിഡി പദ്ധതികൾ പരിശോധിക്കുക"
+msgstr "ക്ലീൻ കുക്കിംഗിനായുള്ള സർക്കാർ സബ്‌സിഡികൾ പരിശോധിക്കുക"
 
 #: templates/analysis.html:492 templates/commercial_analysis.html:724
 msgid "Monitor your energy consumption and costs over time"
-msgstr "കാലക്രമേണ നിങ്ങളുടെ ഊർജ്ജ ഉപഭോഗവും ചെലവും നിരീക്ഷിക്കുക"
+msgstr "നിങ്ങളുടെ ഊർജ്ജ ഉപയോഗവും ചെലവുകളും കൃത്യമായി നിരീക്ഷിക്കുക"
 
 #: templates/analysis.html:505 templates/commercial_analysis.html:738
 msgid "Contributing to Clean Cooking Energy Research"
@@ -531,7 +532,9 @@ msgstr "നിങ്ങളുടെ വിശകലനം തിരഞ്ഞെ�
 
 #: templates/analysis_selection.html:12
 msgid "Select the cooking category that best reflects your usage"
-msgstr "നിങ്ങളുടെ ഉപയോഗത്തിന് ഏറ്റവും അനുയോജ്യമായ പാചക വിഭാഗം തിരഞ്ഞെടുക്കുക"
+msgstr ""
+"നിങ്ങളുടെ ഉപയോഗത്തിന് ഏറ്റവും അനുയോജ്യമായ കുക്കിംഗ് കാറ്റഗറി "
+"തിരഞ്ഞെടുക്കുക"
 
 #: templates/analysis_selection.html:22 templates/analysis_selection.html:26
 msgid "Household Cooking"
@@ -565,7 +568,7 @@ msgstr ""
 
 #: templates/base.html:8 templates/base.html:93 templates/contact_us.html:3
 msgid "Kerala Clean Cooking Tool"
-msgstr "കേരള ശുദ്ധ ഇന്ധന പാചക ഉപകരണം"
+msgstr "കേരള ക്ലീൻ കുക്കിംഗ് ടൂൾ"
 
 #: templates/base.html:76 templates/base.html:173
 msgid "Vasudha Foundation"
@@ -577,7 +580,7 @@ msgstr "ഇഎംസി കേരള"
 
 #: templates/base.html:95 templates/base.html:97 templates/index.html:18
 msgid "Clean Cooking Tool"
-msgstr "ശുദ്ധ ഇന്ധന പാചക ഉപകരണം"
+msgstr "ക്ലീൻ കുക്കിംഗ് ടൂൾ"
 
 #: templates/base.html:107 templates/base.html:111
 msgid "English"
@@ -817,7 +820,7 @@ msgstr "പ്രവൃത്തിദിവസങ്ങൾ/മാസം"
 #: templates/commercial_energy_calculation.html:35
 #: templates/energy_calculation.html:31
 msgid "Select a Calculation Method"
-msgstr "കണക്കുകൂട്ടൽ രീതി തിരഞ്ഞെടുക്കുക"
+msgstr "കാൽക്കുലേഷൻ മെത്തേഡ് തിരഞ്ഞെടുക്കുക"
 
 #: templates/commercial_energy_calculation.html:45
 #: templates/commercial_energy_calculation.html:52
@@ -834,8 +837,7 @@ msgstr "വിഭവ രീതി"
 #: templates/energy_calculation.html:51
 msgid "Detailed meal analysis based on specific dish preparation"
 msgstr ""
-"നിർദ്ദിഷ്ട വിഭവം തയ്യാറാക്കുന്നത് അടിസ്ഥാനമാക്കിയുള്ള വിശദമായ ഭക്ഷണ "
-"വിശകലനം"
+"ഓരോ വിഭവവും പാചകം ചെയ്യുന്ന രീതി അടിസ്ഥാനമാക്കിയുള്ള വിശദമായ ഭക്ഷണ വിശകലനം"
 
 #: templates/commercial_energy_calculation.html:65
 #: templates/commercial_energy_calculation.html:73
@@ -851,7 +853,7 @@ msgstr "ഉപഭോഗ രീതി"
 #: templates/commercial_energy_calculation.html:74
 #: templates/energy_calculation.html:74
 msgid "Analysis based on aggregate fuel consumption data"
-msgstr "മൊത്തം ഇന്ധന ഉപഭോഗ ഡാറ്റ അടിസ്ഥാനമാക്കിയുള്ള വിശകലനം"
+msgstr "മൊത്തത്തിലുള്ള ഇന്ധന ഉപഭോഗ വിവരങ്ങളെ അടിസ്ഥാനമാക്കിയുള്ള വിശകലനം"
 
 #: templates/commercial_energy_calculation.html:89
 #: templates/energy_calculation.html:89
@@ -1310,7 +1312,7 @@ msgstr "അടുക്കളയും സൗകര്യ പ്രൊഫൈല�
 #: templates/commercial_kitchen_profile.html:3
 #: templates/commercial_selection.html:3
 msgid "Kerala Clean Cooking Platform"
-msgstr "കേരള ശുദ്ധ ഇന്ധന പാചക പ്ലാറ്റ്ഫോം"
+msgstr "കേരള ക്ലീൻ കുക്കിംഗ് പ്ലാറ്റ്ഫോം"
 
 #: templates/commercial_kitchen_profile.html:6
 #: templates/energy_calculation.html:6
@@ -1329,12 +1331,12 @@ msgstr "കൃത്യമായ വിശകലനത്തിനായി ന�
 #: templates/commercial_kitchen_profile.html:33
 #: templates/kitchen_profile.html:43
 msgid "Kitchen Details"
-msgstr "അടുക്കള വിശദാംശങ്ങൾ"
+msgstr "അടുക്കളയുടെ വിവരങ്ങൾ"
 
 #: templates/commercial_kitchen_profile.html:39
 #: templates/kitchen_profile.html:50
 msgid "Kitchen Ventilation Scenario"
-msgstr "അടുക്കള വായുസഞ്ചാര സാഹചര്യം"
+msgstr "അടുക്കളയിലെ വായുസഞ്ചാരത്തിന്റെ സ്ഥിതി"
 
 #: templates/commercial_kitchen_profile.html:42
 #: templates/kitchen_profile.html:53
@@ -1354,7 +1356,7 @@ msgstr "ദയവായി അടുക്കള സാഹചര്യം തി
 #: templates/commercial_kitchen_profile.html:53
 #: templates/kitchen_profile.html:64
 msgid "Affects health impact calculation"
-msgstr "ആരോഗ്യ ആഘാത കണക്കുകൂട്ടലിനെ ബാധിക്കുന്നു"
+msgstr "ഇത് ആരോഗ്യത്തെ എങ്ങനെ ബാധിക്കുന്നു എന്ന് കണക്കാക്കാൻ ഉപയോഗിക്കും"
 
 #: templates/commercial_kitchen_profile.html:63
 #: templates/kitchen_profile.html:77
@@ -1384,7 +1386,7 @@ msgstr "ദൈനംദിന പാചക സമയം നൽകുക"
 #: templates/commercial_kitchen_profile.html:75
 #: templates/kitchen_profile.html:89
 msgid "Aggregate time for all meal preparations"
-msgstr "എല്ലാ ഭക്ഷണ തയ്യാറെടുപ്പുകൾക്കുമുള്ള ആകെ സമയം"
+msgstr "എല്ലാ വിഭവങ്ങളും തയ്യാറാക്കാൻ വേണ്ട ആകെ സമയം"
 
 #: templates/commercial_kitchen_profile.html:80
 msgid "Kitchen Staff Exposed"
@@ -1444,7 +1446,7 @@ msgstr "ബജറ്റ് മുൻഗണന തിരഞ്ഞെടുക്�
 #: templates/commercial_kitchen_profile.html:113
 #: templates/kitchen_profile.html:124
 msgid "Primary driver for financial decision making"
-msgstr "സാമ്പത്തിക തീരുമാനങ്ങൾക്കുള്ള പ്രാഥമിക ഘടകം"
+msgstr "സാമ്പത്തിക തീരുമാനങ്ങളിലെ പ്രധാന ലക്ഷ്യം"
 
 #: templates/commercial_kitchen_profile.html:155
 msgid "Processing"
@@ -1698,8 +1700,9 @@ msgid ""
 "Optional. Defaults are loaded from the database; changes apply to this "
 "session only."
 msgstr ""
-"ഐച്ഛികം. സ്ഥിരസ്ഥിതി മൂല്യങ്ങൾ ഡാറ്റാബേസിൽ നിന്ന് എടുക്കുന്നു; മാറ്റങ്ങൾ "
-"ഈ സെഷനിൽ മാത്രം ബാധകമാണ്."
+"ഇത് നിർബന്ധമല്ല. ഡിഫോൾട്ട് വിവരങ്ങൾ ഡാറ്റാബേസിൽ നിന്ന് എടുത്തതാണ്. "
+"നിങ്ങൾക്ക് വേണമെങ്കിൽ മാറ്റം വരുത്താം. നിങ്ങൾ വരുത്തുന്ന മാറ്റങ്ങൾ ഈ സെഷന് "
+"മാത്രമേ ബാധകമാകൂ."
 
 #: templates/commercial_selection.html:263 templates/household_profile.html:261
 msgid "LPG Cylinder Price"
@@ -1732,7 +1735,7 @@ msgstr "ജൈവ ഇന്ധന ചെലവ്"
 
 #: templates/commercial_selection.html:297 templates/household_profile.html:291
 msgid "Average cost per kg of firewood or biomass"
-msgstr "വിറകിന്റെയോ ജൈവ ഇന്ധനത്തിന്റെയോ ശരാശരി കിലോ വില"
+msgstr "ഒരു കിലോ വിറകിന്റെയോ ജൈവ ഇന്ധനത്തിന്റെയോ ശരാശരി വില"
 
 #: templates/commercial_selection.html:301 templates/household_profile.html:295
 msgid "Grid CO₂ Factor"
@@ -1740,7 +1743,9 @@ msgstr "ഗ്രിഡ് CO₂ ഘടകം"
 
 #: templates/commercial_selection.html:307 templates/household_profile.html:300
 msgid "Kerala grid CO₂ intensity — affects the emission estimates"
-msgstr "കേരള ഗ്രിഡിന്റെ CO₂ തീവ്രത — ഉദ്‌വമന കണക്കുകളെ ബാധിക്കുന്നു"
+msgstr ""
+"കേരളത്തിലെ വൈദ്യുതി ഉപയോഗം മൂലമുള്ള കാർബൺ പുറന്തള്ളൽ കണക്കാക്കാൻ ഇത് "
+"ഉപയോഗിക്കും."
 
 #: templates/commercial_selection.html:335
 msgid "Number of Students"
@@ -2197,7 +2202,7 @@ msgstr "സാധുവായ ഫോൺ നമ്പർ നൽകുക"
 
 #: templates/household_profile.html:66
 msgid "Household Details"
-msgstr "കുടുംബ വിശദാംശങ്ങൾ"
+msgstr "കുടുംബ വിവരങ്ങൾ"
 
 #: templates/household_profile.html:71
 msgid "Number of Household Members"
@@ -2221,11 +2226,11 @@ msgstr "നിങ്ങളുടെ ജില്ല തിരഞ്ഞെടു�
 
 #: templates/household_profile.html:96
 msgid "Area Classification"
-msgstr "പ്രദേശ വർഗ്ഗീകരണം"
+msgstr "പ്രദേശ വിഭാഗം"
 
 #: templates/household_profile.html:98
 msgid "Select Area Classification"
-msgstr "പ്രദേശ വർഗ്ഗീകരണം തിരഞ്ഞെടുക്കുക"
+msgstr "നിങ്ങളുടെ പ്രദേശം തിരഞ്ഞെടുക്കുക"
 
 #: templates/household_profile.html:108
 msgid "Monthly Household Income"
@@ -2381,7 +2386,7 @@ msgstr "സൗരോർജ്ജ മേൽക്കൂര"
 
 #: templates/household_profile.html:221
 msgid "Are you willing to consider a solar rooftop?"
-msgstr "സൗരോർജ്ജ മേൽക്കൂര പരിഗണിക്കാൻ നിങ്ങൾ തയ്യാറാണോ?"
+msgstr "സോളാർ റൂഫ്‌ടോപ്പ് സ്ഥാപിക്കാൻ നിങ്ങൾക്ക് താൽപര്യമുണ്ടോ?"
 
 #: templates/household_profile.html:223
 msgid "Select an option"
@@ -2409,15 +2414,16 @@ msgstr "14.2 kg ഗാർഹിക സിലിണ്ടറിന്റെ വ�
 
 #: templates/household_profile.html:282
 msgid "Check your electricity bill for the applicable slab rate"
-msgstr "ബാധകമായ സ്ലാബ് നിരക്കിനായി നിങ്ങളുടെ വൈദ്യുതി ബിൽ പരിശോധിക്കുക"
+msgstr ""
+"നിങ്ങളുടെ വൈദ്യുതി ബിൽ പരിശോധിച്ച് ബാധകമായ സ്ലാബ് നിരക്ക് തിരഞ്ഞെടുക്കുക."
 
 #: templates/household_profile.html:458
-msgid "Energy efficiency gain from economies of scale"
-msgstr "വലിയ തോതിലുള്ള പ്രവർത്തനത്തിലൂടെ ലഭിക്കുന്ന ഊർജ്ജ കാര്യക്ഷമതാ നേട്ടം"
+msgid "%(gain)s%% energy efficiency gain through large-scale operation"
+msgstr "വലിയ തോതിൽ ഉപയോഗിച്ചാൽ %(gain)s%% വരെ ഊർജ ലാഭം ലഭിക്കും"
 
 #: templates/index.html:3
 msgid "Kerala Clean Cooking Tool - Home"
-msgstr "കേരള ശുദ്ധ ഇന്ധന പാചക ഉപകരണം - ആരംഭ പേജ്"
+msgstr "കേരള ക്ലീൻ കുക്കിംഗ് ടൂൾ - ആരംഭ പേജ്"
 
 #: templates/index.html:14
 msgid "Clean Cooking"
@@ -2428,8 +2434,8 @@ msgid ""
 "A research-driven analytical tool that identifies the most efficient "
 "cooking-energy solutions for diverse use cases across Kerala."
 msgstr ""
-"കേരളത്തിലുടനീളമുള്ള വിവിധ ഉപയോഗ സാഹചര്യങ്ങൾക്ക് ഏറ്റവും കാര്യക്ഷമമായ പാചക"
-" ഊർജ്ജ പരിഹാരങ്ങൾ കണ്ടെത്തുന്ന, ഗവേഷണാധിഷ്ഠിതമായ ഒരു വിശകലന ഉപകരണം."
+"കേരളത്തിലെ ആളുകൾക്ക് അവരുടെ ആവശ്യത്തിന് ഏറ്റവും അനുയോജ്യവും ചെലവ് "
+"കുറഞ്ഞതും ഊർജക്ഷമവുമായ പാചകരീതി തിരഞ്ഞെടുക്കാൻ സഹായിക്കുന്ന ഒരു ഉപകരണം"
 
 #: templates/index.html:32
 msgid "Districts Covered"
@@ -2467,15 +2473,16 @@ msgstr "പ്രധാന സവിശേഷതകൾ"
 
 #: templates/info.html:28
 msgid "Flexible assessment options"
-msgstr "വഴക്കമുള്ള വിലയിരുത്തൽ ഓപ്ഷനുകൾ"
+msgstr "വിവരങ്ങൾ ശേഖരിക്കാനുള്ള സൗകര്യം"
 
 #: templates/info.html:29
 msgid ""
 "Use meal data or totals inputs or summarize existing fuel "
 "consumption—whichever fits your data best."
 msgstr ""
-"ഭക്ഷണ ഡാറ്റ, മൊത്ത ഇൻപുട്ടുകൾ, അല്ലെങ്കിൽ നിലവിലെ ഇന്ധന ഉപഭോഗ സംഗ്രഹം—ഏത്"
-" ഡാറ്റ ലഭ്യമോ അത് ഉപയോഗിക്കാം."
+"നിങ്ങളുടെ കൈവശമുള്ള വിവരങ്ങൾക്ക് അനുയോജ്യമായ രീതി "
+"തിരഞ്ഞെടുക്കുക—ഭക്ഷണത്തിന്റെ അടിസ്ഥാനത്തിലോ, ആകെ ഉപയോഗത്തിന്റെ "
+"അടിസ്ഥാനത്തിലോ, നിലവിലെ ഇന്ധന വിവരങ്ങളുടെ അടിസ്ഥാനത്തിലോ നൽകാം."
 
 #: templates/info.html:31
 msgid "Granular dish-level energy modelling"
@@ -2491,21 +2498,21 @@ msgstr "ബഹു-ഇന്ധന സാഹചര്യ താരതമ്യം
 
 #: templates/info.html:47
 msgid "Health risk evaluation"
-msgstr "ആരോഗ്യ ആഘാത വിലയിരുത്തൽ"
+msgstr "ആരോഗ്യ പ്രത്യാഘാതങ്ങളുടെ വിലയിരുത്തൽ"
 
 #: templates/info.html:48
 msgid "WHO-based health risk analysis guidance and highlights vulnerable groups."
 msgstr ""
-"WHO മാനദണ്ഡങ്ങൾ അടിസ്ഥാനമാക്കിയുള്ള ആരോഗ്യ അപകടസാധ്യതാ വിശകലനവും ദുർബല "
-"വിഭാഗങ്ങളെക്കുറിച്ചുള്ള സൂചനകളും."
+"WHO മാനദണ്ഡങ്ങൾ പ്രകാരമുള്ള ആരോഗ്യ വിശകലനവും, പെട്ടെന്ന് രോഗബാധിതരാകാൻ "
+"സാധ്യതയുള്ളവർക്കുള്ള പ്രത്യേക മാർഗ്ഗനിർദ്ദേശങ്ങളും."
 
 #: templates/info.html:50
 msgid "WHO air quality benchmarking"
-msgstr "WHO വായു ഗുണനിലവാര മാനദണ്ഡം"
+msgstr "WHO പ്രകാരമുള്ള വായു ഗുണനിലവാരം"
 
 #: templates/info.html:52
 msgid "Peak exposure modelling"
-msgstr "ഉച്ചസ്ഥായി സമ്പർക്ക മോഡലിംഗ്"
+msgstr "കൂടുതൽ പുക ഏൽക്കുന്ന സമയങ്ങളുടെ കണക്കുകൂട്ടൽ"
 
 #: templates/info.html:53
 msgid "Vulnerable group protection"
@@ -2517,7 +2524,7 @@ msgstr "പരിസ്ഥിതി ആഘാതം"
 
 #: templates/info.html:65
 msgid "Lifecycle carbon accounting across all fuel options."
-msgstr "എല്ലാ ഇന്ധന ഓപ്ഷനുകളിലെ ജീവിതചക്ര കാർബൺ കണക്കിടൽ."
+msgstr "എല്ലാത്തരം ഇന്ധനങ്ങളുടെയും ആകെ കാർബൺ എമിഷൻ കണക്കുകൂട്ടൽ"
 
 #: templates/info.html:67
 msgid "CO₂ emissions quantification"
@@ -2525,11 +2532,11 @@ msgstr "CO₂ ഉദ്‌വമന അളവ് നിർണ്ണയം"
 
 #: templates/info.html:69
 msgid "Sustainability grading system"
-msgstr "സുസ്ഥിരത ഗ്രേഡിംഗ് സംവിധാനം"
+msgstr "പരിസ്ഥിതി സൗഹൃദ ഗ്രേഡിംഗ് സിസ്റ്റം"
 
 #: templates/info.html:71
 msgid "Social cost of carbon"
-msgstr "കാർബണിന്റെ സാമൂഹ്യ ചെലവ്"
+msgstr "കാർബൺ മലിനീകരണം ഉണ്ടാക്കുന്ന സാമൂഹിക-സാമ്പത്തിക ആഘാതം"
 
 #: templates/info.html:83
 msgid "Clean cooking recommendations and transition strategies."
@@ -2537,19 +2544,19 @@ msgstr "ശുദ്ധ ഇന്ധന പാചക ശുപാർശകളു
 
 #: templates/info.html:85
 msgid "Multi-criteria decision analysis"
-msgstr "ബഹുമാനദണ്ഡ തീരുമാന വിശകലനം"
+msgstr "വിവിധ കാര്യങ്ങൾ വിലയിരുത്തിയുള്ള തീരുമാനം"
 
 #: templates/info.html:87
 msgid "Cost & savings comparison"
-msgstr "ചെലവും ലാഭവും താരതമ്യം"
+msgstr "ചെലവും ലാഭവും തമ്മിലുള്ള താരതമ്യം"
 
 #: templates/info.html:88
 msgid "Feasibility assessment"
-msgstr "സാധ്യതാ വിലയിരുത്തൽ"
+msgstr "പ്രായോഗികത പരിശോധിക്കൽ"
 
 #: templates/info.html:100
 msgid "Research-Validated Methodology"
-msgstr "ഗവേഷണ-സാധൂകൃത രീതിശാസ്ത്രം"
+msgstr "ഗവേഷണങ്ങൾ വഴി തെളിയിക്കപ്പെട്ട രീതികൾ"
 
 #: templates/info.html:105
 msgid "Energy Calculations"
@@ -2581,7 +2588,7 @@ msgstr "RBI പലിശ നിരക്കും പണപ്പെരുപ്
 
 #: templates/info.html:117
 msgid "NPV & levelized 25-year cost"
-msgstr "NPV & 25 വർഷ ലെവലൈസ്ഡ് ചെലവ്"
+msgstr "എൻ.പി.വി.യും 25 വർഷത്തെ ശരാശരി ചെലവും"
 
 #: templates/info.html:118
 msgid "Solar investment analysis"
@@ -2593,16 +2600,17 @@ msgstr "EMI, ധനസഹായ ഓപ്ഷനുകൾ"
 
 #: templates/info.html:128
 msgid "Data Privacy Commitment"
-msgstr "വിവര സ്വകാര്യതാ പ്രതിബദ്ധത"
+msgstr "ഡാറ്റാ സ്വകാര്യതയ്ക്കുള്ള ഞങ്ങളുടെ പ്രതിബദ്ധത"
 
 #: templates/info.html:129
 msgid ""
 "Anonymised data only, stored securely to strengthen cooking-energy policy"
 " in Kerala. Personal details are optional."
 msgstr ""
-"അജ്ഞാതമാക്കിയ ഡാറ്റ മാത്രം; കേരളത്തിലെ പാചക ഊർജ്ജ നയം "
-"ശക്തിപ്പെടുത്തുന്നതിനായി സുരക്ഷിതമായി സൂക്ഷിക്കുന്നു. വ്യക്തിഗത വിവരങ്ങൾ "
-"നൽകുന്നത് ഐച്ഛികമാണ്."
+"വ്യക്തിയെ തിരിച്ചറിയാനാകാത്ത വിവരങ്ങൾ മാത്രമാണ് സുരക്ഷിതമായി ശേഖരിക്കുകയും "
+"സൂക്ഷിക്കുകയും ചെയ്യുന്നത്. കേരളത്തിലെ ശുദ്ധ പാചക-ഊർജ നയങ്ങൾ "
+"മെച്ചപ്പെടുത്തുന്നതിനാണ് ഈ വിവരങ്ങൾ ഉപയോഗിക്കുന്നത്. വ്യക്തിഗത വിവരങ്ങൾ "
+"നൽകുന്നത് നിർബന്ധമല്ല."
 
 #: templates/info.html:139
 msgid "Support & Resources"
@@ -2628,13 +2636,15 @@ msgstr "ഫലങ്ങൾ കുടുംബത്തോടോ ഊർജ്ജ 
 #: templates/kitchen_profile.html:7 templates/kitchen_profile.html:17
 #: templates/kitchen_profile.html:26
 msgid "Kitchen & Health Details"
-msgstr "അടുക്കളയും ആരോഗ്യ വിശദാംശങ്ങളും"
+msgstr "അടുക്കളയും ആരോഗ്യ സംബന്ധമായ വിവരങ്ങളും"
 
 #: templates/kitchen_profile.html:19 templates/kitchen_profile.html:30
 msgid ""
 "Describe your kitchen details and health considerations for an accurate "
 "analysis."
-msgstr "കൃത്യമായ വിശകലനത്തിനായി അടുക്കള വിശദാംശങ്ങളും ആരോഗ്യ ഘടകങ്ങളും വിവരിക്കുക."
+msgstr ""
+"കൃത്യമായ വിലയിരുത്തലിനായി നിങ്ങളുടെ അടുക്കളയുടെയും ആരോഗ്യത്തിന്റെയും "
+"വിവരങ്ങൾ നൽകുക."
 
 #: templates/kitchen_profile.html:93
 msgid "No. of Members Sensitive to Smoke"
@@ -2650,11 +2660,11 @@ msgstr "ദുർബലരായ അംഗങ്ങളുടെ എണ്ണം 
 
 #: templates/kitchen_profile.html:98
 msgid "Residents requiring higher air quality standards"
-msgstr "ഉന്നത വായു ഗുണനിലവാരം ആവശ്യമുള്ള താമസക്കാർ"
+msgstr "കൂടുതൽ ശുദ്ധവായു ആവശ്യമായ കുടുംബാംഗങ്ങൾ"
 
 #: templates/kitchen_profile.html:108
 msgid "Budget & Renewable Energy Preferences"
-msgstr "ബജറ്റും നവീകരണ ഊർജ്ജ മുൻഗണനകളും"
+msgstr "ബജറ്റും റിന്യൂവബിൾ എനർജി ചോയിസുകളും"
 
 #~ msgid "Network error: Unable to load chart data"
 #~ msgstr "നെറ്റ്‌വർക്ക് പിശക്: ചാർട്ട് ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല"
