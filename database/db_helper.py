@@ -892,26 +892,21 @@ def get_environmental_grade(annual_co2_kg: float) -> Tuple[str, str]:
 
 # Context manager for database operations
 class DatabaseConnection:
-    """Context manager for database connections."""
+    """Read-only reference connection for shared parameter lookups."""
 
     def __init__(self, db_path=None):
         self.db_path = db_path or DB_PATH
         self.conn = None
 
     def __enter__(self):
-        self.conn = sqlite3.connect(str(self.db_path))
-        self.conn.execute("PRAGMA journal_mode=WAL")
+        self.conn = sqlite3.connect(Path(self.db_path).resolve().as_uri() + '?mode=ro',
+                                    uri=True, timeout=10.0)
         self.conn.execute("PRAGMA busy_timeout=3000")
-        self.conn.execute("PRAGMA synchronous=NORMAL")
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("PRAGMA foreign_keys = ON")
         return self.conn
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.conn:
-            if exc_type is None:
-                self.conn.commit()
-            else:
-                self.conn.rollback()
             self.conn.close()
         return False

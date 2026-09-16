@@ -8,6 +8,12 @@
 {% set current_step = 2 %}
 {% set total_steps = 4 %}
 
+{% block extra_css %}
+<style>
+    .icon-method { width: 2rem; height: 2rem; }
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Inputs live in a real <form> so CSRF + required attributes are semantically valid.
      Submission stays JS-driven (calculate button is type="button"); onsubmit is prevented
@@ -16,9 +22,9 @@
 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 <div class="container my-2 py-3 analysis-container-custom">
     <div class="text-center mb-2">
-        <h3 class="fw-bold text-primary-green mb-1">
+        <h1 class="page-title fw-bold text-primary-green mb-1">
             {{ _('Energy Assessment') }}
-        </h3>
+        </h1>
         <p class="mb-3">{{ _('Enter cooking energy data with either detailed menu inputs or existing consumption records') }}</p>
     </div>
     <div class="row justify-content-center g-4">
@@ -27,28 +33,27 @@
             <!-- Method Selection -->
             <div class="card shadow-green fade-in-up mb-4">
                 <div class="card-body">
-                    <h4 class="card-title text-primary-green mb-4">
+                    <h2 class="section-heading card-title text-primary-green mb-4">
                         <i class="bi bi-list-check me-2"></i>{{ _('Select a Calculation Method') }}
-                    </h4>
+                    </h2>
 
                     <div class="row g-3">
                         {% if dishes_available %}
                         <div class="col-md-6">
                             <div class="card method-card h-100 mb-0" data-method="dish">
                                 <div class="card-body position-relative">
-                                    <div class="form-check position-absolute top-0 end-0 m-2">
+                                    <div class="form-check position-absolute top-0 end-0 m-3">
 
                                         <input class="form-check-input" type="radio" name="calculation_method"
                                             id="method_dish" value="dish" aria-label="{{ _('Dish-based Modelling') }}">
                                     </div>
                                     <div class="d-flex align-items-center mb-1 mt-1 pt-1 ms-1">
                                         <img src="{{ url_for('static', filename='icons/dishes.svg') }}"
-                                            alt="{{ _('Dish Method') }}" class="me-2"
-                                            style="width: 2rem; height: 2rem;">
+                                            alt="" class="me-2 icon-method">
 
                                     </div>
-                                    <h4 class="card-title mb-0">{{ _('Dish-based Modelling') }}</h4>
-                                    <p class="card-text small text-muted ms-0">{{ _('Detailed meal analysis based on specific dish preparation') }}</p>
+                                    <h3 class="section-heading card-title mb-0"><label for="method_dish">{{ _('Dish-based Modelling') }}</label></h3>
+                                    <p class="card-text small text-muted ms-0">{{ _('Choose this if you know which dishes you cook and the fuels you use.') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -66,12 +71,11 @@
                                     </div>
                                     <div class="d-flex align-items-center mb-1 mt-1 pt-1 ms-1">
                                         <img src="{{ url_for('static', filename='icons/fuel.svg') }}"
-                                            alt="{{ _('Consumption Method') }}" class="me-2"
-                                            style="width: 2rem; height: 2rem;">
+                                            alt="" class="me-2 icon-method">
                                     </div>
-                                    <h4 class="card-title mb-0">{{ _('Consumption-based Modelling') }}</h4>
+                                    <h3 class="section-heading card-title mb-0"><label for="method_consumption">{{ _('Consumption-based Modelling') }}</label></h3>
 
-                                    <p class="card-text small text-muted">{{ _('Analysis based on aggregate fuel consumption data') }}
+                                    <p class="card-text small text-muted">{{ _('Choose this if you know your fuel bills, refills or electricity use.') }}
                                     </p>
                                 </div>
                             </div>
@@ -85,9 +89,9 @@
             <div id="dish-method" class="method-content d-none">
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4">
+                        <h2 class="section-heading card-title text-primary-green mb-4">
                             <i class="bi bi-bowl me-2"></i>{{ _('Dish Selection & Current Fuel Usage') }}
-                        </h4>
+                        </h2>
                         <div class="alert alert-info mb-4">
                             <i class="bi bi-info-circle me-2"></i>
                             {{ _('Select the dishes you prepare regularly, then specify the energy sources applied to each category.') }}
@@ -95,7 +99,7 @@
 
                         <!-- Available Fuels Selection -->
                         <div class="mb-4">
-                            <label class="form-label">{{ _('All fuels') }} *</label>
+                            <label class="form-label">{{ _('Which fuels do you currently cook with?') }} *</label>
                             <div class="row g-2">
                                 {% for fuel in available_fuels %}
                                 {% if fuel != 'Solar + BESS' %}
@@ -122,9 +126,9 @@
                         <div class="row g-4">
                             <!-- Breakfast -->
                             <div class="col-lg-6">
-                                <div class="card border-success">
+                                <div class="card">
                                     <div class="card-body">
-                                        <h3 class="card-title mb-3" style="font-size: 1.4rem;"><i
+                                        <h3 class="section-heading card-title mb-3"><i
                                                 class="bi bi-sunrise me-2"></i>{{ _('Breakfast')
                                             }}</h3>
                                         <div class="mb-3">
@@ -150,9 +154,9 @@
 
                             <!-- Lunch -->
                             <div class="col-lg-6">
-                                <div class="card border-warning">
+                                <div class="card">
                                     <div class="card-body">
-                                        <h3 class="card-title mb-3" style="font-size: 1.4rem;"><i
+                                        <h3 class="section-heading card-title mb-3"><i
                                                 class="bi bi-sun me-2"></i>{{ _('Lunch') }}</h3>
                                         <div class="mb-3">
                                             <label for="lunch_type" class="form-label">{{ _('Lunch Type') }}</label>
@@ -176,9 +180,9 @@
 
                             <!-- Dinner -->
                             <div class="col-lg-6">
-                                <div class="card border-primary">
+                                <div class="card">
                                     <div class="card-body">
-                                        <h3 class="card-title mb-3" style="font-size: 1.4rem;"><i
+                                        <h3 class="section-heading card-title mb-3"><i
                                                 class="bi bi-moon me-2"></i>{{ _('Dinner') }}
                                         </h3>
                                         <div class="mb-3">
@@ -203,9 +207,9 @@
 
                             <!-- Snacks -->
                             <div class="col-lg-6">
-                                <div class="card border-info">
+                                <div class="card">
                                     <div class="card-body">
-                                        <h3 class="card-title mb-3" style="font-size: 1.4rem;"><i
+                                        <h3 class="section-heading card-title mb-3"><i
                                                 class="bi bi-cup-hot me-2"></i>{{ _('Snacks') }}
                                         </h3>
                                         <div class="mb-3">
@@ -222,14 +226,14 @@
 
                         <!-- Selected Dishes Summary -->
                         <div id="selected-dishes-summary" class="mt-4 d-none">
-                            <h5 class="text-success mb-3">{{ _('Selected Dishes Summary') }}</h5>
+                            <h3 class="section-heading text-success mb-3">{{ _('Selected Dishes Summary') }}</h3>
                             <div class="table-responsive">
                                 <table class="table table-sm">
                                     <thead>
                                         <tr>
-                                            <th>{{ _('Category') }}</th>
-                                            <th>{{ _('Dish') }}</th>
-                                            <th>{{ _('Fuel Type') }}</th>
+                                            <th scope="col">{{ _('Category') }}</th>
+                                            <th scope="col">{{ _('Dish') }}</th>
+                                            <th scope="col">{{ _('Fuel Type') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody id="dishes-summary-tbody">
@@ -246,12 +250,11 @@
             <div id="consumption-method" class="method-content {% if dishes_available %}d-none{% endif %}">
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4"><i class="bi bi-fuel-pump me-2"></i>{{ _('Current Energy Consumption') }}</h4>
+                        <h2 class="section-heading card-title text-primary-green mb-4"><i class="bi bi-fuel-pump me-2"></i>{{ _('Current Energy Consumption') }}</h2>
 
                         <!-- Primary Fuel Selection -->
                         <div class="mb-4">
-                            <label for="primary_fuel" class="form-label">{{ _('Select Your Primary Cooking Fuel') }}
-                                *</label>
+                            <label for="primary_fuel" class="form-label">{{ _('Select Your Primary Cooking Fuel') }}&nbsp;*</label>
                             <select class="form-select" id="primary_fuel" name="primary_fuel" required>
                                 <option value="">{{ _('Select Your Primary Cooking Fuel') }}</option>
                                 <option value="LPG">{{ _('LPG') }} ({{ _('Liquefied Petroleum Gas') }})</option>
@@ -265,7 +268,7 @@
 
                         <!-- LPG Details -->
                         <div id="lpg-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-fire me-2"></i>{{ _('LPG Consumption Details') }}</h4>
+                            <h3 class="section-heading text-primary-green mb-3"><i class="bi bi-fire me-2"></i>{{ _('LPG Consumption Details') }}</h3>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="cylinder_size" class="form-label">{{ _('Cylinder Size') }}</label>
@@ -291,7 +294,7 @@
                             </div>
 
                             <div id="lpg-analysis" class="mt-3 p-3 bg-light rounded d-none">
-                                <h4 class="text-success mb-2">{{ _('LPG Consumption Analysis') }}</h4>
+                                <h4 class="section-heading text-success mb-2">{{ _('LPG Consumption Analysis') }}</h4>
                                 <div class="row g-2">
                                     <div class="col-md-3">
                                         <div class="metric-card small">
@@ -323,7 +326,7 @@
 
                         <!-- PNG Details -->
                         <div id="png-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-diagram-3 me-2"></i>{{ _('PNG Consumption Details') }}</h4>
+                            <h3 class="section-heading text-primary-green mb-3"><i class="bi bi-diagram-3 me-2"></i>{{ _('PNG Consumption Details') }}</h3>
 
                             <div class="mb-3">
                                 <label class="form-label">{{ _('How would you like to provide PNG data?') }}</label>
@@ -382,7 +385,7 @@
                             </div>
 
                             <div id="png-analysis" class="mt-3 p-3 bg-light rounded d-none">
-                                <h5 class="text-success mb-2">{{ _('PNG Consumption Analysis') }}</h5>
+                                <h4 class="section-heading text-success mb-2">{{ _('PNG Consumption Analysis') }}</h4>
                                 <div class="row g-2">
                                     <div class="col-md-3">
                                         <div class="metric-card small">
@@ -414,7 +417,7 @@
 
                         <!-- Electricity Details -->
                         <div id="electricity-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-lightning me-2"></i>{{ _('Electricity Consumption for Cooking') }}</h4>
+                            <h3 class="section-heading text-primary-green mb-3"><i class="bi bi-lightning me-2"></i>{{ _('Electricity Consumption for Cooking') }}</h3>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -426,7 +429,7 @@
                             </div>
 
                             <div id="electricity-analysis" class="mt-3 p-3 bg-light rounded d-none">
-                                <h5 class="text-success mb-2">{{ _('Electricity Consumption Analysis') }}</h5>
+                                <h4 class="section-heading text-success mb-2">{{ _('Electricity Consumption Analysis') }}</h4>
                                 <div class="row g-2">
                                     <div class="col-md-4">
                                         <div class="metric-card small">
@@ -452,7 +455,7 @@
 
                         <!-- Biomass Details -->
                         <div id="biomass-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-tree me-2"></i>{{ _('Biomass Consumption Details') }}</h4>
+                            <h3 class="section-heading text-primary-green mb-3"><i class="bi bi-tree me-2"></i>{{ _('Biomass Consumption Details') }}</h3>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -481,7 +484,7 @@
 
                         <!-- Mixed Usage Details -->
                         <div id="mixed-details" class="fuel-details d-none">
-                            <h4 class="text-primary-green mb-3"><i class="bi bi-collection me-2"></i>{{ _('Mixed Fuel Usage Details') }}</h4>
+                            <h3 class="section-heading text-primary-green mb-3"><i class="bi bi-collection me-2"></i>{{ _('Mixed Fuel Usage Details') }}</h3>
                             <div class="alert alert-info mb-3">
                                 <i class="bi bi-info-circle me-2"></i>
                                 {{ _('Enter the consumption details for each fuel type you use for cooking.') }}
@@ -490,7 +493,7 @@
                             <div class="row g-3">
                                 <!-- LPG -->
                                 <div class="col-md-6">
-                                    <div class="card border-primary">
+                                    <div class="card">
                                         <div class="card-body">
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input" type="checkbox" id="mixed_use_lpg" checked>
@@ -506,7 +509,7 @@
 
                                 <!-- PNG -->
                                 <div class="col-md-6">
-                                    <div class="card border-success">
+                                    <div class="card">
                                         <div class="card-body">
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input" type="checkbox" id="mixed_use_png">
@@ -522,7 +525,7 @@
 
                                 <!-- Electricity -->
                                 <div class="col-md-6">
-                                    <div class="card border-warning">
+                                    <div class="card">
                                         <div class="card-body">
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input" type="checkbox" id="mixed_use_elec" checked>
@@ -538,7 +541,7 @@
 
                                 <!-- Traditional Biomass -->
                                 <div class="col-md-6">
-                                    <div class="card border-danger">
+                                    <div class="card">
                                         <div class="card-body">
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input" type="checkbox" id="mixed_use_biomass">
@@ -561,12 +564,13 @@
             </div>
         </div>
 
+        <p id="calculation-help" class="form-text mb-3" role="status" aria-live="polite"></p>
         <!-- Navigation -->
         <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-nav-back" onclick="goToPreviousStep()">
                 <i class="bi bi-arrow-left me-2"></i>{{ _('Back') }}
             </button>
-            <button type="button" class="btn btn-nav-next" id="calculate-btn" onclick="calculateConsumption()" disabled>
+            <button type="button" class="btn btn-nav-next" id="calculate-btn" aria-describedby="calculation-help" onclick="calculateConsumption()" disabled>
                 {{ _('Next') }} <i class="bi bi-arrow-right ms-2"></i>
             </button>
         </div>
@@ -574,11 +578,11 @@
 </div>
 
 <!-- Dish fuel modal -->
-<div class="modal fade" id="dishFuelModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="dishFuelModal" tabindex="-1" aria-labelledby="dishFuelHeading" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Select fuel for') }} <span id="dishFuelModalTitle"></span></h5>
+                <h2 class="section-heading modal-title" id="dishFuelHeading">{{ _('Select fuel for') }} <span id="dishFuelModalTitle"></span></h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body">
@@ -608,8 +612,8 @@
     let currentFuelMix = [];
 
     // Dish data from backend
-    const dishData = JSON.parse('{{ dish_data | tojson | safe }}');
-    const fuelLabelMap = JSON.parse('{{ fuel_label_map | tojson | safe }}');
+    const dishData = {{ dish_data | tojson }};
+    const fuelLabelMap = {{ fuel_label_map | tojson }};
     const dishDisplayMap = {};
     const categoryLabelMap = {
         'Breakfast': '{{ _("Breakfast") }}',
@@ -627,10 +631,12 @@
     };
 
     // Energy data from session (for pre-populating when editing)
-    const energyData = JSON.parse('{{ energy_data | tojson | safe }}');
+    const energyData = {{ energy_data | tojson }};
 
     function showMethodContent(method) {
         if (!method) return;
+        const selectedRadio = document.getElementById(`method_${method}`);
+        if (selectedRadio) selectedRadio.checked = true;
 
         // Hide all method sections
         document.querySelectorAll('.method-content').forEach(section => {
@@ -650,6 +656,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        const energyForm = document.getElementById('energyForm');
+        energyForm.addEventListener('change', updateCalculateButton);
+        energyForm.addEventListener('input', function (event) {
+            if (event.target.type === 'number') event.target.setCustomValidity('');
+            if (event.target.classList.contains('is-invalid') && event.target.checkValidity()) {
+                event.target.classList.remove('is-invalid');
+                event.target.setAttribute('aria-invalid', 'false');
+                updateCalculateButton();
+            }
+        });
         // Method selection handlers
         document.querySelectorAll('input[name="calculation_method"]').forEach(radio => {
             radio.addEventListener('change', function () {
@@ -664,15 +680,13 @@
 
         // Method card click handlers
         document.querySelectorAll('.method-card').forEach(card => {
-            card.addEventListener('click', function () {
-                const method = this.dataset.method;
-                document.getElementById(`method_${method}`).checked = true;
-                selectedMethod = method;
-                showMethodContent(method);
-                if (method === 'dish') {
-                    loadDishData();
+            card.addEventListener('click', function (event) {
+                if (event.target.closest('input, label')) return;
+                const radio = document.getElementById(`method_${this.dataset.method}`);
+                if (!radio.checked) {
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change', { bubbles: true }));
                 }
-                updateCalculateButton();
             });
         });
 
@@ -769,14 +783,17 @@
                 dishDisplayMap[canonicalDishName] = displayDishName;
 
                 // Create veg/non-veg indicator
+                // Shape carries the meaning as well as the colour: a filled circle for
+                // vegetarian, a filled triangle for non-vegetarian, plus a text label
+                // for screen readers. Colour alone is unusable on touch and under CVD.
                 const vegIndicator = isVeg
-                    ? `<span class="text-success me-1" title="${localeStrings.vegetarian}" style="font-size: 1.2em;">●</span>`
-                    : `<span class="text-danger me-1" title="${localeStrings.nonVegetarian}" style="font-size: 1.2em;">●</span>`;
+                    ? `<span class="text-success me-1" title="${localeStrings.vegetarian}" style="font-size: 1.2em;"><span aria-hidden="true">&#9679;</span><span class="visually-hidden">${localeStrings.vegetarian}</span></span>`
+                    : `<span class="text-danger me-1" title="${localeStrings.nonVegetarian}" style="font-size: 1.2em;"><span aria-hidden="true">&#9650;</span><span class="visually-hidden">${localeStrings.nonVegetarian}</span></span>`;
 
                 const dishElement = document.createElement('div');
-                dishElement.className = 'form-check mb-2 d-flex align-items-center gap-2';
+                dishElement.className = 'form-check dish-option mb-2 d-flex align-items-center gap-2';
                 dishElement.innerHTML = `
-                <div class="d-flex align-items-center">
+                <div class="dish-option-main d-flex align-items-center">
                     <input class="form-check-input dish-checkbox me-2" type="checkbox"
                            id="${category}_${dishSlug}" value="${canonicalDishName}"
                            data-category="${category}" data-dish="${canonicalDishName}">
@@ -784,18 +801,20 @@
                         ${vegIndicator}${displayDishName}
                     </label>
                 </div>
-                <div class="fuel-inline small text-muted flex-grow-1" id="fuel_inline_${dishSlug}"></div>
+                <div class="fuel-inline small text-muted flex-grow-1" id="fuel_inline_${category}_${dishSlug}"></div>
             `;
                 container.appendChild(dishElement);
             });
 
             // Add event listeners to dish checkboxes
             container.querySelectorAll('.dish-checkbox').forEach(checkbox => {
+                checkbox.checked = (selectedDishes[category] || []).includes(checkbox.dataset.dish);
                 checkbox.addEventListener('change', function () {
                     updateDishSelection(this.dataset.category, this.dataset.dish, this.checked, this);
                 });
             });
         });
+        updateInlineFuelSelectors();
     }
 
     let pendingDish = null;
@@ -804,9 +823,15 @@
         currentFuelMix = Array.from(document.querySelectorAll('input[name="current_fuel_mix"]:checked'))
             .map(cb => cb.value);
 
+        Object.keys(selectedFuels).forEach(dish => {
+            if (!currentFuelMix.includes(selectedFuels[dish])) delete selectedFuels[dish];
+        });
+
         // Update fuel selection dropdowns for dishes
         updateFuelSelections();
         updateInlineFuelSelectors();
+        updateDishSummary();
+        updateCalculateButton();
     }
 
     function updateDishSelection(category, dish, isSelected, checkboxEl) {
@@ -824,14 +849,15 @@
                 selectedDishes[category].push(dish);
             }
             // Show inline fuel dropdown instead of modal
-            showInlineFuelDropdown(dish, checkboxEl);
+            showInlineFuelDropdown(category, dish);
         } else {
             selectedDishes[category] = selectedDishes[category].filter(d => d !== dish);
-            // Remove fuel selection for this dish
-            if (selectedFuels[dish]) {
+            // A dish can occur in several meals. Keep its shared fuel assignment
+            // while that dish remains selected in another meal.
+            if (!Object.values(selectedDishes).some(dishes => dishes.includes(dish))) {
                 delete selectedFuels[dish];
             }
-            const inlineContainer = document.getElementById(`fuel_inline_${slugifyDish(dish)}`);
+            const inlineContainer = document.getElementById(`fuel_inline_${category}_${slugifyDish(dish)}`);
             if (inlineContainer) {
                 inlineContainer.innerHTML = '';
             }
@@ -891,76 +917,47 @@
         // Legacy fuel selection blocks removed; using inline selectors instead.
     }
 
-    function showInlineFuelDropdown(dish, checkboxEl) {
-        const dishSlug = slugifyDish(dish);
-        const container = document.getElementById(`fuel_inline_${dishSlug}`);
+    function showInlineFuelDropdown(category, dish) {
+        const container = document.getElementById(`fuel_inline_${category}_${slugifyDish(dish)}`);
         if (!container) return;
-
         if (currentFuelMix.length === 0) {
-            container.innerHTML = `<span class="text-warning">${localeStrings.selectFuelsAbove}</span>`;
+            container.textContent = localeStrings.selectFuelsAbove;
             return;
         }
-
         const select = document.createElement('select');
+        select.id = `fuel_select_${category}_${slugifyDish(dish)}`;
+        select.dataset.dish = dish;
         select.className = 'form-select form-select-sm mt-1';
-        select.innerHTML = `
-                <option value="">${localeStrings.selectFuelForDish}</option>
-                ${currentFuelMix.map(fuel => `<option value="${fuel}">${displayFuelName(fuel)}</option>`).join('')}
-            `;
+        select.setAttribute('aria-label', `${localeStrings.selectFuelForDish}: ${dishDisplayMap[dish] || dish}`);
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = localeStrings.selectFuelForDish;
+        select.appendChild(placeholder);
+        currentFuelMix.forEach(fuel => {
+            const option = document.createElement('option');
+            option.value = fuel;
+            option.textContent = displayFuelName(fuel);
+            select.appendChild(option);
+        });
         select.value = selectedFuels[dish] || '';
         select.addEventListener('change', function () {
-            if (this.value) {
-                selectedFuels[dish] = this.value;
-                // Hide dropdown after selection - show blank space
-                container.innerHTML = '';
-                updateDishSummary();
-                updateCalculateButton();
-            }
+            if (this.value) selectedFuels[dish] = this.value;
+            else delete selectedFuels[dish];
+            // The server uses one fuel per dish, so show the same value at every
+            // selected occurrence without replacing the user's focused control.
+            document.querySelectorAll('.fuel-inline select').forEach(control => {
+                if (control.dataset.dish === dish) control.value = this.value;
+            });
+            updateDishSummary();
+            updateCalculateButton();
+            window.refreshSelectDescriptions?.();
         });
-
-        container.innerHTML = '';
-        container.appendChild(select);
+        container.replaceChildren(select);
     }
 
     function updateInlineFuelSelectors() {
         Object.entries(selectedDishes).forEach(([category, dishes]) => {
-            dishes.forEach(dish => {
-                const dishSlug = slugifyDish(dish);
-                const container = document.getElementById(`fuel_inline_${dishSlug}`);
-                if (!container) return;
-
-                if (currentFuelMix.length === 0) {
-                    container.innerHTML = localeStrings.selectFuelsAbove;
-                    return;
-                }
-
-                // If fuel is already selected, show blank space instead of dropdown
-                if (selectedFuels[dish]) {
-                    container.innerHTML = '';
-                    return;
-                }
-
-                const select = document.createElement('select');
-                select.className = 'form-select form-select-sm';
-                select.innerHTML = `
-                        <option value="">${localeStrings.selectFuelForDish}</option>
-                        ${currentFuelMix.map(fuel => `<option value="${fuel}">${displayFuelName(fuel)}</option>`).join('')}
-                    `;
-                select.value = selectedFuels[dish] || '';
-
-                select.addEventListener('change', function () {
-                    if (this.value) {
-                        selectedFuels[dish] = this.value;
-                        // Hide dropdown after selection - show blank space
-                        container.innerHTML = '';
-                        updateDishSummary();
-                        updateCalculateButton();
-                    }
-                });
-
-                container.innerHTML = '';
-                container.appendChild(select);
-            });
+            dishes.forEach(dish => showInlineFuelDropdown(category, dish));
         });
     }
 
@@ -1062,6 +1059,13 @@
     }
 
     function calculateLpgConsumption() {
+        if (['refill_days', 'cylinder_price', 'cylinder_size'].some(id => {
+            const input = document.getElementById(id);
+            return input.value === '' || !input.checkValidity();
+        })) {
+            document.getElementById('lpg-analysis').classList.add('d-none');
+            return;
+        }
         const refillDays = parseFloat(document.getElementById('refill_days').value) || 30;
         const cylinderPrice = parseFloat(document.getElementById('cylinder_price').value) || {{ lpg_cylinder_price|default(922) }};
     const cylinderWeight = parseFloat(document.getElementById('cylinder_size').value) || {{ lpg_cylinder_weight|default (14.2) }};
@@ -1076,7 +1080,7 @@
     const monthlyEnergyRequired = dailyEnergyRequired * 30;
     const monthlyEnergyDelivered = monthlyEnergyRequired * efficiency;
     const cylindersPerMonth = 30 / refillDays;
-    const monthlyCost = cylindersPerMonth * cylinderPrice;
+    const monthlyCost = cylindersPerMonth * Math.max(0, cylinderPrice - {{ lpg_subsidy_amount | default(0) }});
 
     // Update display
     document.getElementById('lpg-energy-cylinder').textContent = energyPerCylinder.toFixed(1);
@@ -1089,97 +1093,80 @@
     updateResultsSummary(monthlyEnergyDelivered, monthlyCost);
     }
 
+    let pngPreviewRequest = null;
+    let pngPreviewTimer = null;
+    let pngPreviewVersion = 0;
+
     function calculatePngConsumption() {
+        clearTimeout(pngPreviewTimer);
+        if (pngPreviewRequest) pngPreviewRequest.abort();
+        const version = ++pngPreviewVersion;
         const inputMethod = document.querySelector('input[name="png_input_method"]:checked').value;
-
-        if (inputMethod !== 'bill') {
-            // For SCM and daily inputs, we can use the existing simplified frontend logic
-            // as they are more direct and don't involve complex reverse calculations.
-            let monthlyScm = 0;
-            if (inputMethod === 'scm') {
-                monthlyScm = parseFloat(document.getElementById('monthly_scm').value) || 0;
-            } else { // daily
-                const dailyScm = parseFloat(document.getElementById('daily_scm').value) || 0;
-                monthlyScm = dailyScm * 30;
-            }
-
-            const calorificValue = {{ png_calorific_value|default(10.56) }};
-    const efficiency = {{ png_efficiency|default (0.70) }};
-    const ratePerScm = {{ png_rate|default (54.0) }};
-    const monthlyEnergyRequired = monthlyScm * calorificValue;
-    const monthlyEnergyDelivered = monthlyEnergyRequired * efficiency;
-    // This is a rough estimation of the bill for display purposes
-    const estimatedBill = monthlyScm * ratePerScm;
-    const avgRate = monthlyScm > 0 ? estimatedBill / monthlyScm : 0;
-
-    document.getElementById('png-monthly-scm').textContent = monthlyScm.toFixed(1);
-    document.getElementById('png-monthly-energy').textContent = monthlyEnergyDelivered.toFixed(1);
-    document.getElementById('png-monthly-bill').textContent = estimatedBill.toFixed(0);
-    document.getElementById('png-avg-rate').textContent = avgRate.toFixed(1);
-    document.getElementById('png-analysis').classList.remove('d-none');
-    updateResultsSummary(monthlyEnergyDelivered, estimatedBill);
-    return;
+        const inputId = { bill: 'monthly_bill', scm: 'monthly_scm', daily: 'daily_scm' }[inputMethod];
+        const input = document.getElementById(inputId);
+        const value = Number.parseFloat(input.value);
+        const panel = document.getElementById('png-analysis');
+        if (!Number.isFinite(value) || !input.checkValidity() || value < 0) {
+            panel.classList.add('d-none');
+            return;
         }
-
-    // For bill-based input, use the new API endpoint for accuracy
-    const monthlyBill = parseFloat(document.getElementById('monthly_bill').value) || 0;
-    if (monthlyBill <= 0) {
-        document.getElementById('png-analysis').classList.add('d-none');
-        return;
-    }
-
-    // Show loading state
-    document.getElementById('png-analysis').classList.remove('d-none');
-    document.getElementById('png-monthly-scm').textContent = '...';
-    document.getElementById('png-monthly-energy').textContent = '...';
-    document.getElementById('png-monthly-bill').textContent = monthlyBill.toFixed(0);
-    document.getElementById('png-avg-rate').textContent = '...';
-
-    fetch('/api/calculate_png', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
-        },
-        body: JSON.stringify({
-            monthly_bill: monthlyBill,
-            rate: {{ png_rate|default(54.0) }}   // pass session-overridden rate so API doesn't fall back to DB
-        }),
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error('API Error:', data.error);
-                document.getElementById('png-analysis').classList.add('d-none');
-                return;
-            }
-
-            const monthlyScm = data.monthly_scm_consumption;
-            const monthlyEnergyDelivered = data.monthly_energy_delivered;
-            const avgRate = monthlyScm > 0 ? data.total_bill / monthlyScm : 0;
-
-            // Update display with accurate data from backend
-            document.getElementById('png-monthly-scm').textContent = monthlyScm.toFixed(1);
-            document.getElementById('png-monthly-energy').textContent = monthlyEnergyDelivered.toFixed(1);
-            document.getElementById('png-monthly-bill').textContent = data.total_bill.toFixed(0);
-            document.getElementById('png-avg-rate').textContent = avgRate.toFixed(1);
-
-            updateResultsSummary(monthlyEnergyDelivered, data.total_bill);
-        })
-        .catch(error => {
-            console.error('Fetch Error:', error);
-            document.getElementById('png-analysis').classList.add('d-none');
+        panel.classList.remove('d-none');
+        panel.setAttribute('aria-busy', 'true');
+        ['png-monthly-scm', 'png-monthly-energy', 'png-monthly-bill', 'png-avg-rate'].forEach(id => {
+            document.getElementById(id).textContent = '…';
         });
+        const payload = inputMethod === 'bill'
+            ? { type: 'bill', monthly_bill: value }
+            : { type: 'consumption', monthly_scm: inputMethod === 'daily' ? value * 30 : value };
+        payload.rate = {{ png_rate | tojson }};
+        pngPreviewTimer = setTimeout(async () => {
+            const controller = new AbortController();
+            pngPreviewRequest = controller;
+            const timeout = setTimeout(() => controller.abort(), 15000);
+            try {
+                const response = await fetch('/api/calculate_png', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+                    },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                const data = await response.json();
+                if (version !== pngPreviewVersion) return;
+                if (!response.ok || data.error) throw new Error(data.error || 'Preview unavailable');
+                const scm = Number(data.monthly_scm_consumption);
+                const energy = Number(data.monthly_energy_delivered);
+                const bill = Number(data.total_bill);
+                if (![scm, energy, bill].every(Number.isFinite)) throw new Error('Invalid preview');
+                document.getElementById('png-monthly-scm').textContent = scm.toFixed(1);
+                document.getElementById('png-monthly-energy').textContent = energy.toFixed(1);
+                document.getElementById('png-monthly-bill').textContent = bill.toFixed(0);
+                document.getElementById('png-avg-rate').textContent = (scm > 0 ? bill / scm : 0).toFixed(1);
+                updateResultsSummary(energy, bill);
+            } catch (error) {
+                if (version === pngPreviewVersion) panel.classList.add('d-none');
+            } finally {
+                clearTimeout(timeout);
+                if (version === pngPreviewVersion) panel.removeAttribute('aria-busy');
+            }
+        }, 180);
     }
 
     function calculateElectricityConsumption() {
+        const input = document.getElementById('monthly_kwh_cooking');
+        if (input.value === '' || !input.checkValidity()) {
+            document.getElementById('electricity-analysis').classList.add('d-none');
+            return;
+        }
         const monthlyKwh = parseFloat(document.getElementById('monthly_kwh_cooking').value) || 80;
         const tariff = {{ electricity_tariff|default(7.5) }};
     const efficiency = {{ electricity_efficiency|default (0.85) }};
 
     const monthlyEnergyDelivered = monthlyKwh * efficiency;
     const monthlyCost = monthlyKwh * tariff;
-    const annualCo2 = (monthlyKwh / 30) * 365 * {{ grid_emission_factor|default (0.72) }} * {{ grid_emission_adjustment |default (0.9) }};
+    const annualCo2 = (monthlyKwh / 30) * 365 * {{ grid_emission_factor|default (0.72) }};
 
     // Update display
     document.getElementById('elec-monthly-energy').textContent = monthlyEnergyDelivered.toFixed(1);
@@ -1226,12 +1213,12 @@
                 const cylinderEnergy = {{ lpg_cylinder_weight|default(14.2) }} * {{ lpg_calorific_value|default(12.8) }} * {{ lpg_efficiency|default(0.63) }};
     const monthlyEnergy = (cylinderEnergy * 30) / refillDays;
     totalEnergy += monthlyEnergy;
-    totalCost += (30 / refillDays) * {{ lpg_cylinder_price |default (922) }};
+    totalCost += (30 / refillDays) * Math.max(0, {{ lpg_cylinder_price | default(922) }} - {{ lpg_subsidy_amount | default(0) }});
             }
 
     if (png) {
         const bill = parseFloat(document.getElementById('mixed_monthly_bill_png')?.value) || 500;
-        const scm = bill / {{ png_rate|default(30) }};
+        const scm = Math.max(0, bill - {{ png_fixed_charges | default(0) }}) / {{ png_rate | default(54) }};
     totalEnergy += scm * {{ png_calorific_value |default (10.56) }} * {{ png_efficiency |default (0.70) }};
     totalCost += bill;
             }
@@ -1255,28 +1242,42 @@
 
     function updateCalculateButton() {
         const btn = document.getElementById('calculate-btn');
-
+        const hint = document.getElementById('calculation-help');
+        let message = '';
         if (selectedMethod === 'dish') {
-            // Check if we have fuels selected and dishes with fuels
-            const hasFuels = currentFuelMix.length > 0;
-            const hasDishes = Object.values(selectedDishes).some(dishes => dishes.length > 0);
-            const allDishesHaveFuels = Object.values(selectedDishes).every(dishes =>
-                dishes.every(dish => selectedFuels[dish])
-            );
-
-            btn.disabled = !(hasFuels && hasDishes && allDishesHaveFuels);
+            if (!currentFuelMix.length) message = {{ _('Select your cooking fuels above to continue.') | tojson }};
+            else if (!Object.values(selectedDishes).some(dishes => dishes.length)) message = {{ _('Select at least one dish you prepare.') | tojson }};
+            else if (!Object.values(selectedDishes).every(dishes => dishes.every(dish => selectedFuels[dish]))) message = {{ _('Choose a cooking fuel beside each selected dish.') | tojson }};
         } else {
-            // For consumption method
-            const hasMethod = selectedMethod !== '';
-            const resultsCard = document.getElementById('calculation-results');
-            // If results card doesn't exist (commented out), just check if a fuel is selected
-            const primaryFuel = document.getElementById('primary_fuel')?.value;
-            const hasData = resultsCard ? !resultsCard.classList.contains('d-none') : !!primaryFuel;
-            btn.disabled = !(hasMethod && hasData);
+            const fuel = document.getElementById('primary_fuel')?.value;
+            if (!fuel) message = {{ _('Select your primary cooking fuel to continue.') | tojson }};
+            else if (fuel === 'Mixed usage' && !document.querySelector('#mixed-details input[type="checkbox"]:checked')) message = {{ _('Select at least one fuel in your mixed usage.') | tojson }};
+            else if (fuel === 'LPG' && document.getElementById('use_domestic_lpg') && !document.querySelector('#lpg-details input[type="checkbox"]:checked')) message = {{ _('Select at least one LPG cylinder type.') | tojson }};
         }
+        btn.disabled = Boolean(message);
+        if (hint) hint.textContent = message || {{ _('Ready. Continue to the next step when your entries are complete.') | tojson }};
+    }
+
+    function validateEnergyInputs() {
+        const visibleControls = Array.from(document.querySelectorAll('#energyForm input, #energyForm select'))
+            .filter(control => control.getClientRects().length && !control.disabled && control.type !== 'hidden');
+        let firstInvalid = null;
+        visibleControls.forEach(control => {
+            if (control.type === 'number') control.setCustomValidity(control.value === '' ? {{ _('Enter a value for this field.') | tojson }} : '');
+            const valid = control.checkValidity();
+            control.classList.toggle('is-invalid', !valid);
+            control.setAttribute('aria-invalid', String(!valid));
+            if (!valid && !firstInvalid) firstInvalid = control;
+        });
+        if (!firstInvalid) return true;
+        const hint = document.getElementById('calculation-help');
+        if (hint) hint.textContent = getFieldValidationMessage(firstInvalid);
+        firstInvalid.focus();
+        return false;
     }
 
     function calculateConsumption() {
+        if (document.getElementById('calculate-btn').disabled || !validateEnergyInputs()) return;
         if (selectedMethod === 'dish') {
             // Prepare dish-based data
             let data = {
@@ -1369,101 +1370,59 @@
     }
 
     function restoreSavedEnergyData() {
-        if (!energyData || Object.keys(energyData).length === 0) return;
+        if (!energyData || typeof energyData !== 'object') return;
+        const storedMethod = energyData.calculation_method || energyData.fuel_details?.calculation_method;
+        const method = { consumption_based: 'consumption', dish_based: 'dish' }[storedMethod] || storedMethod;
+        if (!['consumption', 'dish'].includes(method) || !document.getElementById(`method_${method}`)) return;
+        selectedMethod = method;
+        showMethodContent(method);
 
-        const method = energyData.calculation_method;
-        if (!method) return;
-
-        // Select the method
-        const methodRadio = document.getElementById(`method_${method}`);
-        if (methodRadio) {
-            methodRadio.checked = true;
-            selectedMethod = method;
-            showMethodContent(method);
-        }
+        // Successful submissions retain the entered values separately from calculated results.
+        Object.entries(energyData).forEach(([key, value]) => {
+            if (key === 'csrf_token' || key === 'calculation_method') return;
+            const control = document.getElementById(key);
+            if (!control || value === null || value === undefined || typeof value === 'object') return;
+            if (control.type === 'checkbox') control.checked = [true, 'on', '1', 1].includes(value);
+            else if (control.type !== 'radio') control.value = value;
+        });
 
         if (method === 'consumption') {
-            // Restore consumption-based data
             const primaryFuel = energyData.primary_fuel;
             if (primaryFuel) {
-                const fuelSelect = document.getElementById('primary_fuel');
-                if (fuelSelect) {
-                    fuelSelect.value = primaryFuel;
-                    showFuelDetails(primaryFuel);
+                document.getElementById('primary_fuel').value = primaryFuel;
+                showFuelDetails(primaryFuel);
+                if (primaryFuel === 'PNG' && energyData.png_input_method) {
+                    const radio = document.getElementById(`png_${energyData.png_input_method}`);
+                    if (radio) { radio.checked = true; showPngInput(radio.value); }
                 }
-
-                // Restore fuel-specific values
-                if (primaryFuel === 'LPG') {
-                    if (energyData.refill_days) document.getElementById('refill_days').value = energyData.refill_days;
-                    if (energyData.cylinder_price) document.getElementById('cylinder_price').value = energyData.cylinder_price;
-                    if (energyData.cylinder_size) document.getElementById('cylinder_size').value = energyData.cylinder_size;
-                    setTimeout(calculateLpgConsumption, 100);
-                } else if (primaryFuel === 'PNG') {
-                    const pngMethod = energyData.png_input_method || 'bill';
-                    const pngRadio = document.getElementById(`png_${pngMethod}`);
-                    if (pngRadio) {
-                        pngRadio.checked = true;
-                        showPngInput(pngMethod);
-                    }
-                    if (energyData.monthly_bill) document.getElementById('monthly_bill').value = energyData.monthly_bill;
-                    if (energyData.monthly_scm) document.getElementById('monthly_scm').value = energyData.monthly_scm;
-                    if (energyData.daily_scm) document.getElementById('daily_scm').value = energyData.daily_scm;
-                    setTimeout(calculatePngConsumption, 100);
-                } else if (primaryFuel === 'Grid electricity') {
-                    if (energyData.monthly_kwh_cooking) document.getElementById('monthly_kwh_cooking').value = energyData.monthly_kwh_cooking;
-                    setTimeout(calculateElectricityConsumption, 100);
-                } else if (primaryFuel === 'Traditional Solid Biomass') {
-                    if (energyData.monthly_kg) document.getElementById('monthly_kg').value = energyData.monthly_kg;
-                    if (energyData.biomass_type) document.getElementById('biomass_type').value = energyData.biomass_type;
+                if (primaryFuel === 'Mixed usage') {
+                    ['lpg', 'png', 'elec', 'biomass'].forEach(fuel => {
+                        const checkbox = document.getElementById(`mixed_use_${fuel}`);
+                        const content = document.getElementById(`mixed_${fuel}_content`);
+                        if (checkbox && content) content.classList.toggle('d-none', !checkbox.checked);
+                    });
+                    updateMixedFuelResults();
                 }
             }
-        } else if (method === 'dish') {
-            // Restore dish-based data
+        } else {
+            const fuels = Array.isArray(energyData.current_fuel_mix) ? energyData.current_fuel_mix : [];
+            document.querySelectorAll('input[name="current_fuel_mix"]').forEach(checkbox => {
+                checkbox.checked = fuels.includes(checkbox.value);
+            });
+            currentFuelMix = fuels;
+            ['Breakfast', 'Lunch', 'Dinner', 'Snacks'].forEach(category => {
+                const dishes = energyData[`${category.toLowerCase()}_dishes`];
+                selectedDishes[category] = Array.isArray(dishes) ? dishes : [];
+                selectedDishes[category].forEach(dish => {
+                    const fuel = energyData[`${dish}_fuel`];
+                    if (fuels.includes(fuel)) selectedFuels[dish] = fuel;
+                });
+            });
             loadDishData();
-
-            // Restore current fuel mix
-            if (energyData.current_fuel_mix && Array.isArray(energyData.current_fuel_mix)) {
-                energyData.current_fuel_mix.forEach(fuel => {
-                    const checkbox = document.querySelector(`input[name="current_fuel_mix"][value="${fuel}"]`);
-                    if (checkbox) checkbox.checked = true;
-                });
-                updateCurrentFuelMix();
-            }
-
-            // Restore meal types
-            if (energyData.breakfast_type) document.getElementById('breakfast_type').value = energyData.breakfast_type;
-            if (energyData.lunch_type) document.getElementById('lunch_type').value = energyData.lunch_type;
-            if (energyData.dinner_type) document.getElementById('dinner_type').value = energyData.dinner_type;
-
-            // Restore selected dishes and their fuels
-            setTimeout(() => {
-                ['Breakfast', 'Lunch', 'Dinner', 'Snacks'].forEach(category => {
-                    const dishesKey = `${category.toLowerCase()}_dishes`;
-                    const dishes = energyData[dishesKey];
-                    if (dishes && Array.isArray(dishes)) {
-                        dishes.forEach(dish => {
-                            const checkbox = document.querySelector(`input[data-category="${category}"][data-dish="${dish}"]`);
-                            if (checkbox) {
-                                checkbox.checked = true;
-                                if (!selectedDishes[category]) selectedDishes[category] = [];
-                                selectedDishes[category].push(dish);
-
-                                // Restore fuel selection for this dish
-                                const fuelKey = `${dish}_fuel`;
-                                if (energyData[fuelKey]) {
-                                    selectedFuels[dish] = energyData[fuelKey];
-                                }
-                            }
-                        });
-                    }
-                });
-                updateInlineFuelSelectors();
-                updateDishSummary();
-                updateCalculateButton();
-            }, 200);
+            updateDishSummary();
         }
-
-        setTimeout(updateCalculateButton, 300);
+        updateCalculateButton();
     }
+
 </script>
 {% endblock %}

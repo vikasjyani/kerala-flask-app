@@ -339,7 +339,7 @@ class FuelCostCalculator:
         
         # Check for session-specific custom override first
         custom_biomass = self.custom_prices.get('Biomass_unit_price')
-        if custom_biomass is not None and float(custom_biomass) > 0:
+        if custom_biomass is not None and float(custom_biomass) >= 0:
             cost_per_kg = float(custom_biomass)
             self.logger.log_result("Biomass Price Override", f"Using session custom price ₹{cost_per_kg}/kg")
             try:

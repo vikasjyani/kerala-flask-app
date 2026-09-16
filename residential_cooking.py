@@ -380,7 +380,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
         # Biomass energy content and efficiency - load from database
         biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
         custom_prices = household_data.get('custom_fuel_prices', {})
-        if custom_prices.get('Biomass_unit_price'):
+        if custom_prices.get('Biomass_unit_price') is not None:
             biomass_cost_per_kg = float(custom_prices['Biomass_unit_price'])
         else:
             biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
@@ -538,7 +538,7 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
 
             biomass_energy_content = float(db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5))
             custom_prices = household_data.get('custom_fuel_prices', {})
-            if custom_prices.get('Biomass_unit_price'):
+            if custom_prices.get('Biomass_unit_price') is not None:
                 biomass_cost_per_kg = float(custom_prices['Biomass_unit_price'])
             else:
                 biomass_cost_per_kg = float(db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0))
@@ -591,6 +591,25 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
     logger.log_result("Monthly Cost", f"Rs {result['monthly_cost']:.2f}")
     logger.log_result("Annual CO₂ Emissions", f"{result['annual_emissions']:.2f} kg CO₂/year")
 
+    # Preserve input-energy units for cost comparisons and weight mixed-fuel
+    # efficiency by the actual input energy, rather than a default fuel value.
+    total_energy_required = 0.0
+    for fuel_name, details in result['fuel_details'].items():
+        if not isinstance(details, dict):
+            continue
+        efficiency = details.get('efficiency', helper.DEFAULT_EFFICIENCIES.get(fuel_name, 0.60))
+        energy_delivered = details.get('energy_delivered', 0)
+        energy_required = energy_delivered / efficiency if efficiency > 0 else 0
+        details['efficiency'] = efficiency
+        details['energy_required'] = energy_required
+        details['cost_per_kwh'] = details.get('monthly_cost', 0) / energy_required if energy_required > 0 else 0
+        total_energy_required += energy_required
+    result['overall_thermal_efficiency'] = (
+        result['monthly_energy_kwh'] / total_energy_required * 100
+        if total_energy_required > 0 else 0
+    )
+    result['calculation_method'] = 'consumption_based'
+
     # Save to database
     if household_id:
         logger.log_step(f"Saving cooking analysis to database for household {household_id}")
@@ -599,11 +618,6 @@ def calculate_consumption_based(data, household_data, kitchen_data, household_id
     else:
         logger.log_warning("No household_id - skipping database save")
 
-    # Add overall thermal efficiency to result
-    # For consumption-based, efficiency is based on the primary fuel's efficiency
-    efficiency = helper.DEFAULT_EFFICIENCIES.get(primary_fuel, 0.60)
-    result['overall_thermal_efficiency'] = efficiency * 100
-    
     logger.log_result("Overall Thermal Efficiency", f"{result['overall_thermal_efficiency']:.1f}%")
     # Store calculation_method at top level for reliable method-switch detection in app.py
     result['calculation_method'] = 'consumption_based'

@@ -9,6 +9,7 @@ import json
 import uuid
 import datetime
 import io
+import math
 
 # Import from new modules
 import helper
@@ -52,7 +53,8 @@ babel = Babel()
 # Translation setup
 app.config['LANGUAGES'] = {
     'en': 'English',
-    'ml': 'മലയാളം'
+    'ml': 'മലയാളം',
+    # 'hi': 'हिन्दी'
 }
 
 FALLBACK_DISTRICTS = [
@@ -76,9 +78,7 @@ def normalize_language(language_code):
     """Normalize legacy and supported language codes."""
     if not language_code:
         return None
-    if language_code == 'hi':
-        return 'ml'
-    if language_code in ('en', 'ml'):
+    if language_code in ('en', 'ml', 'hi'):
         return language_code
     return None
 
@@ -90,12 +90,15 @@ def get_locale():
             session['language'] = session_lang
             return session_lang
     # Otherwise try to match best language from request headers
-    return request.accept_languages.best_match(['en', 'ml']) or 'en'
+    return request.accept_languages.best_match(['en', 'ml', 'hi']) or 'en'
 
-def localize_db_label(label_en, label_ml=None):
-    """Pick localized DB label with Malayalam fallback behavior."""
-    if get_locale() == 'ml' and label_ml and str(label_ml).strip():
+def localize_db_label(label_en, label_ml=None, label_hi=None):
+    """Pick localized DB label with Malayalam/Hindi fallback behavior."""
+    locale = get_locale()
+    if locale == 'ml' and label_ml and str(label_ml).strip():
         return label_ml
+    if locale == 'hi' and label_hi and str(label_hi).strip():
+        return label_hi
     return label_en
 
 # Stored institution_type VALUES ('Hotel', 'Factory', ...) differ from the display
@@ -125,7 +128,7 @@ def get_district_options_with_fallback():
     except Exception:
         pass
 
-    return [{'value': d, 'label_en': d, 'label_ml': None} for d in FALLBACK_DISTRICTS]
+    return [{'value': d, 'label_en': d, 'label_ml': None, 'label_hi': None} for d in FALLBACK_DISTRICTS]
 
 def clear_application_journey():
     """Clear application journey state without wiping unrelated session keys.
@@ -145,6 +148,7 @@ def clear_application_journey():
         'household_data',
         'kitchen_data',
         'res_energy_data',       # namespaced residential energy result
+        'res_energy_inputs',     # successful entries for editing the energy step
         'analysis_result',
         'residential_analysis_result',
         'residential_analysis_cache_key',
@@ -152,6 +156,7 @@ def clear_application_journey():
         'institution_data',
         'commercial_analysis_id',
         'com_energy_data',       # namespaced commercial energy result
+        'com_energy_inputs',     # submitted commercial entries for editing
         'commercial_analysis_result',
         'commercial_analysis_cache_key',
         # Generic / legacy keys (clean up old browser cookies that predate namespacing)
@@ -177,6 +182,43 @@ def build_analysis_result(current, alternatives, health_impact, recommendations)
         'recommendations': recommendations or []
     }
 
+
+def build_calculation_input_snapshot(entered_values, profile, kitchen):
+    """Retain calculation provenance in the existing analysis JSON, without contact data."""
+    profile_fields = (
+        'district', 'area_type', 'household_size', 'monthly_income', 'lpg_subsidy',
+        'electricity_tariff', 'loan_interest_rate', 'loan_tenure', 'main_priority',
+        'solar_willingness', 'solar_rooftop_area', 'institution_type',
+        'servings_per_day', 'working_days', 'solar_willing', 'available_roof_area',
+        'budget', 'custom_fuel_prices',
+    )
+    return {
+        'schema_version': 1,
+        'entered_values': {key: value for key, value in dict(entered_values).items() if key != 'csrf_token'},
+        'profile': {key: profile[key] for key in profile_fields if key in profile},
+        'kitchen': dict(kitchen),
+        'reference_values': {
+            'fuel_efficiencies': dict(helper.DEFAULT_EFFICIENCIES),
+            'emission_factors_kg_per_kwh': dict(helper.EMISSION_FACTORS),
+            'lpg_kwh_per_kg': helper.LPG_CALORIFIC_VALUE,
+            'png_kwh_per_scm': helper.PNG_CALORIFIC_VALUE,
+            'biomass_kwh_per_kg': db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5),
+            'biogas_kwh_per_m3': helper.BIOGAS_ENERGY_PER_M3,
+            'energy_units': {'fuel_input': 'kWh', 'monthly_energy_kwh': 'useful cooking heat kWh'},
+            'cost_year_months': 12,
+            'solar_and_battery': {name: getattr(helper, name) for name in (
+                'Keralam_SOLAR_GHI', 'Keralam_WEATHER_FACTOR', 'SOLAR_SYSTEM_EFF',
+                'SOLAR_DEGRADATION', 'SOLAR_CAPITAL_COST_PER_KW', 'SOLAR_INSTALLATION_COST',
+                'SOLAR_LIFETIME_YEARS', 'SOLAR_MAINTENANCE_PER_KW_ANNUAL',
+                'BATTERY_COST_PER_KWH', 'BATTERY_CAPACITY_PER_UNIT', 'BATTERY_EFFICIENCY',
+                'BATTERY_DOD', 'BATTERY_LIFETIME_YEARS',
+            )},
+            'residential_month_days': 30,
+            'residential_emissions_year_days': 365,
+            'commercial_year_days': float(profile.get('working_days') or 30) * 12,
+        },
+    }
+
 def save_analysis_result_to_cache(analysis_result, analysis_type):
     """Persist large analysis payloads server-side and store only cache keys in session."""
     if analysis_type == 'commercial':
@@ -188,7 +230,7 @@ def save_analysis_result_to_cache(analysis_result, analysis_type):
         specific_cache_session_key = 'residential_analysis_cache_key'
         legacy_session_key = 'residential_analysis_result'
 
-    cache_key = f"analysis_{entity_id}"
+    cache_key = f"analysis_{analysis_type}_{entity_id}"
     db_helper.save_analysis_cache(cache_key, analysis_result)
     # Write ONLY the type-specific key — never the generic 'analysis_cache_key' so that
     # a commercial and a residential result cannot overwrite each other in the same cookie.
@@ -206,7 +248,7 @@ def load_analysis_result_from_cache(analysis_type=None):
     elif analysis_type == 'residential':
         cache_key = session.get('residential_analysis_cache_key')
 
-    if not cache_key:
+    if not cache_key and analysis_type is None:
         # Fallback: derive cache key from flow_type so the generic key can no longer
         # cause cross-flow bleed.  Old cookies that still carry 'analysis_cache_key'
         # are NOT used here; they will be cleared by clear_application_journey().
@@ -371,6 +413,7 @@ def submit_household():
             'name': data.get('name'),
             'email': data.get('email'),
             'phone': data.get('phone'),
+            'country_code': data.get('country_code', '+91'),
             'district': data.get('district'),
             'area_type': data.get('area_type'),
             'household_size': int(data.get('household_size', 4)),
@@ -412,14 +455,18 @@ def submit_household():
                 pass
 
         # Save to database
-        household_id = helper.save_household_data(household_data)
+        existing_id = session.get('household_id') if session.get('flow_type') == 'residential' else None
+        household_id = helper.save_household_data(household_data, household_id=existing_id)
         
         # Store in session — tag this as a residential flow
         session['flow_type'] = 'residential'
         session['household_id'] = household_id
         session['household_data'] = household_data
-        session.pop('kitchen_data', None)
+        if not existing_id:
+            session.pop('kitchen_data', None)
+            session.pop('res_energy_inputs', None)
         session.pop('res_energy_data', None)
+        session.pop('residential_analysis_cache_key', None)
         
         if request.is_json:
             return jsonify({'status': 'success', 'redirect': url_for('energy_calculation')})
@@ -452,13 +499,14 @@ def kitchen_profile():
         scenarios.append({
             'scenario_name': name,
             'scenario_name_ml': data['name_ml'],
+            'scenario_name_hi': data.get('name_hi'),
             'description': data['description_en'],
             'health_risk_category': data['risk'],
             'combined_factor': data['factor'],
             'risk_color': helper.RISK_STYLES[data['risk']]['badge'],
             'risk_icon': helper.RISK_STYLES[data['risk']]['icon']
         })
-    
+
     return render_template('kitchen_profile.html', scenarios=scenarios)
 
 @app.route('/submit_kitchen', methods=['POST'])
@@ -485,6 +533,15 @@ def submit_kitchen():
             'ventilation_quality': 'Average'
         }
         
+        energy_data = session.get('res_energy_data')
+        household_id = session.get('household_id')
+        if household_id and energy_data:
+            helper.save_cooking_analysis(
+                household_id, kitchen_data, energy_data,
+                input_snapshot=build_calculation_input_snapshot(
+                    session.get('res_energy_inputs', {}), household_data, kitchen_data
+                ),
+            )
         session['kitchen_data'] = kitchen_data
         
         if request.is_json:
@@ -539,15 +596,16 @@ def energy_calculation():
             dish_data[category].append({
                 'name': name,
                 'name_ml': dish.get('dish_name_ml'),
-                'display_name': localize_db_label(name, dish.get('dish_name_ml')),
+                'name_hi': dish.get('dish_name_hi'),
+                'display_name': localize_db_label(name, dish.get('dish_name_ml'), dish.get('dish_name_hi')),
                 'is_veg': dish.get('is_veg', 'yes')  # Default to 'yes' if not specified
             })
-        
+
     # Get available fuels
     fuels = db_helper.get_all_fuels(active_only=True)
     available_fuels = [f['fuel_name'] for f in fuels]
     fuel_label_map = {
-        f['fuel_name']: localize_db_label(f['fuel_name'], f.get('fuel_name_ml'))
+        f['fuel_name']: localize_db_label(f['fuel_name'], f.get('fuel_name_ml'), f.get('fuel_name_hi'))
         for f in fuels
     }
     logger.log_data("Available Fuels", available_fuels)
@@ -559,8 +617,8 @@ def energy_calculation():
     household_data = session.get('household_data', {})
     # Only pass energy_data for pre-fill if it has a known calculation_method.
     # Prevents dish-based values pre-filling consumption fields and vice-versa.
-    _raw_energy = session.get('res_energy_data', {})
-    energy_data = _raw_energy if _raw_energy.get('calculation_method') in ('consumption_based', 'dish_based') else {}
+    _raw_energy = session.get('res_energy_inputs') or session.get('res_energy_data', {})
+    energy_data = _raw_energy if _raw_energy.get('calculation_method') in ('consumption', 'dish', 'consumption_based', 'dish_based') else {}
 
     # Resolve prices: session custom overrides take priority over DB values
     _custom = household_data.get('custom_fuel_prices', {})
@@ -589,7 +647,7 @@ def energy_calculation():
             lpg_cylinder_price = float(lpg_price_data.get('subsidized_price', lpg_price_data.get('non_subsidized_price', 922)))
 
     # Biomass cost per kg
-    if _custom.get('Biomass_unit_price'):
+    if _custom.get('Biomass_unit_price') is not None:
         biomass_cost_per_kg_val = float(_custom['Biomass_unit_price'])
     else:
         biomass_cost_per_kg_val = db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
@@ -612,6 +670,8 @@ def energy_calculation():
                           electricity_tariff=electricity_tariff,
                           png_rate=png_rate,
                           lpg_cylinder_price=lpg_cylinder_price,
+                          lpg_subsidy_amount=helper.LPG_SUBSIDY_AMOUNT if household_data.get('lpg_subsidy') == 'Yes' else 0,
+                          png_fixed_charges=float(db_helper.get_system_parameter('PNG_FIXED_CHARGE_MONTHLY', 0)) + float(db_helper.get_system_parameter('PNG_METER_RENT_MONTHLY', 0)),
                           # Efficiency factors and calorific values from database
                           lpg_efficiency=helper.DEFAULT_EFFICIENCIES.get('LPG', 0.60),
                           png_efficiency=helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70),
@@ -623,7 +683,6 @@ def energy_calculation():
                           biomass_energy_content=db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5),
                           biomass_cost_per_kg=biomass_cost_per_kg_val,
                           grid_emission_factor=grid_ef_val,
-                          grid_emission_adjustment=db_helper.get_system_parameter('GRID_EMISSION_ADJUSTMENT_FACTOR', 0.9),
                           household_data=household_data)
 
 @app.route('/get_dishes/<category>')
@@ -657,10 +716,9 @@ def calculate_consumption():
         calc_method = form_data.get('calculation_method')
         logger.log_input("Calculation Method", calc_method)
         
-        # Clear previous res_energy_data to ensure fresh calculation.
-        # Fixes: old string was 'consumption' vs stored value 'consumption_based' — always triggered.
-        # Also check top-level key first (set by engine), fall back to nested fuel_details key.
-        old_energy_data = session.pop('res_energy_data', None)
+        # Keep the last successful result if validation or calculation fails.
+        # Replace it only after the new calculation succeeds.
+        old_energy_data = session.get('res_energy_data')
         if old_energy_data:
             old_method = (
                 old_energy_data.get('calculation_method')
@@ -668,7 +726,7 @@ def calculate_consumption():
             )
             new_method = 'dish_based' if calc_method == 'dish' else 'consumption_based'
             if old_method != new_method:
-                logger.log_step(f"Method switch detected: {old_method} → {new_method}. Cleared old data.")
+                logger.log_step(f"Method switch detected: {old_method} → {new_method}.")
         
         household_data = session.get('household_data', {})
         kitchen_data = session.get('kitchen_data', {})
@@ -676,11 +734,11 @@ def calculate_consumption():
         
         if calc_method == 'consumption':
             result = residential_cooking.calculate_consumption_based(
-                form_data, household_data, kitchen_data, household_id
+                form_data, household_data, kitchen_data, None
             )
         else:
             result = residential_cooking.calculate_dish_based(
-                form_data, household_data, kitchen_data, household_id, 
+                form_data, household_data, kitchen_data, None,
                 language=session.get('language', 'en')
             )
             
@@ -692,8 +750,21 @@ def calculate_consumption():
                 flash(error_msg, 'error')
                 return redirect(url_for('energy_calculation'))
             
-        # Store result in session under the residential namespace key
+        # Results contain derived values, so they cannot reliably repopulate the
+        # original form. Retain the successful entries without storing CSRF tokens.
+        entered_values = {
+            key: (form_data.getlist(key) if hasattr(form_data, 'getlist') and
+                  (key.endswith('_dishes') or key == 'current_fuel_mix') else form_data[key])
+            for key in form_data if key != 'csrf_token'
+        }
+        if household_id:
+            helper.save_cooking_analysis(
+                household_id, kitchen_data, result,
+                input_snapshot=build_calculation_input_snapshot(entered_values, household_data, kitchen_data),
+            )
+        # Publish session state only after every database row is saved successfully.
         session['res_energy_data'] = result
+        session['res_energy_inputs'] = entered_values
         logger.log_success("Residential calculation completed")
         logger.log_data("Residential Energy Data Stored in Session", result)
         
@@ -944,9 +1015,11 @@ def download_report():
 @app.route('/commercial_selection')
 def commercial_selection():
     """Commercial analysis landing page with institution profile"""
-    # Clear any previous journey (residential or commercial) so old session
-    # keys never bleed into this new commercial flow.
-    clear_application_journey()
+    # Back from the kitchen step edits the existing profile. A new analysis
+    # still starts with a clean journey so residential/commercial data stays separate.
+    editing_profile = request.args.get('edit') == '1' and session.get('flow_type') == 'commercial'
+    if not editing_profile:
+        clear_application_journey()
     try:
         # Fetch institution types and filter to allowed 5
         all_institutions = db_helper.get_all_institution_types()
@@ -1035,12 +1108,17 @@ def commercial_institution_profile():
             return redirect(url_for('commercial_selection'))
         
         # Save to database
-        institution_id = helper.save_institution_data(institution_data)
+        existing_id = session.get('commercial_analysis_id') if session.get('flow_type') == 'commercial' else None
+        institution_id = helper.save_institution_data(institution_data, institution_id=existing_id)
         
         # Tag this as a commercial flow
         session['flow_type'] = 'commercial'
         session['institution_data'] = institution_data
         session['commercial_analysis_id'] = institution_id
+        session.pop('com_energy_data', None)
+        session.pop('commercial_analysis_cache_key', None)
+        if not existing_id:
+            session.pop('com_energy_inputs', None)
         
         return redirect(url_for('commercial_kitchen_profile'))
     except Exception as e:
@@ -1064,13 +1142,14 @@ def commercial_kitchen_profile():
             scenarios.append({
                 'scenario_name': name,
                 'scenario_name_ml': data['name_ml'],
+                'scenario_name_hi': data.get('name_hi'),
                 'description': data['description_en'],
                 'health_risk_category': data['risk'],
                 'combined_factor': data['factor'],
                 'risk_color': helper.RISK_STYLES[data['risk']]['badge'],
                 'risk_icon': helper.RISK_STYLES[data['risk']]['icon']
             })
-        
+
         return render_template('commercial_kitchen_profile.html',
                              scenarios=scenarios)
     except Exception as e:
@@ -1110,7 +1189,7 @@ def commercial_submit_kitchen():
             # Keep old fields for backward compatibility
             'kitchen_type': data.get('kitchen_scenario', ''),
             'ventilation_quality': 'Average',
-            'roof_area_available': float(institution_data.get('available_roof_area') or 500),  # Use from institution_data
+            'roof_area_available': float(institution_data.get('available_roof_area') or 0),  # Use from institution_data
             'solar_willing': institution_data.get('solar_willing', 'No'),  # Use from institution_data
             'budget_preference': data.get('budget_preference')
         }
@@ -1153,8 +1232,8 @@ def commercial_energy_calculation():
             logger.log_data("Institution Data (session)", institution_data)
             logger.log_data("Kitchen Data (session)", kitchen_data)
 
-            # Clear previous com_energy_data on method switch (mirrors residential logic).
-            old_com_data = session.pop('com_energy_data', None)
+            # Keep the last saved result until a replacement has been calculated and saved.
+            old_com_data = session.get('com_energy_data')
             if old_com_data:
                 old_method = (
                     old_com_data.get('calculation_method')
@@ -1162,7 +1241,7 @@ def commercial_energy_calculation():
                 )
                 new_method = 'dish_based' if calculation_method == 'dish' else 'consumption_based'
                 if old_method != new_method:
-                    logger.log_step(f"Commercial method switch: {old_method} → {new_method}. Cleared old data.")
+                    logger.log_step(f"Commercial method switch: {old_method} → {new_method}.")
 
             # Call appropriate calculation function based on method
             if calculation_method == 'dish':
@@ -1185,10 +1264,18 @@ def commercial_energy_calculation():
                 return redirect(url_for('commercial_energy_calculation'))
             
             # Save results to database
+            entered_values = {
+                key: list(dict.fromkeys(request.form.getlist(key))) if key.endswith('_dishes') or key == 'current_fuel_mix' else request.form[key]
+                for key in request.form if key != 'csrf_token'
+            }
             if institution_id:
-                helper.save_commercial_analysis(institution_id, result)
+                helper.save_commercial_analysis(
+                    institution_id, result, kitchen_data=kitchen_data,
+                    input_snapshot=build_calculation_input_snapshot(entered_values, institution_data, kitchen_data),
+                )
             
             session['com_energy_data'] = result
+            session['com_energy_inputs'] = entered_values
             logger.log_data("Commercial Energy Result", result)
             return redirect(url_for('commercial_analysis'))
             
@@ -1219,7 +1306,7 @@ def commercial_energy_calculation():
         
         # Query to get dishes filtered by institution_type column
         query = """
-            SELECT dc.*, cat.category_name, cat.category_name_ml
+            SELECT dc.*, cat.category_name, cat.category_name_ml, cat.category_name_hi
             FROM dishes_commercial dc
             JOIN dish_categories cat ON dc.category_id = cat.category_id
             AND dc.institution_type = ?
@@ -1238,7 +1325,7 @@ def commercial_energy_calculation():
 
         all_fuels = db_helper.get_all_fuels()
         fuel_label_map = {
-            f['fuel_name']: localize_db_label(f['fuel_name'], f.get('fuel_name_ml'))
+            f['fuel_name']: localize_db_label(f['fuel_name'], f.get('fuel_name_ml'), f.get('fuel_name_hi'))
             for f in all_fuels
         }
         logger.log_step(f"DEBUG: Fetched {len(all_fuels)} fuels from database")
@@ -1261,7 +1348,7 @@ def commercial_energy_calculation():
             com_png_rate = float(_png_data['price_per_scm']) if _png_data else float(
                 db_helper.get_system_parameter('PNG_COMMERCIAL_RATE', 51.0))
 
-        if _custom_c.get('Biomass_unit_price'):
+        if _custom_c.get('Biomass_unit_price') is not None:
             com_biomass_cost = float(_custom_c['Biomass_unit_price'])
         else:
             _bio_data = db_helper.get_fuel_unit_price(
@@ -1377,7 +1464,7 @@ def chart_data():
     # Localize chart labels with DB-backed Malayalam names where available.
     all_fuels = db_helper.get_all_fuels(active_only=False)
     fuel_label_map = {
-        fuel['fuel_name']: localize_db_label(fuel['fuel_name'], fuel.get('fuel_name_ml'))
+        fuel['fuel_name']: localize_db_label(fuel['fuel_name'], fuel.get('fuel_name_ml'), fuel.get('fuel_name_hi'))
         for fuel in all_fuels
     }
 
@@ -1438,69 +1525,48 @@ def chart_data():
 def calculate_png():
     """API endpoint to calculate PNG consumption using shared backend logic"""
     try:
-        data = request.json
-        monthly_bill = float(data.get('monthly_bill', 0))
-        input_type = data.get('type', 'bill') # 'bill' or 'consumption'
-        
-        # Priority 1: User-provided rate, Priority 2: database rate.
-        rate = data.get('rate')
-        if rate is None:
-            png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
-            if not png_price_data:
-                return jsonify({'error': 'PNG pricing not found in database'}), 500
-            rate = float(png_price_data['price_per_scm'])
-        else:
-            rate = float(rate)
-        
-        if input_type == 'bill':
-            if monthly_bill <= 0:
-                result = {
-                     'monthly_scm_consumption': 0,
-                     'monthly_energy_delivered': 0,
-                     'total_bill': 0,
-                     'tariff_used': rate
-                }
-            else:
-                # Use shared helper with matching logic (binary search if needed)
-                # Note: helper.calculate_png_consumption_from_bill takes bill amount
-                calc_result = helper.calculate_png_consumption_from_bill(
-                    monthly_bill,
-                    rate_per_scm=rate
-                )
-                
-                # Extract needed values
-                result = {
-                    'monthly_scm_consumption': calc_result.get('monthly_scm_consumption', 0),
-                    'monthly_energy_delivered': calc_result.get('daily_energy_kwh', 0) * 30 * helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70), # Energy Delivered = Gross * Eff
-                    'total_bill': calc_result.get('total_bill', 0),
-                    'tariff_used': calc_result.get('rate_per_scm', rate)
-                }
-        else:
-            # Consumption (SCM) based
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return jsonify({'error': 'Enter a valid PNG amount.'}), 400
+        input_type = data.get('type', 'bill')
+        if not isinstance(input_type, str) or input_type not in {'bill', 'consumption'}:
+            return jsonify({'error': 'Select a valid PNG input method.'}), 400
+        try:
+            monthly_bill = float(data.get('monthly_bill', 0))
             monthly_scm = float(data.get('monthly_scm', 0))
-            if monthly_scm <= 0:
-                 result = {
-                     'monthly_scm_consumption': 0,
-                     'monthly_energy_delivered': 0,
-                     'total_bill': 0,
-                     'tariff_used': rate
-                }
+            rate = data.get('rate')
+            if rate is None:
+                png_price_data = db_helper.get_png_pricing(district='All', category='Domestic')
+                if not png_price_data:
+                    return jsonify({'error': 'PNG pricing is temporarily unavailable.'}), 503
+                rate = png_price_data['price_per_scm']
+            rate = float(rate)
+        except (TypeError, ValueError, OverflowError):
+            return jsonify({'error': 'Enter a valid PNG amount and price.'}), 400
+        if any(not math.isfinite(value) or value < 0 for value in (monthly_bill, monthly_scm, rate)) or rate == 0:
+            return jsonify({'error': 'Enter a non-negative amount and a price greater than zero.'}), 400
+
+        try:
+            if input_type == 'bill':
+                calc_result = helper.calculate_png_consumption_from_bill(monthly_bill, rate_per_scm=rate)
             else:
                 calc_result = helper.calculate_png_bill_and_consumption(monthly_scm, rate_per_scm=rate)
-                
-                result = {
-                    'monthly_scm_consumption': monthly_scm,
-                    'monthly_energy_delivered': calc_result.get('daily_energy_kwh', 0) * 30 * helper.DEFAULT_EFFICIENCIES.get('PNG', 0.70),
-                    'total_bill': calc_result.get('total_bill', 0),
-                    'tariff_used': rate
-                }
-
+        except ValueError as exc:
+            return jsonify({'error': str(exc)}), 400
+        result = {
+            'monthly_scm_consumption': calc_result['monthly_scm_consumption'],
+            'monthly_energy_delivered': calc_result['monthly_energy_kwh'] * helper.DEFAULT_EFFICIENCIES['PNG'],
+            'total_bill': calc_result['total_bill'],
+            'tariff_used': calc_result['rate_per_scm'],
+        }
+        if any(not math.isfinite(value) for value in result.values()):
+            return jsonify({'error': 'This amount is too large. Check your PNG entries.'}), 400
         return jsonify(result)
         
     except Exception as e:
         logger = get_logger()
         logger.log_error(f"Error in calculate_png: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Unable to calculate PNG consumption. Please try again.'}), 500
 
 # =================================================================
 # ERROR HANDLERS

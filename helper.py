@@ -207,8 +207,8 @@ def calculate_health_impact_from_scenario(kitchen_scenario, cooking_hours, peopl
 # =================================================================
 
 # Database file paths
-REFERENCE_DB = 'cooking_webapp.db'  # Read-only reference/master data
-USER_DB = 'user_data.db'  # Read-write user transactions
+REFERENCE_DB = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cooking_webapp.db')
+USER_DB = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_data.db')
 
 def get_reference_connection():
     """
@@ -240,18 +240,18 @@ def get_user_connection():
                     pass
                 flask.g._database = None
 
-        conn = sqlite3.connect(USER_DB, timeout=10.0)
+        conn = sqlite3.connect(USER_DB, timeout=10.0, uri=True)
         conn.execute("PRAGMA foreign_keys = ON")
         conn.row_factory = sqlite3.Row
-        conn.execute(f"ATTACH DATABASE '{REFERENCE_DB}' AS ref")
+        conn.execute("ATTACH DATABASE ? AS ref", (f'file:{REFERENCE_DB}?mode=ro',))
         flask.g._database = conn
         return conn
     else:
         # Fallback for scripts outside request context
-        conn = sqlite3.connect(USER_DB, timeout=10.0)
+        conn = sqlite3.connect(USER_DB, timeout=10.0, uri=True)
         conn.execute("PRAGMA foreign_keys = ON")
         conn.row_factory = sqlite3.Row
-        conn.execute(f"ATTACH DATABASE '{REFERENCE_DB}' AS ref")
+        conn.execute("ATTACH DATABASE ? AS ref", (f'file:{REFERENCE_DB}?mode=ro',))
         return conn
 
 def get_db_connection():
@@ -657,7 +657,8 @@ def _canonical_fuel_breakdown(energy_data):
     calc_method = fd.get('calculation_method') or energy_data.get('calculation_method') or ''
     fuel_bd = fd.get('fuel_breakdown')
     if not isinstance(fuel_bd, dict) or not fuel_bd:
-        meta = {'type', 'fuels_used', 'calculation_method', 'fuel_breakdown', 'selected_dishes'}
+        meta = {'type', 'fuels_used', 'calculation_method', 'fuel_breakdown', 'selected_dishes',
+                'meal_types', 'meal_breakdown', 'input_snapshot'}
         fuel_bd = {k: v for k, v in fd.items() if k not in meta and isinstance(v, dict)}
     fuels_used = fd.get('fuels_used') or list(fuel_bd.keys())
     # Infer the method from structure when it isn't set yet (the internal save can run
@@ -675,20 +676,22 @@ def _normalize_selected_dishes(selected_dishes):
         if not isinstance(d, dict):
             continue
         normalized.append({
+            **d,
             'meal_category': d.get('meal_category') or d.get('Category') or d.get('category') or '',
             'dish_name': d.get('dish_name') or d.get('Dishes') or d.get('dish') or d.get('name') or '',
             'fuel_used': d.get('fuel_used') or d.get('stoves') or d.get('fuel') or '',
-            'servings': d.get('servings') or d.get('portions_per_meal') or d.get('portions'),
+            'servings': d.get('servings', d.get('portions_per_meal', d.get('portions'))),
+            'portions_per_meal': d.get('portions_per_meal', d.get('servings', d.get('portions'))),
             'frequency_per_week': d.get('frequency_per_week'),
             'calories_per_portion': d.get('calories_per_portion'),
-            'energy_per_serving_kwh': d.get('energy_per_serving_kwh') or d.get('energy_kwh'),
+            'energy_per_serving_kwh': d.get('energy_per_serving_kwh', d.get('energy_kwh')),
         })
     return normalized
 
 
-def save_household_data(household_data):
-    """Save household data to database and return household_id"""
-    household_id = str(uuid.uuid4())
+def save_household_data(household_data, household_id=None):
+    """Create a profile or update the current journey without changing its identity."""
+    household_id = household_id or str(uuid.uuid4())
     conn = get_user_connection()  # Use user database connection
     try:
         cursor = conn.cursor()
@@ -700,6 +703,15 @@ def save_household_data(household_data):
                 electricity_tariff, loan_interest_rate, loan_tenure, main_priority,
                 calculation_method, current_fuels, consent_given, solar_willingness, solar_rooftop_area
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(household_id) DO UPDATE SET
+                name=excluded.name, email=excluded.email, phone=excluded.phone,
+                country_code=excluded.country_code, district=excluded.district,
+                area_type=excluded.area_type, household_size=excluded.household_size,
+                monthly_income=excluded.monthly_income, ration_card=excluded.ration_card,
+                lpg_subsidy=excluded.lpg_subsidy, electricity_tariff=excluded.electricity_tariff,
+                loan_interest_rate=excluded.loan_interest_rate, loan_tenure=excluded.loan_tenure,
+                main_priority=excluded.main_priority, consent_given=excluded.consent_given,
+                solar_willingness=excluded.solar_willingness, solar_rooftop_area=excluded.solar_rooftop_area
         ''', (
             household_id,
             datetime.datetime.now().date(),
@@ -732,8 +744,8 @@ def save_household_data(household_data):
         close_user_connection(conn)
     return household_id
 
-def save_cooking_analysis(household_id, kitchen_data, energy_data):
-    """Save cooking analysis data to database"""
+def save_cooking_analysis(household_id, kitchen_data, energy_data, input_snapshot=None):
+    """Save one complete current calculation, with optional reproducible input metadata."""
     conn = get_user_connection()  # Use user database connection
     try:
         cursor = conn.cursor()
@@ -744,8 +756,10 @@ def save_cooking_analysis(household_id, kitchen_data, energy_data):
             # Household doesn't exist - skip saving analysis
             return
 
-        fuel_details = energy_data.get('fuel_details', {}) or {}
-        calc_method, _fuel_bd, fuels_used = _canonical_fuel_breakdown(energy_data)
+        fuel_details = dict(energy_data.get('fuel_details', {}) or {})
+        if input_snapshot is not None:
+            fuel_details['input_snapshot'] = input_snapshot
+        calc_method, fuel_bd, fuels_used = _canonical_fuel_breakdown(energy_data)
         kitchen_scenario = kitchen_data.get('kitchen_type', kitchen_data.get('kitchen_scenario', ''))
 
         # Upsert: one current analysis per household (UNIQUE(household_id) enables this).
@@ -791,24 +805,17 @@ def save_cooking_analysis(household_id, kitchen_data, energy_data):
             household_id
         ))
 
+        # The summary and its detailed selections describe one calculation. Commit
+        # them together so a failed detail write cannot leave a partial result.
+        save_fuel_selections(household_id, fuel_bd, is_residential=True, conn=conn)
+        save_dish_selections(household_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')),
+                             is_residential=True, conn=conn)
         conn.commit()
     except Exception:
         conn.rollback()
         raise
     finally:
         close_user_connection(conn)
-
-    # Persist the normalized fuel & dish selections (source of truth, best-effort).
-    try:
-        fuel_details = energy_data.get('fuel_details', {}) or {}
-        _cm, fuel_bd, _fu = _canonical_fuel_breakdown(energy_data)
-        save_fuel_selections(household_id, fuel_bd, is_residential=True)
-        save_dish_selections(household_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')), is_residential=True)
-    except Exception as e:
-        try:
-            get_logger().log_error(f"Error saving residential selections: {e}")
-        except Exception:
-            pass
 
     # Log this analysis to history
     log_user_history(household_id, 'residential_analysis', f"Calculated energy: {energy_data.get('monthly_energy_kwh', 0)} kWh")
@@ -1043,9 +1050,9 @@ def get_recommendations(household_id):
     finally:
         close_user_connection(conn)
 
-def save_institution_data(institution_data):
-    """Save commercial institution data to database and return institution_id"""
-    institution_id = str(uuid.uuid4())
+def save_institution_data(institution_data, institution_id=None):
+    """Create or update the current institution profile while preserving its identity."""
+    institution_id = institution_id or str(uuid.uuid4())
     conn = get_user_connection()  # Use user database connection
     try:
         cursor = conn.cursor()
@@ -1058,6 +1065,14 @@ def save_institution_data(institution_data):
                 solar_willing, roof_area_available, budget_preference,
                 kitchen_type, ventilation_quality, cooking_hours_daily, staff_exposed
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(institution_id) DO UPDATE SET
+                institution_name=excluded.institution_name, institution_type=excluded.institution_type,
+                contact_person=excluded.contact_person, email=excluded.email, phone=excluded.phone,
+                country_code=excluded.country_code, district=excluded.district, area_type=excluded.area_type,
+                address=excluded.address, servings_per_day=excluded.servings_per_day,
+                working_days=excluded.working_days, electricity_tariff=excluded.electricity_tariff,
+                solar_willing=excluded.solar_willing, roof_area_available=excluded.roof_area_available,
+                budget_preference=excluded.budget_preference
         ''', (
             institution_id,
             datetime.datetime.now().date(),
@@ -1082,6 +1097,8 @@ def save_institution_data(institution_data):
             institution_data.get('staff_exposed')
         ))
 
+        cursor.execute('UPDATE commercial_institutions SET available_roof_area = ? WHERE institution_id = ?',
+                       (institution_data.get('available_roof_area'), institution_id))
         conn.commit()
     except Exception:
         conn.rollback()
@@ -1090,10 +1107,13 @@ def save_institution_data(institution_data):
         close_user_connection(conn)
     return institution_id
 
-def save_commercial_analysis(institution_id, result):
+def save_commercial_analysis(institution_id, result, kitchen_data=None, input_snapshot=None):
     """Save commercial analysis results (single upsert path for dish- and consumption-based)."""
     conn = get_db_connection()
-    fuel_details = result.get('fuel_details', {}) or {}
+    fuel_details = dict(result.get('fuel_details', {}) or {})
+    if input_snapshot is not None:
+        fuel_details['input_snapshot'] = input_snapshot
+    calc_method, fuel_bd, fuels_used = _canonical_fuel_breakdown(result)
     try:
         cursor = conn.cursor()
 
@@ -1104,7 +1124,7 @@ def save_commercial_analysis(institution_id, result):
 
         primary_fuel = fuel_details.get('type')
         if not primary_fuel:
-            fuels_list = fuel_details.get('fuels_used', []) or []
+            fuels_list = fuels_used
             primary_fuel = 'Multiple' if len(fuels_list) > 1 else (fuels_list[0] if fuels_list else 'Unknown')
 
         # Upsert: one current analysis per institution (UNIQUE(institution_id)).
@@ -1129,13 +1149,25 @@ def save_commercial_analysis(institution_id, result):
             _money(result.get('monthly_energy_kwh', 0)),
             _money(result.get('monthly_cost', 0)),
             _money(result.get('annual_emissions', 0) or result.get('annual_co2_kg', 0)),
-            fuel_details.get('calculation_method', ''),
+            calc_method,
             json.dumps(fuel_details),
             primary_fuel,
             _money(result.get('health_risk_score', 0)),
             result.get('environmental_grade', 'C')
         ))
 
+        if kitchen_data is not None:
+            kitchen_scenario = kitchen_data.get('kitchen_scenario') or kitchen_data.get('kitchen_type', '')
+            cursor.execute('''
+                UPDATE commercial_institutions SET
+                    kitchen_scenario=?, kitchen_type=?, ventilation_quality=?,
+                    cooking_hours_daily=?, staff_exposed=?
+                WHERE institution_id=?
+            ''', (kitchen_scenario, kitchen_scenario, kitchen_data.get('ventilation_quality', 'Average'),
+                  kitchen_data.get('cooking_hours_daily'), kitchen_data.get('staff_exposed'), institution_id))
+        save_fuel_selections(institution_id, fuel_bd, is_residential=False, conn=conn)
+        save_dish_selections(institution_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')),
+                             is_residential=False, conn=conn)
         conn.commit()
     except Exception:
         conn.rollback()
@@ -1143,20 +1175,9 @@ def save_commercial_analysis(institution_id, result):
     finally:
         close_user_connection(conn)
 
-    # Persist normalized commercial fuel & dish selections (source of truth, best-effort).
-    try:
-        _cm, _fuel_bd, _fu = _canonical_fuel_breakdown(result)
-        save_fuel_selections(institution_id, _fuel_bd, is_residential=False)
-        save_dish_selections(institution_id, _normalize_selected_dishes(fuel_details.get('selected_dishes')), is_residential=False)
-    except Exception as e:
-        try:
-            get_logger().log_error(f"Error saving commercial selections: {e}")
-        except Exception:
-            pass
-
 # New helper functions for saving detailed selections
 
-def save_dish_selections(entity_id, dishes, is_residential=True):
+def save_dish_selections(entity_id, dishes, is_residential=True, conn=None):
     """
     Save detailed dish selections to database
     
@@ -1165,7 +1186,8 @@ def save_dish_selections(entity_id, dishes, is_residential=True):
         dishes: List of dicts with dish details
         is_residential: True for households, False for institutions
     """
-    conn = get_user_connection()
+    owns_transaction = conn is None
+    conn = conn if conn is not None else get_user_connection()
     try:
         cursor = conn.cursor()
 
@@ -1187,11 +1209,11 @@ def save_dish_selections(entity_id, dishes, is_residential=True):
                     entity_id,
                     dish.get('meal_category', ''),
                     dish.get('dish_name', ''),
-                    dish.get('frequency_per_week', 0),
-                    dish.get('portions_per_meal', 1),
-                    dish.get('calories_per_portion', 0),
-                    dish.get('water_content_percentage', 0),
-                    _money(dish.get('energy_per_serving_kwh', 0))
+                    dish.get('frequency_per_week'),
+                    dish.get('portions_per_meal'),
+                    dish.get('calories_per_portion'),
+                    dish.get('water_content_percentage'),
+                    round(float(dish['energy_per_serving_kwh']), 4) if dish.get('energy_per_serving_kwh') is not None else None
                 ))
             else:  # Commercial
                 cursor.execute('''
@@ -1207,15 +1229,21 @@ def save_dish_selections(entity_id, dishes, is_residential=True):
                     dish.get('fuel_used', ''),
                     dish.get('quantity_kg'),
                     dish.get('servings'),
-                    _money(dish.get('energy_per_serving_kwh', dish.get('energy_kwh', 0))),
-                    _money(dish.get('cost', 0))
+                    dish.get('energy_kwh', dish.get('energy_per_serving_kwh')),
+                    _money(dish['cost']) if dish.get('cost') is not None else None
                 ))
 
-        conn.commit()
+        if owns_transaction:
+            conn.commit()
+    except Exception:
+        if owns_transaction:
+            conn.rollback()
+        raise
     finally:
-        close_user_connection(conn)
+        if owns_transaction:
+            close_user_connection(conn)
 
-def save_fuel_selections(entity_id, fuels, is_residential=True):
+def save_fuel_selections(entity_id, fuels, is_residential=True, conn=None):
     """
     Save detailed fuel selections to database
     
@@ -1224,7 +1252,8 @@ def save_fuel_selections(entity_id, fuels, is_residential=True):
         fuels: Dict or list of fuel details
         is_residential: True for households, False for institutions
     """
-    conn = get_user_connection()
+    owns_transaction = conn is None
+    conn = conn if conn is not None else get_user_connection()
     try:
         cursor = conn.cursor()
 
@@ -1246,7 +1275,19 @@ def save_fuel_selections(entity_id, fuels, is_residential=True):
         else:
             fuel_list = fuels or []
         
+        total_delivered = sum(float(fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0)) or 0)
+                              for fuel in fuel_list)
         for fuel in fuel_list:
+            delivered = fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0))
+            percentage = fuel.get('percentage_usage', fuel.get('percentage'))
+            if percentage is None:
+                percentage = float(delivered or 0) / total_delivered * 100 if total_delivered else 0
+            monthly_emissions = fuel.get('monthly_emissions_kg', fuel.get('monthly_co2_kg'))
+            if monthly_emissions is None:
+                annual_emissions = fuel.get('annual_emissions', fuel.get('annual_co2_kg', fuel.get('annual_emissions_kg')))
+                # Average calendar month, consistent with the stored annual total.
+                monthly_emissions = float(annual_emissions) / 12 if annual_emissions is not None else None
+            quantity = fuel.get('monthly_quantity', fuel.get('quantity'))
             if is_residential:
                 cursor.execute('''
                     INSERT INTO residential_fuel_selections (
@@ -1257,12 +1298,12 @@ def save_fuel_selections(entity_id, fuels, is_residential=True):
                 ''', (
                     entity_id,
                     fuel.get('fuel_type', fuel.get('type', 'Unknown')),
-                    fuel.get('percentage_usage', fuel.get('percentage', 0)),
-                    _money(fuel.get('monthly_quantity', fuel.get('quantity', 0))),
+                    _money(percentage),
+                    _money(quantity) if quantity is not None else None,
                     fuel.get('quantity_unit', fuel.get('unit', '')),
                     _money(fuel.get('monthly_cost', 0)),
-                    _money(fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0))),
-                    _money(fuel.get('monthly_emissions_kg', 0)),
+                    _money(delivered),
+                    _money(monthly_emissions) if monthly_emissions is not None else None,
                     fuel.get('is_current_fuel', 1)
                 ))
             else:  # Commercial
@@ -1275,18 +1316,24 @@ def save_fuel_selections(entity_id, fuels, is_residential=True):
                 ''', (
                     entity_id,
                     fuel.get('fuel_type', fuel.get('type', 'Unknown')),
-                    fuel.get('percentage_usage', fuel.get('percentage', 0)),
-                    _money(fuel.get('monthly_quantity', fuel.get('quantity', 0))),
+                    _money(percentage),
+                    _money(quantity) if quantity is not None else None,
                     fuel.get('quantity_unit', fuel.get('unit', '')),
                     _money(fuel.get('monthly_cost', 0)),
-                    _money(fuel.get('energy_delivered_kwh', fuel.get('energy_delivered', 0))),
-                    _money(fuel.get('monthly_emissions_kg', 0)),
+                    _money(delivered),
+                    _money(monthly_emissions) if monthly_emissions is not None else None,
                     fuel.get('is_current_fuel', 1)
                 ))
         
-        conn.commit()
+        if owns_transaction:
+            conn.commit()
+    except Exception:
+        if owns_transaction:
+            conn.rollback()
+        raise
     finally:
-        close_user_connection(conn)
+        if owns_transaction:
+            close_user_connection(conn)
 
 def save_alternative_recommendations(entity_id, entity_type, alternatives):
     """
@@ -1536,45 +1583,17 @@ def calculate_png_consumption_from_bill(total_bill_amount, rate_per_scm=None, di
 
     logger.log_input("PNG Rate Used", f"₹{rate_per_scm:.2f}/SCM")
 
-    def bill_for_consumption(scm):
-        if scm <= 0:
-            return 0
-        result = calculate_png_bill_and_consumption(scm, rate_per_scm=rate_per_scm)
-        return result['total_bill']
-    
-    # Binary search for consumption that matches the bill.
-    # Upper bound: estimate from bill ÷ rate (no fixed charges) × 2 safety factor.
-    # Min 200 SCM so residential bills always fit; no hard cap for large commercial bills.
-    estimated_max = int(total_bill_amount / max(rate_per_scm, 0.01)) + 200
-    low, high = 0.0, max(200.0, float(estimated_max))
-    tolerance = 1  # ±1 rupee tolerance
-    logger.log_step(f"Binary search bounds set: low={low} SCM, high={high} SCM, tolerance=₹{tolerance}")
-    
-    while high - low > 0.1:  # 0.1 SCM precision
-        mid = (low + high) / 2
-        calculated_bill = bill_for_consumption(mid)
-        logger.log_calculation(
-            "PNG Bill Solver Iteration",
-            "binary search mid → bill",
-            {"mid_scm": round(mid, 3), "low": round(low, 3), "high": round(high, 3)},
-            f"Calculated bill: ₹{calculated_bill:.2f}"
-        )
-        
-        if abs(calculated_bill - total_bill_amount) <= tolerance:
-            result = calculate_png_bill_and_consumption(mid, rate_per_scm=rate_per_scm)
-            logger.log_success(f"Match found within tolerance at {mid:.3f} SCM")
-            logger.log_data("Resolved PNG Bill Result", result)
-            return result
-        elif calculated_bill < total_bill_amount:
-            low = mid
-        else:
-            high = mid
-    
-    # Return the closest match
-    final_consumption = (low + high) / 2
-    result = calculate_png_bill_and_consumption(final_consumption, rate_per_scm=rate_per_scm)
-    logger.log_warning(f"No exact match within tolerance; using closest SCM {final_consumption:.3f}")
-    logger.log_data("Closest PNG Bill Result", result)
+    # This tariff is linear: invert the same variable and fixed charges exactly.
+    # A search tolerance previously invented fuel use for a zero bill.
+    fixed_charges = calculate_png_bill_and_consumption(0, rate_per_scm)['fixed_charges']
+    if not math.isfinite(rate_per_scm) or rate_per_scm <= 0:
+        raise ValueError("Enter PNG consumption in SCM when the unit price is zero; a bill cannot determine consumption.")
+    total_bill_amount = float(total_bill_amount)
+    if not math.isfinite(total_bill_amount) or total_bill_amount < fixed_charges:
+        raise ValueError("The PNG bill must cover the monthly fixed and meter charges.")
+    monthly_scm = (total_bill_amount - fixed_charges) / rate_per_scm
+    result = calculate_png_bill_and_consumption(monthly_scm, rate_per_scm=rate_per_scm)
+    logger.log_data("Resolved PNG Bill Result", result)
     return result
 
 
@@ -1799,7 +1818,7 @@ def calculate_solar_system_sizing(daily_energy_kwh, roof_area):
     return system_capacity, required_capacity
 
 def calculate_emi(principal, annual_rate, tenure_years):
-    if principal <= 0 or annual_rate <= 0 or tenure_years <= 0:
+    if principal <= 0 or annual_rate < 0 or tenure_years <= 0:
         return 0
 
     monthly_rate = annual_rate / 12
@@ -1899,7 +1918,7 @@ def calculate_bess_sizing(breakfast_energy, dinner_energy, breakfast_timing='lat
     }
 
 def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_energy, snacks_energy,
-                                     breakfast_timing, roof_area, category='Domestic'):
+                                     breakfast_timing, roof_area, category='Domestic', working_days=30):
     """
     Calculate solar + BESS system sizing based on SUPPLY CONSTRAINTS.
     Logic:
@@ -1917,10 +1936,11 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
         dict with complete system specs
     """
     # --- 1. Determine Loads (Daily) ---
-    daily_breakfast = breakfast_energy / 30
-    daily_lunch = lunch_energy / 30
-    daily_dinner = dinner_energy / 30
-    daily_snacks = snacks_energy / 30
+    monthly_factor = float(working_days) if working_days else 30.0
+    daily_breakfast = breakfast_energy / monthly_factor
+    daily_lunch = lunch_energy / monthly_factor
+    daily_dinner = dinner_energy / monthly_factor
+    daily_snacks = snacks_energy / monthly_factor
 
     # Classify loads
     daytime_load = daily_lunch + daily_snacks
@@ -1934,8 +1954,10 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
     total_daily_load = daytime_load + evening_load
 
     # --- 2. Determine Solar Potential ---
-    # Max capacity allowed by roof (approx 8m² per kW)
-    max_solar_kw = roof_area / 8
+    # Hardware is sized in whole kW; round down before balancing the load so
+    # generation and costs never assume panels that exceed the available roof.
+    area_per_kw = db_helper.get_system_parameter('SOLAR_AREA_PER_KW', 8)
+    max_solar_kw = max(0, math.floor(roof_area / area_per_kw))
     
     # Generation factors
     daily_gen_per_kw = Keralam_SOLAR_GHI * SOLAR_SYSTEM_EFF * Keralam_WEATHER_FACTOR
@@ -1980,13 +2002,7 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
     
     calculated_solar_kw = required_gen_with_buffer / daily_gen_per_kw
     calculated_solar_kw = math.ceil(calculated_solar_kw)
-    # Cap at max roof capacity and round DOWN to whole number
-    calculated_solar_capped = min(calculated_solar_kw, max_solar_kw)
-    final_solar_kw = math.ceil(calculated_solar_capped)
-    
-    # Ensure minimum 1kW if roof space is available (no constraint case)
-    if final_solar_kw == 0 and max_solar_kw >= 1 and calculated_solar_capped > 0:
-        final_solar_kw = 1
+    final_solar_kw = min(calculated_solar_kw, max_solar_kw)
     
     # Recalculate actual generation matches
     # If we hit the roof cap, we implied `excess_solar` limits above, so `bess_output_daily` is already correct.
@@ -1994,12 +2010,13 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
     
     # Battery Size:
     # Calculate hardware needed to deliver `bess_output_daily`
-    if bess_output_daily > 0.1: # Minimum viable
+    if bess_output_daily > 0:
         # Reuse helper logic but manually
         bess_capacity_raw = bess_output_daily / BATTERY_COMBINED_FACTOR
         # Round UP battery capacity to whole kWh
         bess_capacity_required = math.ceil(bess_capacity_raw)
         battery_units = math.ceil(bess_capacity_required / BATTERY_CAPACITY_PER_UNIT)
+        bess_capacity_required = battery_units * BATTERY_CAPACITY_PER_UNIT
         battery_cost = battery_units * BATTERY_COST_PER_KWH
         daily_bess_energy = bess_output_daily
     else:
@@ -2023,6 +2040,8 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
         
         Commercial: No subsidies applied
         """
+        if final_solar_kw <= 0:
+            return 0
         gross_cost = final_solar_kw * capital_cost_per_kw + installation_cost
         
         if not is_domestic:
@@ -2040,7 +2059,7 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
             # ₹78k max cap
             solar_cost = gross_cost - 78000
         
-        return solar_cost
+        return max(0, solar_cost)
     
     # Determine if domestic or commercial for subsidy calculation
     is_domestic = (category == 'Domestic')
@@ -2052,14 +2071,17 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
     total_grid_backup_daily = daytime_grid_needed + evening_grid_needed
     grid_backup_percent = (total_grid_backup_daily / total_daily_load * 100) if total_daily_load > 0 else 0
     
+    # Allocate only the energy actually supplied, including partial roof coverage.
+    daytime_coverage = daytime_solar_supplied / daytime_load if daytime_load > 0 else 0
+    evening_coverage = daily_bess_energy / evening_load if evening_load > 0 else 0
     # Build BESS Specs dict for display consistency
     bess_specs = {
         'daily_bess_energy': daily_bess_energy,
         'bess_capacity_required': bess_capacity_required,
         'battery_units': battery_units,
         'battery_cost': battery_cost,
-        'breakfast_from_bess': daily_breakfast * 30 if (breakfast_timing == 'early' and daily_bess_energy >= (daily_breakfast + daily_dinner)) else 0, # Simplified
-        'dinner_from_bess': daily_dinner * 30 if daily_bess_energy > 0 else 0
+        'breakfast_from_bess': breakfast_energy * evening_coverage if breakfast_timing == 'early' else 0,
+        'dinner_from_bess': dinner_energy * evening_coverage
     }
     
     logger = get_logger()
@@ -2092,10 +2114,10 @@ def calculate_solar_with_bess_sizing(breakfast_energy, lunch_energy, dinner_ener
         'daily_battery_charging': (bess_output_daily / CHARGING_EFFICIENCY if bess_output_daily > 0 else 0),
         'bess_specs': bess_specs,
         'energy_breakdown': {
-            'breakfast_from_solar': (daily_breakfast * 30) if breakfast_timing != 'early' else 0,
+            'breakfast_from_solar': breakfast_energy * daytime_coverage if breakfast_timing != 'early' else 0,
             'breakfast_from_bess': bess_specs['breakfast_from_bess'],
-            'lunch_from_solar': daily_lunch * 30,
-            'snacks_from_solar': daily_snacks * 30,
+            'lunch_from_solar': lunch_energy * daytime_coverage,
+            'snacks_from_solar': snacks_energy * daytime_coverage,
             'dinner_from_bess': bess_specs['dinner_from_bess']
         },
         'grid_backup': {
@@ -2466,22 +2488,46 @@ def calculate_alternatives(energy_data, household_data, kitchen_data):
 
     return alternatives
 
-def _get_cost_per_kwh_from_energy_data(fuel, energy_data):
+def _get_cost_per_kwh_from_energy_data(fuel, energy_data, exclude_fixed_charges=False):
     """Extract a cost_per_kwh for the given fuel from current energy data if available"""
     if not energy_data:
         return None
 
     fuel_details = energy_data.get('fuel_details', {})
-    breakdown = fuel_details.get('fuel_breakdown') if isinstance(fuel_details, dict) else None
+    breakdown = fuel_details.get('fuel_breakdown', fuel_details) if isinstance(fuel_details, dict) else None
 
     if not breakdown or fuel not in breakdown or not isinstance(breakdown[fuel], dict):
         return None
 
     details = breakdown[fuel]
 
+    if fuel == 'PNG' and exclude_fixed_charges:
+        # Reuse the entered variable tariff, not the current bill's average
+        # price: fixed charges must not grow when replacing another fuel.
+        rate_per_scm = details.get('rate_per_scm')
+        if rate_per_scm is None:
+            rate_per_scm = details.get('bill_breakdown', {}).get('consumption_charge', {}).get('rate')
+        if rate_per_scm is not None:
+            return float(rate_per_scm) / PNG_CALORIFIC_VALUE
+
+        current_input_energy = details.get('energy_required')
+        if current_input_energy is None:
+            efficiency = details.get('efficiency', DEFAULT_EFFICIENCIES.get('PNG', 0.70))
+            if efficiency > 1:
+                efficiency /= 100.0
+            current_input_energy = details.get('energy_delivered', 0) / efficiency if efficiency > 0 else 0
+        if current_input_energy > 0:
+            current_bill = details.get('monthly_cost')
+            if current_bill is None and details.get('cost_per_kwh') is not None:
+                current_bill = current_input_energy * details['cost_per_kwh']
+            if current_bill is not None:
+                fixed_charges = calculate_png_bill_and_consumption(0, 0)['fixed_charges']
+                return max(0, current_bill - fixed_charges) / current_input_energy
+        return None
+
     # Prefer explicit cost_per_kwh
     cost_per_kwh = details.get('cost_per_kwh')
-    if cost_per_kwh and cost_per_kwh > 0:
+    if cost_per_kwh is not None and cost_per_kwh >= 0:
         return cost_per_kwh
 
     # Derive from monthly_cost and energy requirement/delivery if present
@@ -2493,7 +2539,11 @@ def _get_cost_per_kwh_from_energy_data(fuel, energy_data):
         if energy_required and energy_required > 0:
             return monthly_cost / energy_required
         if energy_delivered and energy_delivered > 0:
-            return monthly_cost / energy_delivered
+            efficiency = details.get('efficiency', DEFAULT_EFFICIENCIES.get(fuel, 0.60))
+            if efficiency > 1:
+                efficiency /= 100.0
+            # Prices are per input kWh, while energy_delivered is useful heat.
+            return monthly_cost * efficiency / energy_delivered
 
     return None
 
@@ -2511,7 +2561,7 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
     energy_required = monthly_energy_kwh / efficiency if efficiency > 0 else monthly_energy_kwh
 
     # Try to reuse the pricing from the current setup
-    cost_per_kwh = _get_cost_per_kwh_from_energy_data(fuel, energy_data)
+    cost_per_kwh = _get_cost_per_kwh_from_energy_data(fuel, energy_data, exclude_fixed_charges=(fuel == 'PNG'))
 
     # Grid/LPG/PNG: compute cost directly with commercial pricing
     if fuel in ('Grid electricity', 'LPG', 'PNG'):
@@ -2544,13 +2594,20 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
                     institution_data=institution_data,
                     kitchen_data=kitchen_data
                 )
-                cost_per_kwh, source = cost_calculator.get_cost_per_kwh('PNG', energy_required=energy_required)
+                # The scenario adds monthly fixed charges once below.
+                cost_per_kwh, source = cost_calculator.get_cost_per_kwh('PNG')
                 
 
 
 
 
         monthly_cost = energy_required * cost_per_kwh
+        if fuel == 'PNG':
+            png_bill = calculate_png_bill_and_consumption(
+                energy_required / PNG_CALORIFIC_VALUE, cost_per_kwh * PNG_CALORIFIC_VALUE
+            )
+            monthly_cost = png_bill['total_bill']
+            cost_per_kwh = png_bill['cost_per_kwh']
 
         # ✅ Calculate CO2 using centralized function with institution_data
         daily_energy = energy_required / monthly_factor
@@ -2657,7 +2714,7 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
         district = institution_data.get('district', 'Thiruvananthapuram')
         # Get biomass cost: session custom > DB > fallback
         _custom = institution_data.get('custom_fuel_prices', {})
-        if _custom.get('Biomass_unit_price'):
+        if _custom.get('Biomass_unit_price') is not None:
             biomass_cost_per_kg = float(_custom['Biomass_unit_price'])
         else:
             biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
@@ -2729,7 +2786,7 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
         if 'roof_area_available' not in kitchen_data and 'available_roof_area' in institution_data:
              kitchen_data['roof_area_available'] = institution_data['available_roof_area']
 
-        result = calculate_fuel_scenario(fuel, monthly_energy_kwh, commercial_household, kitchen_data, energy_data)
+        result = calculate_fuel_scenario(fuel, monthly_energy_kwh, commercial_household, kitchen_data, energy_data, category='Commercial')
         
         # Override tariff for backup cost if needed? 
         # Actually calculate_fuel_scenario uses household_data['electricity_tariff'], which we just set.
@@ -2743,7 +2800,7 @@ def calculate_commercial_fuel_scenario(fuel, monthly_energy_kwh, institution_dat
         db_helper.get_system_parameter('ELECTRICITY_COMMERCIAL_RATE', 9.5)
     )
 
-    return calculate_fuel_scenario(fuel, monthly_energy_kwh, commercial_household, kitchen_data, energy_data)
+    return calculate_fuel_scenario(fuel, monthly_energy_kwh, commercial_household, kitchen_data, energy_data, category='Commercial')
 
 def calculate_commercial_alternatives(energy_data, institution_data, kitchen_data):
     """Commercial variant of alternatives using commercial tariffs and current fuel pricing"""
@@ -2774,7 +2831,7 @@ def calculate_commercial_alternatives(energy_data, institution_data, kitchen_dat
 
 
 
-def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_data, energy_data=None):
+def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_data, energy_data=None, category='Domestic'):
     """Calculate comprehensive metrics for a specific fuel"""
     logger = get_logger()
     logger.log_subsection(f"FUEL SCENARIO: {fuel}")
@@ -2788,7 +2845,9 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
     })
     efficiency = DEFAULT_EFFICIENCIES.get(fuel, 0.60)
     fuel_energy_required = monthly_energy_kwh / efficiency
-    daily_fuel_energy = fuel_energy_required / 30
+    emission_context = household_data if category == 'Commercial' else None
+    monthly_factor = float(household_data.get('working_days') or 30) if category == 'Commercial' else 30.0
+    daily_fuel_energy = fuel_energy_required / monthly_factor
     biogas_costs = None
     logger.log_data("Baseline", {
         "efficiency": efficiency,
@@ -2804,7 +2863,7 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         # Try to get cost_per_kwh from current energy_data (for consistency)
         cost_per_kwh = _get_cost_per_kwh_from_energy_data('Grid electricity', energy_data)
         
-        if cost_per_kwh and cost_per_kwh > 0:
+        if cost_per_kwh is not None and cost_per_kwh >= 0:
             # Use cost_per_kwh for consistency with current usage
             monthly_cost = fuel_energy_required * cost_per_kwh
         else:
@@ -2835,7 +2894,9 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
             dinner_energy=dinner_energy,
             snacks_energy=snacks_energy,
             breakfast_timing=breakfast_timing,
-            roof_area=kitchen_data.get('roof_area_available', 50)
+            roof_area=kitchen_data.get('roof_area_available', 50),
+            category=category,
+            working_days=monthly_factor
         )
 
         capital_cost = bess_system['total_capital_cost']
@@ -2861,7 +2922,7 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         # Grid Backup Cost
         grid_backup = bess_system.get('grid_backup', {})
         grid_backup_kwh_daily = grid_backup.get('needed_kwh_daily', 0)
-        grid_backup_cost_monthly = grid_backup_kwh_daily * 30 * household_data.get('electricity_tariff', 6.5)
+        grid_backup_cost_monthly = grid_backup_kwh_daily * monthly_factor * household_data.get('electricity_tariff', 6.5)
 
         # Total Monthly Cost
         monthly_cost = hardware_monthly_cost + grid_backup_cost_monthly
@@ -2873,7 +2934,7 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         grid_emission_factor = float(_cef_s['Grid_emission_factor']) if _cef_s.get('Grid_emission_factor') is not None else EMISSION_FACTORS.get('Grid electricity', 0.65)
         # BESS losses are already accounted for in the input monthly_electricity_kwh (via efficiency)
         # but emissions strictly come from the grid portion
-        annual_backup_emissions = grid_backup_kwh_daily * 365 * grid_emission_factor
+        annual_backup_emissions = calculate_co2_emissions(grid_backup_kwh_daily, grid_emission_factor, emission_context)
         
         # Base solar emissions (manufacturing etc - optional, usually considered 0 for direct op)
         # But we can add a small factor if needed. For now, assuming 0 operational emissions for solar part.
@@ -2912,7 +2973,7 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         # Try to get cost_per_kwh from current energy_data (for consistency)
         cost_per_kwh = _get_cost_per_kwh_from_energy_data('LPG', energy_data)
         
-        if cost_per_kwh and cost_per_kwh > 0:
+        if cost_per_kwh is not None and cost_per_kwh >= 0:
             # Use cost_per_kwh for consistency with current usage
             monthly_cost = fuel_energy_required * cost_per_kwh
             cylinder_price = cost_per_kwh * LPG_ENERGY_PER_CYLINDER  # For logging
@@ -2941,21 +3002,24 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         monthly_scm = fuel_energy_required / PNG_CALORIFIC_VALUE
         
         # Try to get cost_per_kwh from current energy_data (for consistency)
-        cost_per_kwh = _get_cost_per_kwh_from_energy_data('PNG', energy_data)
+        cost_per_kwh = _get_cost_per_kwh_from_energy_data('PNG', energy_data, exclude_fixed_charges=True)
         
-        if cost_per_kwh and cost_per_kwh > 0:
-            # Use cost_per_kwh for consistency with current usage
-            monthly_cost = fuel_energy_required * cost_per_kwh
+        if cost_per_kwh is not None and cost_per_kwh >= 0:
+            # Scale only the variable fuel price; add fixed and meter charges once.
+            png_bill = calculate_png_bill_and_consumption(monthly_scm, cost_per_kwh * PNG_CALORIFIC_VALUE)
+            monthly_cost = png_bill['total_bill']
+            cost_per_kwh = png_bill['cost_per_kwh']
         else:
-            # Fallback: session custom > database rate (variable cost only, no fixed charges)
+            # Fallback: session custom > database rate, using the same fixed charges.
             _custom = household_data.get('custom_fuel_prices', {})
             if _custom.get('PNG_unit_price'):
                 png_rate = float(_custom['PNG_unit_price'])
             else:
                 png_price_data = db_helper.get_png_pricing(household_data.get('district', 'All'), 'Domestic')
                 png_rate = float(png_price_data['price_per_scm']) if png_price_data else db_helper.get_system_parameter('PNG_DOMESTIC_RATE', 54.0)
-            monthly_cost = monthly_scm * png_rate
-            cost_per_kwh = png_rate / PNG_CALORIFIC_VALUE
+            png_bill = calculate_png_bill_and_consumption(monthly_scm, png_rate)
+            monthly_cost = png_bill['total_bill']
+            cost_per_kwh = png_bill['cost_per_kwh']
             
         capital_cost = 0  # PNG stove cost
         logger.log_data("PNG Calculation", {
@@ -2967,7 +3031,7 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         biomass_energy_content = db_helper.get_system_parameter('BIOMASS_ENERGY_CONTENT', 4.5)
         # Get biomass cost: session custom > system parameter
         _custom = household_data.get('custom_fuel_prices', {})
-        if _custom.get('Biomass_unit_price'):
+        if _custom.get('Biomass_unit_price') is not None:
             biomass_cost_per_kg = float(_custom['Biomass_unit_price'])
         else:
             biomass_cost_per_kg = db_helper.get_system_parameter('BIOMASS_DEFAULT_COST', 5.0)
@@ -2987,7 +3051,8 @@ def calculate_fuel_scenario(fuel, monthly_energy_kwh, household_data, kitchen_da
         emission_factor = float(_cef_h['Grid_emission_factor']) if _cef_h.get('Grid_emission_factor') is not None else EMISSION_FACTORS.get('Grid electricity', 0.65)
     else:
         emission_factor = EMISSION_FACTORS.get(fuel, 0.5)
-    annual_co2 = calculate_co2_emissions(daily_fuel_energy, emission_factor)
+    annual_co2 = (annual_backup_emissions if fuel == 'Solar + BESS'
+                  else calculate_co2_emissions(daily_fuel_energy, emission_factor, emission_context))
     logger.log_result("Annual CO₂", f"{annual_co2:.2f} kg/year")
     
     # Health impact

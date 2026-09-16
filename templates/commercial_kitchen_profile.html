@@ -9,16 +9,12 @@
 {% set total_steps = 4 %}
 
 {% block content %}
-<script>
-
-</script>
 <div class="container my-2.5 py-3 analysis-container-custom">
     <div class="text-center mb-2.5">
         <p class="text-uppercase text-primary-green small fw-semibold mb-1">{{ _('Commercial & Institutional Cooking') }}</p>
-        <h3 class="fw-bold text-primary-green mb-1">
-            <img src="{{ url_for('static', filename='icons/house-heart1.svg') }}" alt="{{ _('Kitchen Icon') }}"
-                class="me-2 icon-xxl align-middle">{{ _('Kitchen & Facility Profile') }}
-        </h3>
+        <h1 class="page-title fw-bold text-primary-green mb-1">
+            <i class="bi bi-house-heart me-1" aria-hidden="true"></i>{{ _('Kitchen & Facility Profile') }}
+        </h1>
         <p class="mb-0 text-muted">{{ _('Describe your kitchen setup for an accurate analysis') }}</p>
     </div>
 
@@ -29,9 +25,9 @@
                 <!-- Kitchen Scenario -->
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4">
+                        <h2 class="card-title section-heading text-primary-green mb-4">
                             <i class="bi bi-layout-wtf me-2"></i>{{ _('Kitchen Details') }}
-                        </h4>
+                        </h2>
 
                         <div class="row g-3">
                             <div class="col-12">
@@ -40,10 +36,11 @@
                                 </label>
                                 <select class="form-select" id="kitchen_scenario" name="kitchen_scenario" required>
                                     <option value="">{{ _('Select scenario') }}</option>
+                                    {% set risk_labels = {'VERY LOW': _('Very Low'), 'LOW': _('Low'), 'MODERATE': _('Moderate'), 'MEDIUM': _('Medium'), 'HIGH': _('High'), 'VERY HIGH': _('Very High')} %}
                                     {% for scenario in scenarios %}
                                     <option value="{{ scenario.scenario_name }}">
                                         {{ localize_db_label(scenario.scenario_name, scenario.scenario_name_ml) }} - {{
-                                        _(scenario.health_risk_category) }} ({{
+                                        risk_labels.get(scenario.health_risk_category | upper, scenario.health_risk_category) }} ({{
                                         "%.0f"|format((scenario.combined_factor|default(0)) * 100)
                                         }}% {{ _('exposure') }})
                                     </option>
@@ -59,9 +56,9 @@
                 <!-- Cooking Patterns -->
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4">
+                        <h2 class="card-title section-heading text-primary-green mb-4">
                             <i class="bi bi-clock me-2"></i>{{ _('Cooking Patterns') }}
-                        </h4>
+                        </h2>
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -72,7 +69,7 @@
                                     name="cooking_hours_daily" min="2.0" max="16.0" value="6.0" step="0.5" required
                                     data-bs-toggle="tooltip" title="{{ _('Total daily active cooking time') }}">
                                 <div class="invalid-feedback">{{ _('Please enter daily cooking hours') }}</div>
-                                <div class="form-text">{{ _('Aggregate time for all meal preparations') }}</div>
+                                <div class="form-text">{{ _('Include the time spent preparing all meals in a typical day.') }}</div>
                             </div>
 
                             <div class="col-md-6">
@@ -92,9 +89,9 @@
                 <!-- Energy & Budget -->
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4">
+                        <h2 class="card-title section-heading text-primary-green mb-4">
                             <i class="bi bi-sun me-2"></i>{{ _('Budget & Energy Preferences') }}
-                        </h4>
+                        </h2>
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -110,7 +107,7 @@
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">{{ _('Please select budget preference') }}</div>
-                                <div class="form-text">{{ _('Primary driver for financial decision making') }}</div>
+                                <div class="form-text">{{ _('Choose what matters most when comparing cooking options.') }}</div>
                             </div>
                         </div>
                     </div>
@@ -118,7 +115,7 @@
 
                 <!-- Navigation -->
                 <div class="d-flex justify-content-between">
-                    <a class="btn btn-nav-back" href="{{ url_for('commercial_selection') }}">
+                    <a class="btn btn-nav-back" href="{{ url_for('commercial_selection', edit=1) }}">
                         <i class="bi bi-arrow-left me-2"></i>{{ _('Back') }}
                     </a>
                     <button type="submit" class="btn btn-nav-next" id="submitBtn">
@@ -136,6 +133,18 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('kitchenForm');
+            const savedKitchen = {{ session.get('kitchen_data', {}) | tojson }};
+            ['kitchen_scenario', 'cooking_hours_daily', 'staff_exposed', 'budget_preference'].forEach(id => {
+                const control = document.getElementById(id);
+                if (!control || savedKitchen[id] === null || savedKitchen[id] === undefined) return;
+                const savedValue = String(savedKitchen[id]);
+                if (control.tagName === 'SELECT') {
+                    // Unknown legacy values should retain the visible prompt.
+                    control.value = [...control.options].some(option => option.value === savedValue) ? savedValue : '';
+                } else {
+                    control.value = savedValue;
+                }
+            });
         const submitBtn = document.getElementById('submitBtn');
 
     // Form submission
@@ -145,38 +154,16 @@
         if (!form.checkValidity()) {
             e.stopPropagation();
             form.classList.add('was-validated');
+                const firstInvalid = form.querySelector(':invalid');
+                if (firstInvalid) firstInvalid.focus();
             return;
         }
 
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>{{ _("Processing") }}...';
+        goToNextStep("{{ url_for('commercial_submit_kitchen') }}", data);
 
-        fetch("{{ url_for('commercial_submit_kitchen') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': form.querySelector('input[name="csrf_token"]')?.value || ''
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(result => {
-                if (result.success) {
-                    window.location.href = result.redirect || "{{ url_for('commercial_energy_calculation') }}";
-                } else {
-                    alert(result.message || '{{ _("Failed to save data") }}');
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '{{ _("Next") }} <i class="bi bi-arrow-right ms-2"></i>';
-                }
-            })
-            .catch(() => {
-                alert('{{ _("Network error occurred") }}');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '{{ _("Next") }} <i class="bi bi-arrow-right ms-2"></i>';
-            });
     });
     });
 </script>

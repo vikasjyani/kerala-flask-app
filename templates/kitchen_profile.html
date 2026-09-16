@@ -10,21 +10,11 @@
 
 {% block content %}
 <div class="container my-2 py-3 analysis-container-custom">
-    <!-- <div class="text-center mb-2">
-        <h3 class="fw-bold text-primary-green mb-1">
-            <img src="{{ url_for('static', filename='icons/house-heart1.svg') }}" alt="{{ _('Kitchen Icon') }}"
-                class="me-1 mb-2"
-                style="width: 2rem; height: 2rem;">{{ _('Kitchen & Health Details') }}
-        </h3>
-        <p class="mb-3">{{ _('Describe your kitchen details and health considerations for an accurate analysis.') }}</p>
-
-    </div> -->
     <div class="text-center mb-2">
-        <h3 class="fw-bold text-primary-green mb-0">
-            <img src="{{ url_for('static', filename='icons/house-heart1.svg') }}" alt="{{ _('Kitchen Icon') }}"
-                class="me-1 mb-1" style="width: 2rem; height: 2rem;">
+        <h1 class="page-title fw-bold text-primary-green mb-0">
+            <i class="bi bi-house-heart me-1" aria-hidden="true"></i>
             {{ _('Kitchen & Health Details') }}
-        </h3>
+        </h1>
 
         <p class="mb-1">
             {{ _('Describe your kitchen details and health considerations for an accurate analysis.') }}
@@ -39,9 +29,9 @@
                 <!-- Kitchen Layout -->
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4">
+                        <h2 class="section-heading card-title text-primary-green mb-4">
                             <i class="bi bi-layout-wtf me-2"></i>{{ _('Kitchen Details') }}
-                        </h4>
+                        </h2>
 
                         <div class="row g-3">
                             <!-- Kitchen Scenario Selection -->
@@ -51,10 +41,11 @@
                                 </label>
                                 <select class="form-select" id="kitchen_scenario" name="kitchen_scenario" required>
                                     <option value="">{{ _('Select scenario') }}</option>
+                                    {% set risk_labels = {'VERY LOW': _('Very Low'), 'LOW': _('Low'), 'MODERATE': _('Moderate'), 'MEDIUM': _('Medium'), 'HIGH': _('High'), 'VERY HIGH': _('Very High')} %}
                                     {% for scenario in scenarios %}
                                     <option value="{{ scenario.scenario_name }}">
                                         {{ localize_db_label(scenario.scenario_name, scenario.scenario_name_ml) }} - {{
-                                        _(scenario.health_risk_category) }} ({{
+                                        risk_labels.get(scenario.health_risk_category | upper, scenario.health_risk_category) }} ({{
                                         "%.0f"|format((scenario.combined_factor|default(0)) * 100)
                                         }}% {{ _('exposure') }})
                                     </option>
@@ -73,9 +64,9 @@
                 <!-- Cooking Habits -->
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4">
+                        <h2 class="section-heading card-title text-primary-green mb-4">
                             <i class="bi bi-clock me-2"></i>{{ _('Cooking Patterns') }}
-                        </h4>
+                        </h2>
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -83,19 +74,17 @@
                                     ({{
                                     _('Hours') }}) *</label>
                                 <input type="number" class="form-control" id="cooking_hours_daily"
-                                    name="cooking_hours_daily" min="1.0" max="8.0" value="3.0" step="0.5" required
-                                    data-bs-toggle="tooltip" title="{{ _('Total daily active cooking time') }}">
+                                    name="cooking_hours_daily" min="1.0" max="8.0" value="3.0" step="0.5" required>
                                 <div class="invalid-feedback">{{ _('Please enter daily cooking hours') }}</div>
-                                <div class="form-text">{{ _('Aggregate time for all meal preparations') }}</div>
+                                <div class="form-text">{{ _('Include the time spent preparing all meals in a typical day.') }}</div>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="sensitive_members" class="form-label">{{ _('No. of Members Sensitive to Smoke') }} *</label>
                                 <input type="number" class="form-control" id="sensitive_members"
-                                    name="sensitive_members" min="0" max="10" value="1" step="1" required
-                                    data-bs-toggle="tooltip" title="{{ _('Children <5 years or elderly >65 years') }}">
+                                    name="sensitive_members" min="0" max="10" value="1" step="1" required>
                                 <div class="invalid-feedback">{{ _('Please enter number of sensitive members') }}</div>
-                                <div class="form-text">{{ _('Residents requiring higher air quality standards') }}</div>
+                                <div class="form-text">{{ _('Include children, older adults and anyone sensitive to cooking smoke.') }}</div>
                             </div>
                         </div>
                     </div>
@@ -104,9 +93,9 @@
                 <!-- Solar & Budget -->
                 <div class="card shadow-green fade-in-up mb-4">
                     <div class="card-body">
-                        <h4 class="card-title text-primary-green mb-4">
+                        <h2 class="section-heading card-title text-primary-green mb-4">
                             <i class="bi bi-sun me-2"></i>{{ _('Budget & Renewable Energy Preferences') }}
-                        </h4>
+                        </h2>
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -121,7 +110,7 @@
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">{{ _('Please select budget preference') }}</div>
-                                <div class="form-text">{{ _('Primary driver for financial decision making') }}</div>
+                                <div class="form-text">{{ _('Choose what matters most when comparing cooking options.') }}</div>
                             </div>
                         </div>
                     </div>
@@ -145,40 +134,20 @@
 
     {% block extra_js %}
     <script>
-        // Scenario card selection handler
-        function selectScenario(card, scenarioName) {
-            // Remove selected class from all cards
-            document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
-
-            // Add selected class to clicked card
-            card.classList.add('selected');
-
-            // Check the radio button
-            const radio = card.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.checked = true;
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('kitchenForm');
-            // OLD: These elements were replaced with kitchen_scenario dropdown
-            // const kitchenTypeSelect = document.getElementById('kitchen_type');
-            // const ventilationSelect = document.getElementById('ventilation_quality');
-            const cookingHoursInput = document.getElementById('cooking_hours_daily');
-            const sensitiveMembersInput = document.getElementById('sensitive_members');
-
-            // OLD: Removed event listeners for deleted elements
-            // kitchenTypeSelect.addEventListener('change', updateKitchenPreview);
-            // ventilationSelect.addEventListener('change', updateKitchenPreview);
-
-            // Update health risk when factors change
-            // Note: These preview functions are deprecated with new scenario system
-            // cookingHoursInput.addEventListener('input', updateHealthRisk);
-            // sensitiveMembersInput.addEventListener('input', updateHealthRisk);
-            // kitchenTypeSelect.addEventListener('change', updateHealthRisk);
-            // ventilationSelect.addEventListener('change', updateHealthRisk);
-
+            const savedKitchen = {{ session.get('kitchen_data', {}) | tojson }};
+            ['kitchen_scenario', 'cooking_hours_daily', 'sensitive_members', 'budget_preference'].forEach(id => {
+                const control = document.getElementById(id);
+                if (!control || savedKitchen[id] === null || savedKitchen[id] === undefined) return;
+                const savedValue = String(savedKitchen[id]);
+                if (control.tagName === 'SELECT') {
+                    // Unknown legacy values should retain the visible prompt.
+                    control.value = [...control.options].some(option => option.value === savedValue) ? savedValue : '';
+                } else {
+                    control.value = savedValue;
+                }
+            });
             // Form submission
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
@@ -186,6 +155,8 @@
                 if (!form.checkValidity()) {
                     e.stopPropagation();
                     form.classList.add('was-validated');
+                const firstInvalid = form.querySelector(':invalid');
+                if (firstInvalid) firstInvalid.focus();
                     return;
                 }
 
@@ -195,72 +166,6 @@
                 goToNextStep('/submit_kitchen', data);
             });
 
-            // Initialise (currently no solar preview needed)
         });
-
-        function updateHealthRisk() {
-            const kitchenType = document.getElementById('kitchen_type').value;
-            const ventilation = document.getElementById('ventilation_quality').value;
-            const cookingHours = parseFloat(document.getElementById('cooking_hours_daily').value) || 3;
-            const sensitiveMembers = parseInt(document.getElementById('sensitive_members').value) || 0;
-
-            // If preview elements are not present (moved to results page), skip preview calculations
-            const riskCard = document.getElementById('health-risk-card');
-            const riskLevelCard = document.getElementById('risk-level-card');
-            const riskLevel = document.getElementById('risk-level');
-            const riskScore = document.getElementById('risk-score');
-            if (!kitchenType || !ventilation || !riskCard || !riskLevelCard || !riskLevel || !riskScore) return;
-
-            // Simplified health risk calculation
-            let baseScore = 25; // Assume moderate fuel
-
-            // Kitchen factor adjustment
-            const kitchenFactors = {
-                'Outdoor Kitchen': 0.1,
-                'Separate Room': 0.25,
-                'Semi-Open Kitchen': 0.6,
-                'Open Kitchen': 0.8,
-            };
-
-            // Ventilation factor adjustment
-            const ventilationFactors = {
-                'Excellent': 0.4,
-                'Good': 0.6,
-                'Average': 1.0,
-                'Poor': 1.6
-            };
-
-            baseScore = baseScore * kitchenFactors[kitchenType] * ventilationFactors[ventilation];
-
-            // Add penalties
-            const sensitivePenalty = sensitiveMembers * 10;
-            const durationPenalty = Math.max(0, (cookingHours - 2) * 5);
-
-            const totalScore = Math.min(100, baseScore + sensitivePenalty + durationPenalty);
-
-            // Update display
-            riskCard.style.display = 'block';
-            riskScore.textContent = Math.round(totalScore);
-
-            // Update risk level and colors
-            let level, className;
-            if (totalScore < 30) {
-                level = '{{ _("Low Risk") }}';
-                className = 'health-risk-low';
-            } else if (totalScore < 50) {
-                level = '{{ _("Moderate Risk") }}';
-                className = 'health-risk-moderate';
-            } else if (totalScore < 70) {
-                level = '{{ _("High Risk") }}';
-                className = 'health-risk-high';
-            } else {
-                level = '{{ _("Very High Risk") }}';
-                className = 'health-risk-very-high';
-            }
-
-            riskLevel.textContent = level;
-            riskLevelCard.className = `metric-card ${className}`;
-        }
-
     </script>
     {% endblock %}

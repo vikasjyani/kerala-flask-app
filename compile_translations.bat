@@ -33,6 +33,15 @@ if errorlevel 1 (
     exit /b 1
 )
 
+REM Compile Hindi translations
+echo Compiling Hindi translations...
+pybabel compile -d translations -l hi
+if errorlevel 1 (
+    echo Failed to compile Hindi translations
+    pause
+    exit /b 1
+)
+
 echo.
 echo ======================================
 echo Translation compilation successful!

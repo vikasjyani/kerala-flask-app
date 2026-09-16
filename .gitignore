@@ -46,6 +46,7 @@ uploads/
 reports/
 backups/
 instance/
+extra_research/
 
 # ─── Node / migration tooling (not part of Flask app) ─────────────────────────
 node-migration/

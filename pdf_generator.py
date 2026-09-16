@@ -8,15 +8,17 @@ Version: 4.0 - Production Ready
 import io
 import os
 import datetime
+import textwrap
 import uuid
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import inch, mm
 from reportlab.platypus import (
-    SimpleDocTemplate, Table, TableStyle, Paragraph, 
-    Spacer, PageBreak, Image, KeepTogether, Frame, PageTemplate
+    SimpleDocTemplate, Table, TableStyle, Paragraph,
+    Spacer, PageBreak, CondPageBreak, Image, KeepTogether, Frame, PageTemplate
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.utils import ImageReader
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT, TA_JUSTIFY
 from reportlab.pdfgen import canvas as pdf_canvas
 from reportlab.pdfbase import pdfmetrics
@@ -32,25 +34,29 @@ from matplotlib import font_manager
 class DesignSystem:
     """Centralized design system for consistent styling"""
     
-    # Color Palette (matching web app)
-    PRIMARY_GREEN = colors.HexColor('#4CAF50')
-    DARK_GREEN = colors.HexColor('#388E3C')
-    LIGHT_GREEN = colors.HexColor('#70C170')
-    BG_GREEN = colors.HexColor('#E8F5E9')
-    ACCENT_YELLOW = colors.HexColor('#F2C851')
-    
+    # Colour palette — these are the web app's design tokens (static/css/style.css
+    # :root), so the report and the screen actually match. The previous Material
+    # palette had drifted from the site and failed WCAG AA badly, measured against
+    # white: #4CAF50 headers 2.78:1, #FF9800 2.16:1, #9E9E9E footers 2.68:1. Every
+    # value below clears 4.5:1 against white in both directions.
+    PRIMARY_GREEN = colors.HexColor('#176b45')   # --brand          6.51:1
+    DARK_GREEN = colors.HexColor('#0c452b')      # --brand-strong  11.04:1
+    LIGHT_GREEN = colors.HexColor('#2d8a5e')     # borders/accents only, non-text
+    BG_GREEN = colors.HexColor('#eaf4ee')        # --brand-soft
+    ACCENT_YELLOW = colors.HexColor('#f1c35c')   # --warning-fill, non-text
+
     # Neutral colors
-    GREY_900 = colors.HexColor('#212121')
-    GREY_700 = colors.HexColor('#616161')
-    GREY_500 = colors.HexColor('#9E9E9E')
-    GREY_300 = colors.HexColor('#E0E0E0')
-    GREY_100 = colors.HexColor('#F5F5F5')
-    
+    GREY_900 = colors.HexColor('#24332c')        # --text          13.25:1
+    GREY_700 = colors.HexColor('#4d5c53')        # --text-secondary 7.07:1
+    GREY_500 = colors.HexColor('#5e6b63')        # --text-muted     5.59:1
+    GREY_300 = colors.HexColor('#bdcdc2')        # --border, rules and cell grid
+    GREY_100 = colors.HexColor('#f0f3f1')        # --surface-subtle, zebra rows
+
     # Status colors
-    SUCCESS = colors.HexColor('#4CAF50')
-    WARNING = colors.HexColor('#FF9800')
-    DANGER = colors.HexColor('#F44336')
-    INFO = colors.HexColor('#2196F3')
+    SUCCESS = colors.HexColor('#166534')         # 7.13:1
+    WARNING = colors.HexColor('#875700')         # 6.19:1
+    DANGER = colors.HexColor('#b42332')          # 6.51:1
+    INFO = colors.HexColor('#165b78')            # 7.50:1
     
     # Typography Scale (optimized for readability)
     FONT_SIZE_H1 = 24  # Page titles
@@ -95,7 +101,7 @@ MAX_REPORT_FILES = 10
 
 # ==================== LOCALIZATION HELPERS ====================
 
-SUPPORTED_REPORT_LOCALES = {'en', 'ml'}
+SUPPORTED_REPORT_LOCALES = {'en', 'ml', 'hi'}
 
 REPORT_I18N = {
     'en': {
@@ -275,6 +281,95 @@ REPORT_I18N = {
         'risk_high': 'ഉയർന്ന',
         'risk_very_high': 'വളരെ ഉയർന്ന',
         'unknown': 'അറിയില്ല'
+    },
+    'hi': {
+        'platform_name': 'केरलम् स्वच्छ खाना पकाने इनसाइट्स मंच',
+        'report_residential_title': 'खाना पकाने की ऊर्जा का विश्लेषण',
+        'report_residential_subtitle': 'आवासीय घरेलू रिपोर्ट',
+        'report_commercial_title': 'वाणिज्यिक ऊर्जा विश्लेषण',
+        'report_commercial_subtitle': '{institution_type} रिपोर्ट',
+        'generated_on': 'तैयार किया गया',
+        'generated_date': '{date}',
+        'not_available': 'उपलब्ध नहीं',
+        'household_profile': 'घरेलू प्रोफाइल',
+        'institution_profile': 'संस्था प्रोफाइल',
+        'name': 'नाम',
+        'district': 'जिला',
+        'household_size': 'परिवार का आकार',
+        'household_size_value': '{size} व्यक्ति',
+        'main_priority': 'मुख्य प्राथमिकता',
+        'institution_name': 'संस्था का नाम',
+        'institution_type': 'प्रकार',
+        'daily_servings': 'दैनिक सर्विंग',
+        'working_days_month': 'कार्य दिवस/माह',
+        'current_energy_consumption': 'वर्तमान ऊर्जा खपत',
+        'metric': 'मापदंड',
+        'value': 'मान',
+        'monthly_cost': 'मासिक लागत',
+        'annual_cost': 'वार्षिक लागत',
+        'monthly_energy': 'मासिक ऊर्जा',
+        'annual_co2': 'वार्षिक CO2',
+        'thermal_efficiency': 'तापीय दक्षता',
+        'cost_per_serving': 'प्रति सर्विंग लागत',
+        'fuel_breakdown': 'ईंधन-वार विवरण',
+        'fuel': 'ईंधन',
+        'quantity': 'मात्रा',
+        'energy_delivered': 'प्रदत्त ऊर्जा',
+        'annual_emission': 'वार्षिक उत्सर्जन',
+        'health_safety': 'स्वास्थ्य एवं सुरक्षा मूल्यांकन',
+        'health_advisory': 'स्वास्थ्य सलाह',
+        'health_advisory_message': 'PM2.5 का स्तर WHO के दिशानिर्देशों से अधिक है। स्वच्छ विकल्पों पर विचार करें।',
+        'health_risk_level': 'स्वास्थ्य जोखिम स्तर',
+        'peak_pm25': 'अधिकतम PM2.5',
+        'health_risk_index': 'स्वास्थ्य जोखिम सूचकांक',
+        'comparative_analysis': 'तुलनात्मक विश्लेषण',
+        'cost_comparison_heading': 'मासिक लागत तुलना',
+        'emissions_comparison_heading': 'वार्षिक कार्बन फुटप्रिंट तुलना',
+        'comparison_table_title_residential': 'ऊर्जा स्रोत से खाना पकाना: तुलनात्मक अनुमान',
+        'comparison_table_title_commercial': 'तुलनात्मक अनुमान',
+        'comparison_energy_source': 'ऊर्जा स्रोत',
+        'comparison_monthly_cost': 'मासिक लागत',
+        'comparison_annual_co2': 'वार्षिक CO2',
+        'comparison_efficiency': 'दक्षता',
+        'comparison_health_risk': 'स्वास्थ्य जोखिम',
+        'comparison_status': 'स्थिति',
+        'comparison_current_setup': 'आपका मौजूदा सेटअप',
+        'comparison_current': 'वर्तमान',
+        'status_cost_same': 'लागत: समान',
+        'status_cost_less': 'लागत: Rs {value} कम',
+        'status_cost_more': 'लागत: Rs {value} अधिक',
+        'status_co2_same': 'CO2: समान',
+        'status_co2_less': 'CO2: {value} kg कम',
+        'status_co2_more': 'CO2: {value} kg अधिक',
+        'strategic_recommendations': 'रणनीतिक सिफारिशें',
+        'technical_specifications': 'तकनीकी विनिर्देश',
+        'technical_specs_solar_bess': 'तकनीकी विनिर्देश: सोलर + BESS',
+        'solar_bess': 'सोलर + BESS',
+        'top_recommendations': 'शीर्ष सिफारिशें',
+        'recommendation_title': '#{rank}: {fuel} (स्कोर: {score}/100)',
+        'payback_period': 'पेबैक अवधि',
+        'health_risk': 'स्वास्थ्य जोखिम',
+        'months': 'महीने',
+        'meal_wise_breakdown': 'भोजन-वार ऊर्जा विवरण',
+        'meal': 'भोजन',
+        'cost': 'लागत',
+        'percent': '%',
+        'current_label': 'वर्तमान',
+        'chart_monthly_cost_axis': 'मासिक लागत (Rs)',
+        'chart_monthly_cost_title': 'मासिक लागत तुलना',
+        'chart_annual_co2_axis': 'वार्षिक CO2 उत्सर्जन (kg)',
+        'chart_annual_co2_title': 'पर्यावरणीय प्रभाव तुलना',
+        'chart_years': 'वर्ष',
+        'chart_cumulative_savings': 'संचित बचत (Rs)',
+        'chart_savings_title': '5-वर्षीय बचत अनुमान',
+        'page_number': 'पृष्ठ {page}',
+        'footer_disclaimer': 'अनुमान उपयोगकर्ता इनपुट और मानक कारकों पर आधारित हैं। वास्तविक लागत भिन्न हो सकती है।',
+        'risk_very_low': 'बहुत कम',
+        'risk_low': 'कम',
+        'risk_moderate': 'मध्यम',
+        'risk_high': 'उच्च',
+        'risk_very_high': 'बहुत उच्च',
+        'unknown': 'अज्ञात'
     }
 }
 
@@ -294,8 +389,6 @@ def normalize_locale(locale):
     if not locale:
         return 'en'
     locale = str(locale).strip().lower()
-    if locale == 'hi':
-        return 'ml'
     return locale if locale in SUPPORTED_REPORT_LOCALES else 'en'
 
 
@@ -503,6 +596,12 @@ def register_fonts():
         ('NotoSansMalayalam', '/usr/share/fonts/truetype/noto/NotoSansMalayalam-Regular.ttf', '/usr/share/fonts/truetype/noto/NotoSansMalayalam-Bold.ttf'),
     ]
 
+    devanagari_candidates = [
+        ('NotoSansDevanagari', 'static/fonts/NotoSansDevanagari-Regular.ttf', 'static/fonts/NotoSansDevanagari-Bold.ttf'),
+        ('NirmalaUI', 'C:\\Windows\\Fonts\\Nirmala.ttf', 'C:\\Windows\\Fonts\\NirmalaB.ttf'),
+        ('NotoSansDevanagari', '/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf', '/usr/share/fonts/truetype/noto/NotoSansDevanagari-Bold.ttf'),
+    ]
+
     default_pair = None
     for font_name, regular_path, bold_path in default_candidates:
         default_pair = register_pdf_font_pair(font_name, regular_path, bold_path)
@@ -524,6 +623,17 @@ def register_fonts():
         ml_pair = default_pair
         logger.warning("Malayalam font not found; falling back to default font pair")
 
+    hi_pair = None
+    for font_name, regular_path, bold_path in devanagari_candidates:
+        hi_pair = register_pdf_font_pair(font_name, regular_path, bold_path)
+        if hi_pair:
+            logger.info("PDF Generator: Using %s for Hindi report text", font_name)
+            break
+    if not hi_pair:
+        # Graceful fallback to default pair if Devanagari font unavailable.
+        hi_pair = default_pair
+        logger.warning("Devanagari font not found; falling back to default font pair")
+
     default_chart_font = (
         register_matplotlib_font('static/fonts/DejaVuSans.ttf')
         or register_matplotlib_font('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
@@ -534,16 +644,25 @@ def register_fonts():
         or register_matplotlib_font('/usr/share/fonts/truetype/noto/NotoSansMalayalam-Regular.ttf')
         or default_chart_font
     )
+    hi_chart_font = (
+        register_matplotlib_font('static/fonts/NotoSansDevanagari-Regular.ttf')
+        or register_matplotlib_font('/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf')
+        or default_chart_font
+    )
 
     return {
         'default_regular': default_pair[0],
         'default_bold': default_pair[1],
         'ml_regular': ml_pair[0],
         'ml_bold': ml_pair[1],
+        'hi_regular': hi_pair[0],
+        'hi_bold': hi_pair[1],
         'chart_default_name': default_chart_font.get('name'),
         'chart_default_path': default_chart_font.get('path'),
         'chart_ml_name': ml_chart_font.get('name'),
-        'chart_ml_path': ml_chart_font.get('path')
+        'chart_ml_path': ml_chart_font.get('path'),
+        'chart_hi_name': hi_chart_font.get('name'),
+        'chart_hi_path': hi_chart_font.get('path')
     }
 
 
@@ -556,6 +675,8 @@ def get_font_pair(locale):
     locale = normalize_locale(locale)
     if locale == 'ml':
         return FONT_PROFILES['ml_regular'], FONT_PROFILES['ml_bold']
+    if locale == 'hi':
+        return FONT_PROFILES['hi_regular'], FONT_PROFILES['hi_bold']
     return FONT_PROFILES['default_regular'], FONT_PROFILES['default_bold']
 
 
@@ -566,8 +687,16 @@ def get_chart_font(locale):
     μg/m³) renders properly instead of missing-glyph boxes."""
     locale = normalize_locale(locale)
     ml_name = FONT_PROFILES.get('chart_ml_name')
+    hi_name = FONT_PROFILES.get('chart_hi_name')
     default_name = FONT_PROFILES.get('chart_default_name') or 'DejaVu Sans'
-    families = [ml_name, default_name] if locale == 'ml' else [default_name]
+    if locale == 'ml':
+        families = [ml_name, default_name]
+    elif locale == 'hi':
+        # The Devanagari font carries its own Latin glyphs, so unlike Malayalam it
+        # needs no Latin fallback family.
+        families = [hi_name]
+    else:
+        families = [default_name]
     ordered = []
     for fam in families:
         if fam and fam not in ordered:
@@ -614,11 +743,39 @@ def _ml_lacks(ch):
         return False
     return bool(_ML_CODEPOINTS) and (ord(ch) not in _ML_CODEPOINTS)
 
+def _is_ascii_alpha(ch):
+    return ('a' <= ch <= 'z') or ('A' <= ch <= 'Z')
+
+
+def _promote_latin_digits(text, wants_latin):
+    """Extend a Latin run through digits that belong to the same token.
+
+    The Malayalam font does carry ASCII digits, so "CO2" and "PM2.5" used to split into
+    a Latin run ("CO"/"PM") plus a Malayalam-font digit run ("2"/"2.5") — two different
+    typefaces inside one word, visibly mismatched in weight. A digit or decimal point
+    that touches an ASCII letter is part of that Latin token, so route it to the Latin
+    font too. Standalone numerals (₹922, "5 പേർ") are untouched.
+    """
+    flags = list(wants_latin)
+    for i, ch in enumerate(text):
+        if flags[i] or not (ch.isdigit() or ch == '.'):
+            continue
+        for step in (-1, 1):                     # scan outward past other digits
+            j = i + step
+            while 0 <= j < len(text) and (text[j].isdigit() or text[j] == '.'):
+                j += step
+            if 0 <= j < len(text) and _is_ascii_alpha(text[j]) and flags[j]:
+                flags[i] = True
+                break
+    return flags
+
+
 def ml_markup(text, latin_font=None):
     """Return reportlab paragraph markup where runs of glyphs missing from the Malayalam
     font are wrapped in the Latin fallback font. Content is XML-escaped."""
     text = '' if text is None else str(text)
     latin_font = latin_font or FONT_PROFILES.get('default_regular') or 'Helvetica'
+    wants_latin = _promote_latin_digits(text, [_ml_lacks(ch) for ch in text])
     out, run, run_latin = [], [], False
     def flush():
         if not run:
@@ -626,8 +783,7 @@ def ml_markup(text, latin_font=None):
         s = _xml_escape(''.join(run))
         out.append(f'<font face="{latin_font}">{s}</font>' if run_latin else s)
         run.clear()
-    for ch in text:
-        want = _ml_lacks(ch)
+    for ch, want in zip(text, wants_latin):
         if run and want != run_latin:
             flush()
         run_latin = want
@@ -658,6 +814,40 @@ def localize_matrix(data, locale, styles, has_header=True):
             new_row.append(Paragraph(ml_markup(cell), st))
         out.append(new_row)
     return out
+
+
+def header_cells(labels, locale, font_bold, size=9, color=colors.white, align=TA_LEFT):
+    """Build table header cells as Paragraphs rather than bare strings.
+
+    A bare string in a reportlab cell does two harmful things that a Paragraph does not:
+    it never wraps, so it silently overdraws the neighbouring cells instead of growing
+    the row; and it is not parsed as markup, so the <font> run that ml_markup() emits
+    for Latin text is ignored and the whole string is drawn in the Malayalam font. That
+    font carries digits but no Latin letters, which is why "വാർഷിക CO2" used to render
+    as "വാർഷിക 2" — the CO was dropped, not merely mis-styled.
+
+    The colour must be set on the style: a TableStyle TEXTCOLOR applies to bare strings
+    only and never reaches Paragraph content.
+    """
+    is_ml = normalize_locale(locale) == 'ml'
+    st = ParagraphStyle(
+        f'TableHeaderCell_{locale}_{size}_{align}_{color}',
+        fontName=font_bold,
+        fontSize=size,
+        textColor=color,
+        leading=size * 1.35,
+        alignment=align,
+        # Malayalam compounds are long and space-free; allow a break anywhere so a
+        # header wraps to a second line instead of overflowing its column.
+        wordWrap='CJK' if is_ml else None,
+    )
+    # Pair the Latin fallback with the BOLD Latin face: header text is bold, so letting
+    # ml_markup default to the regular face made "CO" lighter than the Malayalam around it.
+    latin_bold = FONT_PROFILES.get('default_bold') or FONT_PROFILES.get('default_regular')
+    return [
+        Paragraph(ml_markup(text, latin_font=latin_bold) if is_ml else _xml_escape(str(text)), st)
+        for text in labels
+    ]
 
 
 # ==================== STYLE SYSTEM ====================
@@ -702,7 +892,8 @@ def create_styles(locale='en'):
         fontName=font_bold,
         borderWidth=0,
         borderPadding=0,
-        leading=DS.FONT_SIZE_H2 * 1.2
+        leading=DS.FONT_SIZE_H2 * 1.2,
+        keepWithNext=1
     ))
     
     # Subsection Header
@@ -714,7 +905,8 @@ def create_styles(locale='en'):
         spaceAfter=DS.SPACE_SM,
         spaceBefore=DS.SPACE_MD,
         fontName=font_bold,
-        leading=DS.FONT_SIZE_H3 * 1.2
+        leading=DS.FONT_SIZE_H3 * 1.2,
+        keepWithNext=1
     ))
     
     # Body text (update existing sample style to avoid duplicate registration)
@@ -861,46 +1053,101 @@ def add_page_number(canvas, doc):
     locale = normalize_locale(getattr(doc, '_report_locale', 'en'))
     font_regular, _ = get_font_pair(locale)
     
-    # Footer line
+    # Footer band, measured up from the trim edge rather than down from the text
+    # margin. The disclaimer previously sat at MARGIN_VERTICAL - 40 = y=0, i.e. exactly
+    # on the bottom edge, so its descenders were cut off on every page — worse in
+    # Malayalam, whose descenders are deeper.
+    disclaimer_y = 12          # baseline clear of the trim edge
+    labels_y = disclaimer_y + 13
+    rule_y = labels_y + 11
+
     canvas.setStrokeColor(DS.GREY_300)
     canvas.setLineWidth(0.5)
     canvas.line(
-        DS.MARGIN_HORIZONTAL, 
-        DS.MARGIN_VERTICAL - 10, 
-        DS.PAGE_WIDTH - DS.MARGIN_HORIZONTAL, 
-        DS.MARGIN_VERTICAL - 10
+        DS.MARGIN_HORIZONTAL,
+        rule_y,
+        DS.PAGE_WIDTH - DS.MARGIN_HORIZONTAL,
+        rule_y
     )
-    
+
     # Page number
     page_num = canvas.getPageNumber()
     canvas.setFont(font_regular, DS.FONT_SIZE_TINY)
     canvas.setFillColor(DS.GREY_500)
     canvas.drawRightString(
-        DS.PAGE_WIDTH - DS.MARGIN_HORIZONTAL, 
-        DS.MARGIN_VERTICAL - 25, 
+        DS.PAGE_WIDTH - DS.MARGIN_HORIZONTAL,
+        labels_y,
         tr(locale, 'page_number', page=page_num)
     )
-    
-    # Footer text
+
+    # Platform name
     canvas.setFont(font_regular, DS.FONT_SIZE_TINY)
     canvas.drawString(
-        DS.MARGIN_HORIZONTAL, 
-        DS.MARGIN_VERTICAL - 25, 
+        DS.MARGIN_HORIZONTAL,
+        labels_y,
         tr(locale, 'platform_name')
     )
-    
-    # Disclaimer (centered)
-    canvas.setFont(font_regular, DS.FONT_SIZE_TINY - 1)
-    canvas.drawCentredString(
-        DS.PAGE_WIDTH / 2, 
-        DS.MARGIN_VERTICAL - 40, 
-        tr(locale, 'footer_disclaimer')
-    )
-    
+
+    # Disclaimer, centred. Shrink to fit rather than run past the margins: the
+    # Malayalam string is much longer than the English one and drawCentredString
+    # neither wraps nor clips, so an oversized string would bleed off both edges.
+    disclaimer = tr(locale, 'footer_disclaimer')
+    max_width = DS.PAGE_WIDTH - (2 * DS.MARGIN_HORIZONTAL)
+    size = DS.FONT_SIZE_TINY
+    while size > 4.5 and pdfmetrics.stringWidth(disclaimer, font_regular, size) > max_width:
+        size -= 0.25
+    canvas.setFont(font_regular, size)
+    canvas.drawCentredString(DS.PAGE_WIDTH / 2, disclaimer_y, disclaimer)
+
     canvas.restoreState()
 
 
 # ==================== CHART GENERATION ====================
+
+def wrap_chart_label(text, width=18):
+    """Wrap a category label onto multiple lines instead of truncating it.
+
+    The previous code sliced labels to 20 characters, which rendered
+    "Traditional Solid Biomass" as "Traditional Solid Bi" on every chart. Charts are
+    saved with bbox_inches='tight', so a taller label costs only a little margin.
+
+    break_long_words is deliberately False: breaking mid-word would split Malayalam
+    grapheme clusters (a consonant from its matra), producing broken glyphs. A single
+    long compound therefore stays on one line and the tight bounding box absorbs it.
+    """
+    text = str(text).strip()
+    if not text:
+        return text
+    lines = textwrap.wrap(text, width=width, break_long_words=False) or [text]
+    return '\n'.join(lines)
+
+
+def fit_image(path, max_width, max_height):
+    """Place a chart at its natural aspect ratio, scaled to fit the given box.
+
+    Charts are saved with bbox_inches='tight', so the PNG's proportions depend on how
+    much room the tick labels needed — which differs between English and Malayalam.
+    Forcing both a width and a height therefore stretched the Malayalam charts. Scaling
+    by the smaller of the two ratios keeps them undistorted and inside the box.
+    """
+    try:
+        width_px, height_px = ImageReader(path).getSize()
+        scale = min(max_width / width_px, max_height / height_px)
+        return Image(path, width=width_px * scale, height=height_px * scale)
+    except Exception:
+        return Image(path, width=max_width, height=max_height)
+
+
+def _apply_value_label_headroom(ax, values, fraction=0.18):
+    """Extend the x-axis so bar value labels do not collide with the plot border.
+
+    Labels are drawn just past the end of each bar; without headroom the label on the
+    longest bar is clipped by, or overprints, the axes spine.
+    """
+    peak = max([v for v in values if v is not None] or [0])
+    if peak > 0:
+        ax.set_xlim(0, peak * (1 + fraction))
+
 
 def create_cost_comparison_chart(current_cost, alternatives, is_commercial=False, locale='en'):
     """Optimized cost comparison chart"""
@@ -912,7 +1159,7 @@ def create_cost_comparison_chart(current_cost, alternatives, is_commercial=False
         # Set up matplotlib style
         with plt.rc_context({'font.family': chart_font, 'axes.unicode_minus': False}):
             plt.style.use('seaborn-v0_8-darkgrid')
-            fig, ax = plt.subplots(figsize=(7, 3.5), dpi=150)
+            fig, ax = plt.subplots(figsize=(4.2, 2.9), dpi=200)
         
             # Prepare data
             labels = [tr(locale, 'current_label')]
@@ -921,7 +1168,7 @@ def create_cost_comparison_chart(current_cost, alternatives, is_commercial=False
         
             for alt in alternatives[:5]:
                 fuel_name = alt.get('fuel', alt.get('alternative_fuel', tr(locale, 'unknown')))
-                labels.append(localize_fuel_name(fuel_name, locale)[:20])
+                labels.append(wrap_chart_label(localize_fuel_name(fuel_name, locale)))
                 cost = safe_float(alt.get('monthly_cost', 0), 0)
                 costs.append(cost)
                 colors_list.append(DS.SUCCESS.hexval().replace('0x', '#') if cost < current_cost else DS.DANGER.hexval().replace('0x', '#'))
@@ -951,6 +1198,8 @@ def create_cost_comparison_chart(current_cost, alternatives, is_commercial=False
             for i, (bar, cost) in enumerate(zip(bars, costs)):
                 ax.text(cost + x_offset, i, f'₹{cost:,.0f}',
                         va='center', fontsize=8, fontweight='bold', fontproperties=chart_font_props)
+
+            _apply_value_label_headroom(ax, costs)
         
             # Grid and background
             ax.grid(axis='x', alpha=0.3, linestyle='--')
@@ -980,7 +1229,7 @@ def create_emissions_comparison_chart(current_emissions, alternatives, locale='e
 
         with plt.rc_context({'font.family': chart_font, 'axes.unicode_minus': False}):
             plt.style.use('seaborn-v0_8-darkgrid')
-            fig, ax = plt.subplots(figsize=(7, 3.5), dpi=150)
+            fig, ax = plt.subplots(figsize=(4.2, 2.9), dpi=200)
         
             # Prepare data
             labels = [tr(locale, 'current_label')]
@@ -1001,7 +1250,7 @@ def create_emissions_comparison_chart(current_emissions, alternatives, locale='e
         
             for alt in alternatives[:5]:
                 fuel_name = alt.get('fuel', alt.get('alternative_fuel', tr(locale, 'unknown')))
-                labels.append(localize_fuel_name(fuel_name, locale)[:20])
+                labels.append(wrap_chart_label(localize_fuel_name(fuel_name, locale)))
                 emission = safe_float(alt.get('annual_emissions_kg', alt.get('annual_co2', 0)), 0)
                 emissions.append(emission)
                 colors_list.append(get_emission_color(emission))
@@ -1025,6 +1274,8 @@ def create_emissions_comparison_chart(current_emissions, alternatives, locale='e
             for i, (bar, emission) in enumerate(zip(bars, emissions)):
                 ax.text(emission + x_offset, i, f'{emission:,.0f} kg',
                         va='center', fontsize=8, fontweight='bold', fontproperties=chart_font_props)
+
+            _apply_value_label_headroom(ax, emissions)
         
             ax.grid(axis='x', alpha=0.3, linestyle='--')
             ax.set_facecolor('#FAFAFA')
@@ -1053,7 +1304,7 @@ def create_savings_timeline_chart(alternatives, current_cost, locale='en'):
         
         with plt.rc_context({'font.family': chart_font, 'axes.unicode_minus': False}):
             plt.style.use('seaborn-v0_8-whitegrid')
-            fig, ax = plt.subplots(figsize=(7, 3.5), dpi=150)
+            fig, ax = plt.subplots(figsize=(4.2, 2.9), dpi=200)
         
             # Calculate savings over 5 years for top 3 alternatives
             years = np.arange(0, 6)
@@ -1073,7 +1324,7 @@ def create_savings_timeline_chart(alternatives, current_cost, locale='en'):
                     cumulative_savings,
                     marker='o',
                     linewidth=2.5,
-                    label=localize_fuel_name(fuel_name, locale)[:20],
+                    label=wrap_chart_label(localize_fuel_name(fuel_name, locale)),
                     markersize=6
                 )
         
@@ -1104,8 +1355,14 @@ def create_savings_timeline_chart(alternatives, current_cost, locale='en'):
 
 # ==================== HEADER COMPONENTS ====================
 
-def create_header_table(title, subtitle, styles):
-    """Optimized header with logos"""
+def create_header_table(title, subtitle, styles, locale='en'):
+    """Optimized header with logos.
+
+    title/subtitle go through ml_markup for Malayalam: the commercial subtitle is
+    "{institution_type} റിപ്പോർട്ട്", so the institution name is Latin text inside a
+    Malayalam paragraph. Without the fallback markup it was drawn with the Malayalam
+    font, which has no Latin letters, and "Hotel" rendered as invisible .notdef glyphs.
+    """
     logo_height = DS.LOGO_HEIGHT_HEADER
     vasudha_logo = os.path.join('static', 'images', 'Vasudha_Logo.png')
     emc_logo = os.path.join('static', 'images', 'emc_Keralam_logo.png')
@@ -1123,8 +1380,12 @@ def create_header_table(title, subtitle, styles):
     except:
         img_emc = Spacer(1, logo_height)
     
-    title_para = Paragraph(title, styles['PageTitle'])
-    subtitle_para = Paragraph(subtitle, styles['Subtitle'])
+    if normalize_locale(locale) == 'ml':
+        title_para = Paragraph(ml_markup(title, latin_font=FONT_PROFILES.get('default_bold')), styles['PageTitle'])
+        subtitle_para = Paragraph(ml_markup(subtitle), styles['Subtitle'])
+    else:
+        title_para = Paragraph(title, styles['PageTitle'])
+        subtitle_para = Paragraph(subtitle, styles['Subtitle'])
     
     # Optimized column widths (Total ~6.8 inch)
     data = [[img_vasudha, [title_para, subtitle_para], img_emc]]
@@ -1268,14 +1529,17 @@ def create_fuel_breakdown_table(current, styles, locale='en'):
     if not rows:
         return None
 
-    header = [
-        tr(locale, 'fuel'),
-        tr(locale, 'quantity'),
-        tr(locale, 'energy_delivered'),
-        tr(locale, 'monthly_cost'),
-        tr(locale, 'annual_emission')
-    ]
-    data = [header]
+    font_regular, font_bold = get_font_pair(locale)
+    data = [header_cells(
+        [
+            tr(locale, 'fuel'),
+            tr(locale, 'quantity'),
+            tr(locale, 'energy_delivered'),
+            tr(locale, 'monthly_cost'),
+            tr(locale, 'annual_emission'),
+        ],
+        locale, font_bold, size=DS.FONT_SIZE_BODY,
+    )]
 
     body_style = ParagraphStyle(
         f'FuelBreakdownBody_{locale}',
@@ -1323,14 +1587,18 @@ def create_detailed_comparison_table(current, alternatives, styles, locale='en')
         # Latin fallback so fuel names, units (kg, %) and currency render in ml reports.
         return Paragraph(ml_markup(txt) if _is_ml else str(txt), body_style)
 
-    data = [[
-        tr(locale, 'comparison_energy_source'),
-        tr(locale, 'comparison_monthly_cost'),
-        tr(locale, 'comparison_annual_co2'),
-        tr(locale, 'comparison_efficiency'),
-        tr(locale, 'comparison_health_risk'),
-        tr(locale, 'comparison_status')
-    ]]
+    font_regular, font_bold = get_font_pair(locale)
+    data = [header_cells(
+        [
+            tr(locale, 'comparison_energy_source'),
+            tr(locale, 'comparison_monthly_cost'),
+            tr(locale, 'comparison_annual_co2'),
+            tr(locale, 'comparison_efficiency'),
+            tr(locale, 'comparison_health_risk'),
+            tr(locale, 'comparison_status'),
+        ],
+        locale, font_bold, size=9,
+    )]
 
     current_cost = float(current.get('monthly_cost', 0) or 0)
     current_emissions = float(current.get('annual_emissions', 0) or 0)
@@ -1382,15 +1650,25 @@ def create_detailed_comparison_table(current, alternatives, styles, locale='en')
             Paragraph("<br/>".join((ml_markup(p) if _is_ml else str(p)) for p in status_parts), body_style)
         ])
 
-    table = Table(
-        data,
-        colWidths=[1.50 * inch, 1.00 * inch, 1.00 * inch, 0.85 * inch, 1.05 * inch, 1.40 * inch],
-        repeatRows=1
+    # Malayalam headers are single long compounds where English has short words:
+    # "കാര്യക്ഷമത" is 72.6pt at 9pt bold against a 49.2pt English-sized column, so it
+    # could only fit by breaking mid-word (which splits grapheme clusters). Widen the
+    # affected columns for ml; both variants stay inside the 495pt content width.
+    # Widths are fitted to the measured longest word of each Malayalam header at 9pt
+    # bold (source 86.2pt, monthly cost 59.1, CO2 46.4, efficiency 72.6, health 54.0)
+    # plus 12pt of cell padding, so no header has to break inside a word. Both variants
+    # total 6.85in = 493pt, inside the 495pt content width.
+    col_widths = (
+        [1.42 * inch, 1.00 * inch, 0.92 * inch, 1.18 * inch, 0.95 * inch, 1.38 * inch]
+        if _is_ml else
+        [1.50 * inch, 1.00 * inch, 1.00 * inch, 0.85 * inch, 1.05 * inch, 1.40 * inch]
     )
+    table = Table(data, colWidths=col_widths, repeatRows=1)
 
-    font_regular, font_bold = get_font_pair(locale)
     style = [
         ('BACKGROUND', (0, 0), (-1, 0), DS.PRIMARY_GREEN),
+        # Header cells are Paragraphs, which carry their own colour/font; these two
+        # entries only still matter if a header is ever passed as a bare string.
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), font_bold),
@@ -1534,14 +1812,17 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
     story.append(create_header_table(
         tr(locale, 'report_residential_title'),
         tr(locale, 'report_residential_subtitle'),
-        styles
+        styles,
+        locale=locale
     ))
     story.append(Spacer(1, DS.SPACE_MD))
     story.append(Paragraph(
         f"{tr(locale, 'generated_on')}: {datetime.datetime.now().strftime('%d-%m-%Y')}",
         styles['FooterText']
     ))
-    story.append(Spacer(1, DS.SPACE_LG))
+    # No Spacer before a SectionHeader anywhere below: that style already carries
+    # spaceBefore=SPACE_LG, so an explicit Spacer doubled every gap to 48pt and was
+    # what pushed the Health section off page 1 in the first place.
 
     story.append(Paragraph(tr(locale, 'household_profile'), styles['SectionHeader']))
     profile_data = [
@@ -1551,7 +1832,6 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
         [tr(locale, 'main_priority'), str(household_data.get('main_priority', tr(locale, 'not_available'))).title()],
     ]
     story.append(Table(localize_matrix(profile_data, locale, styles, has_header=False), colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)))
-    story.append(Spacer(1, DS.SPACE_LG))
 
     story.append(Paragraph(tr(locale, 'current_energy_consumption'), styles['SectionHeader']))
     summary_data = [
@@ -1562,25 +1842,30 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
         [tr(locale, 'thermal_efficiency'), format_percent(current.get('overall_thermal_efficiency', 0), digits=0)],
     ]
     story.append(Table(localize_matrix(summary_data, locale, styles, has_header=True), colWidths=[2.5 * inch, 3.0 * inch], style=create_table_style(locale=locale)))
-    story.append(Spacer(1, DS.SPACE_MD))
 
     fuel_breakdown_table = create_fuel_breakdown_table(current, styles, locale=locale)
     if fuel_breakdown_table:
-        story.append(Paragraph(tr(locale, 'fuel_breakdown'), styles['SubsectionHeader']))
-        story.append(fuel_breakdown_table)
-        story.append(Spacer(1, DS.SPACE_LG))
-    else:
-        story.append(Spacer(1, DS.SPACE_SM))
+        # Heading and table travel together so the heading cannot strand at a page foot.
+        story.append(KeepTogether([
+            Paragraph(tr(locale, 'fuel_breakdown'), styles['SubsectionHeader']),
+            fuel_breakdown_table,
+        ]))
 
-    story.append(Paragraph(tr(locale, 'health_safety'), styles['SectionHeader']))
-    story.append(create_health_section(health_impact, locale=locale))
-
+    # The whole health block is kept together; it used to orphan its heading at the
+    # bottom of page 1 and strand a two-row table alone on page 2.
+    health_block = [
+        Paragraph(tr(locale, 'health_safety'), styles['SectionHeader']),
+        create_health_section(health_impact, locale=locale),
+    ]
     if float(health_impact.get('pm25_peak', 0) or 0) > 25:
-        story.append(Spacer(1, DS.SPACE_SM))
+        health_block.append(Spacer(1, DS.SPACE_SM))
         advisory = f"<b>{tr(locale, 'health_advisory')}:</b> {tr(locale, 'health_advisory_message')}"
-        story.append(Paragraph(advisory, styles['WarningText']))
+        health_block.append(Paragraph(advisory, styles['WarningText']))
+    story.append(KeepTogether(health_block))
 
-    story.append(PageBreak())
+    # Start the next major section on a fresh page only when little room is left;
+    # an unconditional break used to leave near-empty pages behind short sections.
+    story.append(CondPageBreak(360))
 
     # ===== PAGE 2 =====
     story.append(Paragraph(tr(locale, 'comparative_analysis'), styles['PageTitle']))
@@ -1591,8 +1876,8 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
         emissions_chart = create_emissions_comparison_chart(current.get('annual_emissions', 0), alts_list, locale=locale)
         if cost_chart and emissions_chart:
             chart_row = [
-                Image(cost_chart, width=3.3 * inch, height=2.3 * inch),
-                Image(emissions_chart, width=3.3 * inch, height=2.3 * inch)
+                fit_image(cost_chart, 3.3 * inch, 2.5 * inch),
+                fit_image(emissions_chart, 3.3 * inch, 2.5 * inch)
             ]
             chart_table = Table([chart_row], colWidths=[3.4 * inch, 3.4 * inch])
             chart_table.setStyle(TableStyle([
@@ -1605,25 +1890,40 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
             story.append(chart_table)
             story.append(Spacer(1, DS.SPACE_LG))
 
+    # Don't strand this heading at a page foot. The table itself repeats its header
+    # row when it splits, so it only needs room for the heading plus a few rows.
+    story.append(CondPageBreak(150))
     story.append(Paragraph(tr(locale, 'comparison_table_title_residential'), styles['SectionHeader']))
     story.append(create_detailed_comparison_table(current, alternatives, styles, locale=locale))
 
-    story.append(PageBreak())
+    # Start the next major section on a fresh page only when little room is left;
+    # an unconditional break used to leave near-empty pages behind short sections.
+    story.append(CondPageBreak(360))
 
     # ===== PAGE 3 =====
-    story.append(Paragraph(tr(locale, 'strategic_recommendations'), styles['PageTitle']))
-    story.append(Spacer(1, DS.SPACE_MD))
-
     solar_alt = get_alternative_by_fuel(alternatives, 'Solar + BESS')
-    if solar_alt and isinstance(solar_alt.get('bess_system'), dict):
-        story.append(Paragraph(tr(locale, 'technical_specs_solar_bess'), styles['SectionHeader']))
-        bess_table = create_solar_specs_table(solar_alt['bess_system'], locale=locale)
-        if bess_table:
-            story.append(bess_table)
-            story.append(Spacer(1, DS.SPACE_LG))
-
-    story.append(Paragraph(tr(locale, 'top_recommendations'), styles['SectionHeader']))
+    bess_table = (
+        create_solar_specs_table(solar_alt['bess_system'], locale=locale)
+        if solar_alt and isinstance(solar_alt.get('bess_system'), dict)
+        else None
+    )
     recommendations = analysis_data.get('recommendations', [])
+
+    # Emit this page title only when the section has something under it, so an
+    # analysis with neither a BESS system nor ranked recommendations cannot produce
+    # a page carrying nothing but a heading.
+    if bess_table or recommendations:
+        story.append(Paragraph(tr(locale, 'strategic_recommendations'), styles['PageTitle']))
+        story.append(Spacer(1, DS.SPACE_MD))
+
+    if bess_table:
+        story.append(KeepTogether([
+            Paragraph(tr(locale, 'technical_specs_solar_bess'), styles['SectionHeader']),
+            bess_table,
+        ]))
+
+    if recommendations:
+        story.append(Paragraph(tr(locale, 'top_recommendations'), styles['SectionHeader']))
     for i, rec in enumerate(recommendations[:3], 1):
         if isinstance(rec, (list, tuple)) and len(rec) >= 3:
             fuel, score, rec_data = rec[0], rec[1], rec[2]
@@ -1636,10 +1936,10 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
 
         fuel_label = localize_fuel_name(fuel, locale)
         _rec_title = tr(locale, 'recommendation_title', rank=i, fuel=fuel_label, score=f"{float(score):.1f}")
-        story.append(Paragraph(
+        rec_heading = Paragraph(
             ml_markup(_rec_title, latin_font=FONT_PROFILES.get('default_bold')) if locale == 'ml' else _rec_title,
             styles['SubsectionHeader']
-        ))
+        )
         rec_data_table = [
             [tr(locale, 'monthly_cost'), format_currency(rec_data.get('monthly_cost', 0))],
             [tr(locale, 'annual_co2'), f"{float(rec_data.get('annual_co2', rec_data.get('annual_emissions_kg', 0)) or 0):,.0f} kg"],
@@ -1647,8 +1947,13 @@ def generate_residential_report(analysis_data, household_data, kitchen_data, ene
             # (would otherwise always print "0 months"). See REMEDIATION_STATUS.md.
             [tr(locale, 'health_risk'), localize_risk_category(rec_data.get('health_risk_category', 'Moderate'), locale)],
         ]
-        story.append(Table(localize_matrix(rec_data_table, locale, styles, has_header=False), colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)))
-        story.append(Spacer(1, DS.SPACE_MD))
+        # Each recommendation is one unit: the #3 block used to split across a page
+        # boundary, leaving a single "Health Risk" row alone on the final page.
+        story.append(KeepTogether([
+            rec_heading,
+            Table(localize_matrix(rec_data_table, locale, styles, has_header=False), colWidths=[2 * inch, 3.5 * inch], style=create_summary_table_style(locale=locale)),
+            Spacer(1, DS.SPACE_MD),
+        ]))
 
     doc.build(story, onFirstPage=add_page_number, onLaterPages=add_page_number)
     buffer.seek(0)
@@ -1691,14 +1996,15 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
     story.append(create_header_table(
         tr(locale, 'report_commercial_title'),
         tr(locale, 'report_commercial_subtitle', institution_type=institution_type),
-        styles
+        styles,
+        locale=locale
     ))
     story.append(Spacer(1, DS.SPACE_MD))
     story.append(Paragraph(
         f"{tr(locale, 'generated_on')}: {datetime.datetime.now().strftime('%d-%m-%Y')}",
         styles['FooterText']
     ))
-    story.append(Spacer(1, DS.SPACE_LG))
+    # SectionHeader already carries spaceBefore=SPACE_LG; an explicit Spacer doubled it.
 
     story.append(Paragraph(tr(locale, 'institution_profile'), styles['SectionHeader']))
     inst_profile = [
@@ -1708,7 +2014,6 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
         [tr(locale, 'working_days_month'), str(institution_data.get('working_days', 0) or 0)],
     ]
     story.append(Table(localize_matrix(inst_profile, locale, styles, has_header=False), colWidths=[2.2 * inch, 3.3 * inch], style=create_summary_table_style(locale=locale)))
-    story.append(Spacer(1, DS.SPACE_LG))
 
     story.append(Paragraph(tr(locale, 'current_energy_consumption'), styles['SectionHeader']))
     ops_summary = [
@@ -1722,17 +2027,17 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
         ops_summary.append([tr(locale, 'cost_per_serving'), f"₹{float(current.get('cost_per_serving', 0) or 0):.2f}"])
 
     story.append(Table(localize_matrix(ops_summary, locale, styles, has_header=True), colWidths=[2.5 * inch, 3 * inch], style=create_table_style(locale=locale)))
-    story.append(Spacer(1, DS.SPACE_MD))
 
     fuel_breakdown_table = create_fuel_breakdown_table(current, styles, locale=locale)
     if fuel_breakdown_table:
-        story.append(Paragraph(tr(locale, 'fuel_breakdown'), styles['SubsectionHeader']))
-        story.append(fuel_breakdown_table)
-        story.append(Spacer(1, DS.SPACE_MD))
+        story.append(KeepTogether([
+            Paragraph(tr(locale, 'fuel_breakdown'), styles['SubsectionHeader']),
+            fuel_breakdown_table,
+        ]))
 
     meal_breakdown = current.get('fuel_details', {}).get('meal_breakdown', {})
     if isinstance(meal_breakdown, dict) and meal_breakdown:
-        story.append(Paragraph(tr(locale, 'meal_wise_breakdown'), styles['SubsectionHeader']))
+        meal_heading = Paragraph(tr(locale, 'meal_wise_breakdown'), styles['SubsectionHeader'])
         meal_data = [[tr(locale, 'meal'), f"{tr(locale, 'monthly_energy')} (kWh)", f"{tr(locale, 'cost')} (₹)", tr(locale, 'percent')]]
         for meal, meal_values in meal_breakdown.items():
             meal_data.append([
@@ -1741,24 +2046,30 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
                 f"₹{float(meal_values.get('cost', 0) or 0):.0f}",
                 f"{float(meal_values.get('percentage', 0) or 0):.0f}%"
             ])
-        story.append(Table(
-            localize_matrix(meal_data, locale, styles, has_header=True),
-            colWidths=[1.5 * inch, 1.5 * inch, 1.5 * inch, 1.0 * inch],
-            style=create_table_style(header_color=DS.DARK_GREEN, locale=locale)
-        ))
-        story.append(Spacer(1, DS.SPACE_LG))
+        story.append(KeepTogether([
+            meal_heading,
+            Table(
+                localize_matrix(meal_data, locale, styles, has_header=True),
+                colWidths=[1.5 * inch, 1.5 * inch, 1.5 * inch, 1.0 * inch],
+                style=create_table_style(header_color=DS.DARK_GREEN, locale=locale)
+            ),
+        ]))
 
     health_impact = analysis_data.get('health_impact', {})
     if isinstance(health_impact, dict) and health_impact:
-        story.append(Paragraph(tr(locale, 'health_safety'), styles['SectionHeader']))
-        story.append(create_health_section(health_impact, locale=locale))
+        health_block = [
+            Paragraph(tr(locale, 'health_safety'), styles['SectionHeader']),
+            create_health_section(health_impact, locale=locale),
+        ]
         if safe_float(health_impact.get('pm25_peak', 0), 0) > 25:
-            story.append(Spacer(1, DS.SPACE_SM))
+            health_block.append(Spacer(1, DS.SPACE_SM))
             advisory = f"<b>{tr(locale, 'health_advisory')}:</b> {tr(locale, 'health_advisory_message')}"
-            story.append(Paragraph(advisory, styles['WarningText']))
-        story.append(Spacer(1, DS.SPACE_LG))
+            health_block.append(Paragraph(advisory, styles['WarningText']))
+        story.append(KeepTogether(health_block))
 
-    story.append(PageBreak())
+    # Start the next major section on a fresh page only when little room is left;
+    # an unconditional break used to leave near-empty pages behind short sections.
+    story.append(CondPageBreak(360))
 
     story.append(Paragraph(tr(locale, 'comparative_analysis'), styles['PageTitle']))
     story.append(Spacer(1, DS.SPACE_MD))
@@ -1767,8 +2078,8 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
         emissions_chart = create_emissions_comparison_chart(current.get('annual_emissions', 0), alts_list, locale=locale)
         if cost_chart and emissions_chart:
             chart_row = [
-                Image(cost_chart, width=3.3 * inch, height=2.3 * inch),
-                Image(emissions_chart, width=3.3 * inch, height=2.3 * inch)
+                fit_image(cost_chart, 3.3 * inch, 2.5 * inch),
+                fit_image(emissions_chart, 3.3 * inch, 2.5 * inch)
             ]
             chart_table = Table([chart_row], colWidths=[3.4 * inch, 3.4 * inch])
             chart_table.setStyle(TableStyle([
@@ -1781,18 +2092,29 @@ def generate_commercial_report(analysis_data, institution_data, kitchen_data, en
             story.append(chart_table)
             story.append(Spacer(1, DS.SPACE_LG))
 
+    story.append(CondPageBreak(150))
     story.append(Paragraph(tr(locale, 'comparison_table_title_commercial'), styles['SectionHeader']))
     story.append(create_detailed_comparison_table(current, alternatives, styles, locale=locale))
 
-    story.append(PageBreak())
-
-    story.append(Paragraph(tr(locale, 'technical_specifications'), styles['PageTitle']))
+    # The Technical Specifications title is only emitted when it actually has content.
+    # It used to be appended unconditionally while its sole section (Solar + BESS) was
+    # conditional, so an institution without a BESS recommendation got a page carrying
+    # nothing but the title.
     solar_alt = get_alternative_by_fuel(alternatives, 'Solar + BESS')
-    if solar_alt and isinstance(solar_alt.get('bess_system'), dict):
-        story.append(Paragraph(tr(locale, 'solar_bess'), styles['SectionHeader']))
-        bess_table = create_solar_specs_table(solar_alt['bess_system'], locale=locale)
-        if bess_table:
-            story.append(bess_table)
+    bess_table = (
+        create_solar_specs_table(solar_alt['bess_system'], locale=locale)
+        if solar_alt and isinstance(solar_alt.get('bess_system'), dict)
+        else None
+    )
+    if bess_table:
+        # Start this section on a fresh page only when little room is left; an
+        # unconditional break used to leave near-empty pages behind short sections.
+        story.append(CondPageBreak(360))
+        story.append(Paragraph(tr(locale, 'technical_specifications'), styles['PageTitle']))
+        story.append(KeepTogether([
+            Paragraph(tr(locale, 'solar_bess'), styles['SectionHeader']),
+            bess_table,
+        ]))
 
     doc.build(story, onFirstPage=add_page_number, onLaterPages=add_page_number)
     buffer.seek(0)

@@ -47,7 +47,8 @@ class Config:
     # Babel settings for internationalization
     LANGUAGES = {
         'en': 'English',
-        'ml': 'മലയാളം'
+        'ml': 'മലയാളം',
+        'hi': 'हिन्दी'
     }
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'Asia/Kolkata'

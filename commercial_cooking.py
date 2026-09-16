@@ -605,9 +605,9 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
             # Get biomass cost: form input > session custom > DB > fallback
             custom_prices = institution_data.get('custom_fuel_prices', {})
             form_biomass = data.get('biomass_cost_per_kg')
-            if form_biomass and float(form_biomass) > 0:
+            if form_biomass is not None and str(form_biomass).strip() != '' and float(form_biomass) >= 0:
                 biomass_cost_per_kg = float(form_biomass)
-            elif custom_prices.get('Biomass_unit_price'):
+            elif custom_prices.get('Biomass_unit_price') is not None:
                 biomass_cost_per_kg = float(custom_prices['Biomass_unit_price'])
             else:
                 biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')
@@ -786,7 +786,7 @@ def calculate_consumption_based(data, institution_data, kitchen_data, institutio
                 mixed_kg = float(data.get('mixed_monthly_kg_biomass') or 200)
                 # Get biomass cost: session custom > DB > fallback
                 _custom = institution_data.get('custom_fuel_prices', {})
-                if _custom.get('Biomass_unit_price'):
+                if _custom.get('Biomass_unit_price') is not None:
                     biomass_cost_per_kg = float(_custom['Biomass_unit_price'])
                 else:
                     biomass_price_data = db_helper.get_fuel_unit_price(district, 'Traditional Solid Biomass', 'Commercial')

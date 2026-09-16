@@ -1,19 +1,17 @@
-# Malayalam translations for Kerala Clean Cooking Tool.
-# Copyright (C) 2026 Vasudha Foundation & EMC Kerala
-# This file is distributed under the same license as the Kerala Clean
-# Cooking Tool
-# project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
-#
+# Hindi (hi) UI catalog.
+# MACHINE TRANSLATED - NOT YET REVIEWED BY A NATIVE HINDI SPEAKER.
+# Entries are written as normal (non-fuzzy) so the UI renders Hindi rather
+# than
+# falling back to English; review before public release.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kerala Clean Cooking Tool 1.0\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-29 15:01+0530\n"
+"Project-Id-Version: kerala-clean-cooking 1.0\n"
+"Report-Msgid-Bugs-To: info@vasudha-foundation.org\n"
+"POT-Creation-Date: 2026-09-15 13:25+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: ml\n"
-"Language-Team: ml <LL@li.org>\n"
+"Language: hi\n"
+"Language-Team: Hindi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -22,118 +20,114 @@ msgstr ""
 
 #: app.py:435 app.py:501
 msgid "An error occurred. Please try again."
-msgstr "ഒരു പിശക് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
+msgstr "एक त्रुटि हुई। कृपया पुनः प्रयास करें।"
 
 #: app.py:709 app.py:714
 msgid "An error occurred during the calculation. Please try again."
-msgstr "കണക്കുകൂട്ടലിനിടെ ഒരു പിശക് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
+msgstr "गणना के दौरान एक त्रुटि हुई। कृपया पुनः प्रयास करें।"
 
 #: app.py:797
 msgid "Your session has expired. Please start a new analysis."
-msgstr "നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി പുതിയ വിശകലനം ആരംഭിക്കുക."
+msgstr "आपका सेशन समाप्त हो गया है। कृपया नया विश्लेषण शुरू करें।"
 
 #: app.py:848
 msgid "An error occurred while submitting your feedback. Please try again."
-msgstr ""
-"നിങ്ങളുടെ അഭിപ്രായം സമർപ്പിക്കുന്നതിനിടെ ഒരു പിശക് സംഭവിച്ചു. ദയവായി "
-"വീണ്ടും ശ്രമിക്കുക."
+msgstr "आपकी प्रतिक्रिया सबमिट करते समय एक त्रुटि हुई। कृपया पुनः प्रयास करें।"
 
 #: app.py:899
 msgid "No analysis data is available. Please complete an analysis first."
-msgstr "വിശകലന ഡാറ്റ ലഭ്യമല്ല. ദയവായി ആദ്യം ഒരു വിശകലനം പൂർത്തിയാക്കുക."
+msgstr "कोई विश्लेषण डेटा उपलब्ध नहीं है। कृपया पहले एक विश्लेषण पूरा करें।"
 
 #: app.py:937
 msgid "An error occurred while generating the report. Please try again."
-msgstr "റിപ്പോർട്ട് തയ്യാറാക്കുന്നതിൽ പിശക് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
+msgstr "रिपोर्ट तैयार करते समय एक त्रुटि हुई। कृपया पुनः प्रयास करें।"
 
 #: app.py:1034
 msgid "Please provide institution type and name"
-msgstr "സ്ഥാപനത്തിന്റെ തരവും പേരും നൽകുക"
+msgstr "संस्थान का प्रकार और नाम दर्ज करें"
 
 #: app.py:1051
 msgid "Error processing institution profile"
-msgstr "സ്ഥാപന പ്രൊഫൈൽ പ്രോസസ് ചെയ്യുന്നതിൽ പിശക്"
+msgstr "संस्थान प्रोफ़ाइल प्रोसेस करने में त्रुटि"
 
 #: app.py:1081
 msgid "Error loading kitchen profile page"
-msgstr "അടുക്കള പ്രൊഫൈൽ പേജ് ലോഡ് ചെയ്യുന്നതിൽ പിശക്"
+msgstr "किचन प्रोफ़ाइल पेज लोड करने में त्रुटि"
 
 #: app.py:1135
 msgid "Error processing kitchen profile"
-msgstr "അടുക്കള പ്രൊഫൈൽ പ്രോസസ് ചെയ്യുന്നതിൽ പിശക്"
+msgstr "किचन प्रोफ़ाइल प्रोसेस करने में त्रुटि"
 
 #: app.py:1184
 msgid "Calculation failed"
-msgstr "കണക്കുകൂട്ടൽ പരാജയപ്പെട്ടു"
+msgstr "गणना विफल रही"
 
 #: app.py:1199
 msgid "Error processing calculation"
-msgstr "കണക്കുകൂട്ടൽ പ്രോസസ് ചെയ്യുന്നതിൽ പിശക്"
+msgstr "गणना प्रोसेस करने में त्रुटि"
 
 #: app.py:1307
 msgid "Error loading page"
-msgstr "പേജ് ലോഡ് ചെയ്യുന്നതിൽ പിശക്"
+msgstr "पेज लोड करने में त्रुटि"
 
 #: app.py:1402 app.py:1404 app.py:1406 templates/analysis.html:138
 #: templates/commercial_analysis.html:292
 msgid "Current"
-msgstr "നിലവിലെ"
+msgstr "वर्तमान"
 
 #: app.py:1514
 msgid "Page Not Found"
-msgstr "പേജ് ലഭ്യമല്ല"
+msgstr "पेज नहीं मिला"
 
 #: app.py:1515
 msgid "The requested page does not exist. It may have been moved or deleted."
-msgstr ""
-"അഭ്യർത്ഥിച്ച പേജ് നിലവിലില്ല. അത് മാറ്റുകയോ നീക്കം ചെയ്യുകയോ "
-"ചെയ്തിരിക്കാം."
+msgstr "अनुरोधित पेज मौजूद नहीं है। इसे स्थानांतरित या हटाया जा चुका हो सकता है।"
 
 #: app.py:1526
 msgid "A system error occurred. Please try again."
-msgstr "സംവിധാനത്തിൽ ഒരു പിശക് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
+msgstr "एक सिस्टम त्रुटि हुई। कृपया पुनः प्रयास करें।"
 
 #: app.py:1532
 msgid "Internal Server Error"
-msgstr "ആന്തരിക സംവിധാന പിശക്"
+msgstr "आंतरिक सर्वर त्रुटि"
 
 #: app.py:1533 templates/error.html:42
 msgid ""
 "A system error occurred. Our technical team has been notified and is "
 "working to resolve it."
 msgstr ""
-"സംവിധാനത്തിൽ ഒരു പിശക് സംഭവിച്ചു. സാങ്കേതിക സംഘത്തെ വിവരം "
-"അറിയിച്ചിട്ടുണ്ട്; പ്രശ്നം പരിഹരിക്കാനുള്ള നടപടികൾ സ്വീകരിച്ചുവരുന്നു."
+"एक सिस्टम त्रुटि हुई है। हमारी तकनीकी टीम को सूचित कर दिया गया है और वे "
+"इसे हल करने पर काम कर रहे हैं।"
 
 #: app.py:1540 templates/error.html:48
 msgid "Access Denied"
-msgstr "ആക്സസ് നിഷേധിച്ചു"
+msgstr "एक्सेस अस्वीकृत"
 
 #: app.py:1541 templates/error.html:49
 msgid "You are not authorised to access this page."
-msgstr "ഈ പേജ് ആക്സസ് ചെയ്യാൻ നിങ്ങൾക്ക് അധികാരമില്ല."
+msgstr "आप इस पेज तक पहुंचने के लिए अधिकृत नहीं हैं।"
 
 #: app.py:1549 app.py:1555
 msgid "Your session has expired. Please refresh the page and try again."
-msgstr "നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി പേജ് പുതുക്കി വീണ്ടും ശ്രമിക്കുക."
+msgstr "आपका सेशन समाप्त हो गया है। कृपया पेज रीफ्रेश करके पुनः प्रयास करें।"
 
 #: app.py:1554
 msgid "Session Expired"
-msgstr "സെഷൻ കാലാവധി കഴിഞ്ഞു"
+msgstr "सेशन समाप्त"
 
 #: app.py:1563 app.py:1568
 msgid "Bad Request"
-msgstr "അസാധുവായ അഭ്യർത്ഥന"
+msgstr "अमान्य अनुरोध"
 
 #: app.py:1569
 msgid ""
 "The request could not be processed because required information was "
 "missing."
-msgstr "ആവശ്യമായ വിവരങ്ങൾ ലഭ്യമല്ലാത്തതിനാൽ അഭ്യർത്ഥന പ്രോസസ് ചെയ്യാൻ കഴിഞ്ഞില്ല."
+msgstr "आवश्यक जानकारी उपलब्ध न होने के कारण अनुरोध प्रोसेस नहीं किया जा सका।"
 
 #: templates/analysis.html:3
 msgid "Analysis Results"
-msgstr "വിശകലന ഫലങ്ങൾ"
+msgstr "विश्लेषण परिणाम"
 
 #: templates/analysis.html:3 templates/commercial_analysis.html:3
 #: templates/commercial_energy_calculation.html:3
@@ -145,58 +139,58 @@ msgstr "Kerala Clean Cooking Insights Platform"
 
 #: templates/analysis.html:6 templates/commercial_analysis.html:7
 msgid "Step 4 of 4"
-msgstr "ഘട്ടം 4 ൽ 4"
+msgstr "4 में से चरण 4"
 
 #: templates/analysis.html:6 templates/analysis.html:7
 #: templates/commercial_analysis.html:7 templates/commercial_analysis.html:8
 msgid "Analysis Complete"
-msgstr "വിശകലനം പൂർത്തിയായി"
+msgstr "विश्लेषण पूर्ण"
 
 #: templates/analysis.html:15 templates/commercial_analysis.html:16
 #: templates/commercial_selection.html:218
 msgid "Low"
-msgstr "കുറവ്"
+msgstr "कम"
 
 #: templates/analysis.html:17 templates/commercial_analysis.html:18
 msgid "Moderate"
-msgstr "മിതമായത്"
+msgstr "मध्यम"
 
 #: templates/analysis.html:19 templates/commercial_analysis.html:20
 #: templates/commercial_selection.html:220
 msgid "High"
-msgstr "കൂടുതൽ"
+msgstr "उच्च"
 
 #: templates/analysis.html:21 templates/commercial_analysis.html:22
 msgid "Very High"
-msgstr "വളരെ കൂടുതൽ"
+msgstr "बहुत उच्च"
 
 #: templates/analysis.html:27
 msgid "Clean Cooking Analysis Report"
-msgstr "ക്ലീൻ കുക്കിംഗ് അനാലിസിസ് റിപ്പോർട്ട്"
+msgstr "स्वच्छ कुकिंग विश्लेषण रिपोर्ट"
 
 #: templates/analysis.html:29 templates/commercial_analysis.html:34
 msgid "Assessment with key recommendations"
-msgstr "പ്രധാന ശുപാർശകളോടുകൂടിയ വിലയിരുത്തൽ"
+msgstr "प्रमुख सिफारिशों के साथ मूल्यांकन"
 
 #: templates/analysis.html:38 templates/commercial_analysis.html:115
 msgid "Current Usage"
-msgstr "നിലവിലെ ഉപയോഗം"
+msgstr "वर्तमान उपयोग"
 
 #: templates/analysis.html:43 templates/commercial_analysis.html:120
 msgid "Fuel"
-msgstr "ഇന്ധനം"
+msgstr "ईंधन"
 
 #: templates/analysis.html:44 templates/commercial_analysis.html:121
 msgid "Quantity"
-msgstr "അളവ്"
+msgstr "मात्रा"
 
 #: templates/analysis.html:45 templates/commercial_analysis.html:122
 msgid "Consumption"
-msgstr "ഉപഭോഗം"
+msgstr "खपत"
 
 #: templates/analysis.html:45 templates/commercial_analysis.html:122
 msgid "Joules"
-msgstr "ജൂൾസ്"
+msgstr "जूल"
 
 #: templates/analysis.html:46 templates/analysis.html:109
 #: templates/analysis.html:296 templates/analysis.html:338
@@ -206,27 +200,27 @@ msgstr "ജൂൾസ്"
 #: templates/commercial_analysis.html:501
 #: templates/commercial_analysis.html:558
 msgid "Monthly Cost"
-msgstr "പ്രതിമാസ ചെലവ്"
+msgstr "मासिक लागत"
 
 #: templates/analysis.html:47 templates/commercial_analysis.html:124
 msgid "Annual Emissions"
-msgstr "വാർഷിക ഉദ്‌വമനം"
+msgstr "वार्षिक उत्सर्जन"
 
 #: templates/analysis.html:85 templates/commercial_analysis.html:190
 msgid "Total"
-msgstr "ആകെ"
+msgstr "कुल"
 
 #: templates/analysis.html:101 templates/commercial_analysis.html:252
 msgid "Cooking Energy Use by Fuel"
-msgstr "ഇന്ധനം തിരിച്ചുള്ള പാചക ഊർജ്ജ ഉപയോഗം"
+msgstr "ईंधन के अनुसार कुकिंग ऊर्जा का उपयोग"
 
 #: templates/analysis.html:103 templates/commercial_analysis.html:255
 msgid "Comparative Cost and Emission Estimates"
-msgstr "താരതമ്യേനയുള്ള ചെലവ്, എമിഷൻ കണക്കുകൾ"
+msgstr "तुलनात्मक लागत और उत्सर्जन अनुमान"
 
 #: templates/analysis.html:108 templates/commercial_analysis.html:261
 msgid "Energy Source"
-msgstr "ഊർജ്ജ സ്രോതസ്സ്"
+msgstr "ऊर्जा स्रोत"
 
 #: templates/analysis.html:111 templates/analysis.html:302
 #: templates/analysis.html:344 templates/analysis.html:395
@@ -235,11 +229,11 @@ msgstr "ഊർജ്ജ സ്രോതസ്സ്"
 #: templates/commercial_analysis.html:507
 #: templates/commercial_analysis.html:563
 msgid "Annual CO₂"
-msgstr "വാർഷിക CO₂"
+msgstr "वार्षिक CO₂"
 
 #: templates/analysis.html:113 templates/commercial_analysis.html:266
 msgid "Thermal Efficiency"
-msgstr "താപ കാര്യക്ഷമത"
+msgstr "तापीय दक्षता"
 
 #: templates/analysis.html:114 templates/analysis.html:312
 #: templates/analysis.html:357 templates/analysis.html:406
@@ -248,15 +242,15 @@ msgstr "താപ കാര്യക്ഷമത"
 #: templates/commercial_analysis.html:520
 #: templates/commercial_analysis.html:574
 msgid "Health Risk"
-msgstr "ആരോഗ്യ അപകടസാധ്യത"
+msgstr "स्वास्थ्य जोखिम"
 
 #: templates/analysis.html:117 templates/commercial_analysis.html:271
 msgid "Status"
-msgstr "സ്റ്റാറ്റസ്"
+msgstr "स्थिति"
 
 #: templates/analysis.html:122 templates/commercial_analysis.html:276
 msgid "Your Current Fuel Use"
-msgstr "നിങ്ങളുടെ നിലവിലെ ഇന്ധന ഉപയോഗം"
+msgstr "आपका वर्तमान ईंधन उपयोग"
 
 #: templates/analysis.html:146 templates/commercial_analysis.html:300
 msgid ""
@@ -264,33 +258,32 @@ msgid ""
 "installation, not from daily use. During operation, this energy source "
 "produces zero direct emissions."
 msgstr ""
-"കാണിച്ചിരിക്കുന്ന ഉദ്‌വമനം നിർമ്മാണത്തിൽ നിന്നും ഇൻസ്റ്റാളേഷനിൽ "
-"നിന്നുമുള്ള ലൈഫ് സൈക്കിൾ ഉദ്‌വമനമാണ്, അല്ലാതെ ദൈനംദിന ഉപയോഗത്തിൽ "
-"നിന്നുള്ളതല്ല. പ്രവർത്തിക്കുമ്പോൾ, ഈ ഊർജ്ജ സ്രോതസ്സ് നേരിട്ടുള്ള ഉദ്‌വമനം"
-" ഉണ്ടാക്കുന്നില്ല."
+"दिखाए गए उत्सर्जन निर्माण और स्थापना से होने वाले जीवनचक्र उत्सर्जन हैं, "
+"न कि दैनिक उपयोग से। संचालन के दौरान, यह ऊर्जा स्रोत शून्य प्रत्यक्ष "
+"उत्सर्जन पैदा करता है।"
 
 #: templates/analysis.html:170 templates/commercial_analysis.html:227
 #: templates/commercial_analysis.html:324
 msgid "Cost"
-msgstr "ചെലവ്"
+msgstr "लागत"
 
 #: templates/analysis.html:171 templates/analysis.html:179
 #: templates/commercial_analysis.html:325
 #: templates/commercial_analysis.html:338
 msgid "less"
-msgstr "കുറവ്"
+msgstr "कम"
 
 #: templates/analysis.html:172 templates/analysis.html:180
 #: templates/commercial_analysis.html:327
 #: templates/commercial_analysis.html:339
 msgid "more"
-msgstr "കൂടുതൽ"
+msgstr "अधिक"
 
 #: templates/analysis.html:172 templates/analysis.html:181
 #: templates/commercial_analysis.html:329
 #: templates/commercial_analysis.html:341
 msgid "Same"
-msgstr "സമാനം"
+msgstr "समान"
 
 #: templates/analysis.html:178 templates/commercial_analysis.html:336
 msgid "CO₂"
@@ -298,35 +291,35 @@ msgstr "CO₂"
 
 #: templates/analysis.html:198 templates/commercial_analysis.html:359
 msgid "Technical Specifications: Solar PV + BESS System"
-msgstr "സാങ്കേതിക വിശദാംശങ്ങൾ: സോളാർ PV + BESS സംവിധാനം"
+msgstr "तकनीकी विवरण: सोलर PV + BESS सिस्टम"
 
 #: templates/analysis.html:203 templates/commercial_analysis.html:364
 msgid "Specification"
-msgstr "വിശദാംശങ്ങൾ"
+msgstr "विशिष्टता"
 
 #: templates/analysis.html:204 templates/commercial_analysis.html:365
 msgid "Value"
-msgstr "മൂല്യം"
+msgstr "मान"
 
 #: templates/analysis.html:205 templates/commercial_analysis.html:366
 msgid "Description"
-msgstr "വിവരണം"
+msgstr "विवरण"
 
 #: templates/analysis.html:210 templates/commercial_analysis.html:371
 msgid "Solar PV System Size"
-msgstr "സോളാർ PV സംവിധാനത്തിന്റെ ശേഷി"
+msgstr "सोलर PV सिस्टम क्षमता"
 
 #: templates/analysis.html:212 templates/commercial_analysis.html:373
 msgid "Capacity required based on daily load"
-msgstr "പ്രതിദിന ലോഡ് അടിസ്ഥാനമാക്കി ആവശ്യമായ ശേഷി"
+msgstr "दैनिक लोड के आधार पर आवश्यक क्षमता"
 
 #: templates/analysis.html:215 templates/commercial_analysis.html:376
 msgid "Battery Storage"
-msgstr "ബാറ്ററി സ്റ്റോറേജ്"
+msgstr "बैटरी स्टोरेज"
 
 #: templates/analysis.html:217 templates/commercial_analysis.html:378
 msgid "Units"
-msgstr "യൂണിറ്റുകൾ"
+msgstr "यूनिट्स"
 
 #: templates/analysis.html:217 templates/commercial_analysis.html:378
 msgid "Modules"
@@ -334,215 +327,213 @@ msgstr "Modules"
 
 #: templates/analysis.html:221 templates/commercial_analysis.html:382
 msgid "Roof Area Required"
-msgstr "ആവശ്യമായ റൂഫ് ഏരിയ"
+msgstr "आवश्यक छत क्षेत्र"
 
 #: templates/analysis.html:223 templates/commercial_analysis.html:384
 msgid "Approx"
-msgstr "ഏകദേശം"
+msgstr "लगभग"
 
 #: templates/analysis.html:226 templates/commercial_analysis.html:387
 msgid "Daily Generation"
-msgstr "പ്രതിദിന ഉൽപ്പാദനം"
+msgstr "दैनिक उत्पादन"
 
 #: templates/analysis.html:228 templates/commercial_analysis.html:389
 msgid "Based on Kerala GHI"
-msgstr "കേരളത്തിലെ GHI അടിസ്ഥാനമാക്കി"
+msgstr "केरल के GHI के आधार पर"
 
 #: templates/analysis.html:232 templates/commercial_analysis.html:393
 msgid "Grid Backup Required"
-msgstr "ഗ്രിഡ് ബാക്കപ്പ് ആവശ്യമാണ്"
+msgstr "ग्रिड बैकअप आवश्यक"
 
 #: templates/analysis.html:234 templates/commercial_analysis.html:395
 msgid "of daily energy drawn from grid due to area limit"
-msgstr "സ്ഥലപരിമിതി കാരണം ഗ്രിഡിൽ നിന്ന് എടുക്കുന്ന പ്രതിദിന ഊർജ്ജത്തിന്റെ"
+msgstr "क्षेत्रफल की सीमा के कारण ग्रिड से ली जाने वाली दैनिक ऊर्जा का"
 
 #: templates/analysis.html:238 templates/commercial_analysis.html:399
 msgid "Total Upfront Cost"
-msgstr "ആകെ മുൻകൂർ ചെലവ്"
+msgstr "कुल अग्रिम लागत"
 
 #: templates/analysis.html:240 templates/commercial_analysis.html:401
 msgid "Solar Panels + Inverter + Batteries + Installation"
-msgstr "സോളാർ പാനലുകൾ + ഇൻവെർട്ടർ + ബാറ്ററികൾ + ഇൻസ്റ്റാളേഷൻ"
+msgstr "सोलर पैनल + इन्वर्टर + बैटरी + इंस्टॉलेशन"
 
 #: templates/analysis.html:245 templates/commercial_analysis.html:406
 msgid "Monthly EMI / Cost"
-msgstr "പ്രതിമാസ EMI / ചെലവ്"
+msgstr "मासिक EMI / लागत"
 
 #: templates/analysis.html:247 templates/commercial_analysis.html:408
 msgid "Levelised cost over 25 years"
-msgstr "25 വർഷത്തെ ലെവലൈസ്ഡ് ചെലവ്"
+msgstr "25 वर्षों में समतलीकृत लागत"
 
 #: templates/analysis.html:247 templates/commercial_analysis.html:408
 msgid "Loan"
-msgstr "ലോൺ"
+msgstr "ऋण"
 
 #: templates/analysis.html:248 templates/commercial_analysis.html:409
 #: templates/household_profile.html:189 templates/household_profile.html:190
 #: templates/household_profile.html:191 templates/household_profile.html:192
 #: templates/household_profile.html:193
 msgid "years"
-msgstr "വർഷങ്ങൾ"
+msgstr "वर्ष"
 
 #: templates/analysis.html:262 templates/commercial_analysis.html:423
 #: templates/info.html:82
 msgid "Strategic Recommendations"
-msgstr "തന്ത്രപരമായ ശുപാർശകൾ"
+msgstr "रणनीतिक सिफारिशें"
 
 #: templates/analysis.html:278 templates/commercial_analysis.html:439
 msgid "Most Cost-Effective"
-msgstr "ഏറ്റവും ചെലവ് കുറഞ്ഞത്"
+msgstr "सबसे अधिक लागत प्रभावी"
 
 #: templates/analysis.html:281 templates/commercial_analysis.html:442
 msgid "Lowest Emissions"
-msgstr "ഏറ്റവും കുറഞ്ഞ ഉദ്‌വമനം"
+msgstr "सबसे कम उत्सर्जन"
 
 #: templates/analysis.html:284 templates/analysis.html:417
 #: templates/commercial_analysis.html:445
 #: templates/commercial_analysis.html:586
 msgid "Best Overall"
-msgstr "മൊത്തത്തിൽ മികച്ചത്"
+msgstr "कुल मिलाकर सर्वश्रेष्ठ"
 
 #: templates/analysis.html:307 templates/analysis.html:351
 #: templates/analysis.html:401 templates/commercial_analysis.html:469
 #: templates/commercial_analysis.html:514
 #: templates/commercial_analysis.html:569
 msgid "Efficiency"
-msgstr "കാര്യക്ഷമത"
+msgstr "दक्षता"
 
 #: templates/analysis.html:323 templates/commercial_analysis.html:485
 msgid "You Save"
-msgstr "നിങ്ങൾ ലാഭിക്കുന്നു"
+msgstr "आपकी बचत"
 
 #: templates/analysis.html:368 templates/commercial_analysis.html:531
 msgid "You Reduce"
-msgstr "നിങ്ങൾ കുറയ്ക്കുന്നു"
+msgstr "आप कम करते हैं"
 
 #: templates/analysis.html:385 templates/commercial_analysis.html:553
 msgid "Score"
-msgstr "സ്കോർ"
+msgstr "स्कोर"
 
 #: templates/analysis.html:416 templates/commercial_analysis.html:584
 msgid "Balance"
-msgstr "ബാലൻസ്"
+msgstr "संतुलन"
 
 #: templates/analysis.html:421 templates/commercial_analysis.html:591
 msgid "No rating available"
-msgstr "റേറ്റിംഗ് ലഭ്യമല്ല"
+msgstr "कोई रेटिंग उपलब्ध नहीं"
 
 #: templates/analysis.html:429 templates/commercial_analysis.html:599
 msgid "No alternative recommendations available."
-msgstr "ഇതര ശുപാർശകളൊന്നും ലഭ്യമല്ല."
+msgstr "कोई वैकल्पिक अनुशंसा उपलब्ध नहीं है।"
 
 #: templates/analysis.html:437 templates/commercial_analysis.html:608
 msgid "Monthly Operating Cost Comparison"
-msgstr "പ്രതിമാസ പ്രവർത്തന ചെലവ് താരതമ്യം"
+msgstr "मासिक परिचालन लागत की तुलना"
 
 #: templates/analysis.html:438 templates/analysis.html:449
 #: templates/commercial_analysis.html:609
 #: templates/commercial_analysis.html:620
 msgid "Baseline: Current setup"
-msgstr "അടിസ്ഥാനം: നിലവിലെ സജ്ജീകരണം"
+msgstr "बेसलाइन: वर्तमान सेटअप"
 
 #: templates/analysis.html:441 templates/commercial_analysis.html:612
 msgid "Bar chart comparing monthly operating costs across fuel types"
-msgstr ""
-"ഇന്ധന തരങ്ങൾ തമ്മിലുള്ള പ്രതിമാസ പ്രവർത്തന ചെലവുകൾ താരതമ്യം ചെയ്യുന്ന ബാർ"
-" ചാർട്ട്"
+msgstr "विभिन्न ईंधन प्रकारों में मासिक परिचालन लागत की तुलना करने वाला बार चार्ट"
 
 #: templates/analysis.html:442 templates/commercial_analysis.html:613
 msgid "Lower bars indicate a lower monthly operating cost (₹/month)."
-msgstr "താഴ്ന്ന ബാറുകൾ കുറഞ്ഞ മാസിക പ്രവർത്തന ചെലവിനെ സൂചിപ്പിക്കുന്നു (₹/മാസം)."
+msgstr "छोटे बार कम मासिक परिचालन लागत को दर्शाते हैं (₹/माह)।"
 
 #: templates/analysis.html:448 templates/commercial_analysis.html:619
 msgid "Annual Carbon Footprint Comparison"
-msgstr "വാർഷിക കാർബൺ ഫുട്പ്രിന്റ് താരതമ്യം"
+msgstr "वार्षिक कार्बन फुटप्रिंट की तुलना"
 
 #: templates/analysis.html:452 templates/commercial_analysis.html:623
 msgid "Bar chart comparing annual CO₂ emissions across fuel types"
-msgstr "ഇന്ധന തരങ്ങൾ തമ്മിലുള്ള വാർഷിക CO₂ ഉദ്‌വമനം താരതമ്യം ചെയ്യുന്ന ബാർ ചാർട്ട്"
+msgstr "विभिन्न ईंधन प्रकारों के वार्षिक CO₂ उत्सर्जन की तुलना करने वाला बार चार्ट"
 
 #: templates/analysis.html:453 templates/commercial_analysis.html:624
 msgid "Values shown as kg CO₂ per year; lower is better."
-msgstr "മൂല്യങ്ങൾ kg CO₂/വർഷം ആയി കാണിക്കുന്നു; കുറഞ്ഞത് അഭികാമ്യം."
+msgstr "मान kg CO₂ प्रति वर्ष के रूप में दिखाए गए हैं; जितना कम उतना बेहतर।"
 
 #: templates/analysis.html:463 templates/commercial_analysis.html:695
 msgid "Next Steps & Actions"
-msgstr "അടുത്ത ഘട്ടങ്ങളും നടപടികളും"
+msgstr "अगले कदम और कार्रवाइयां"
 
 #: templates/analysis.html:467 templates/commercial_analysis.html:699
 #: templates/info.html:154
 msgid "Download Report"
-msgstr "റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക"
+msgstr "रिपोर्ट डाउनलोड करें"
 
 #: templates/analysis.html:472 templates/commercial_analysis.html:704
 #: templates/info.html:162
 msgid "Share Results"
-msgstr "ഫലങ്ങൾ പങ്കിടുക"
+msgstr "परिणाम साझा करें"
 
 #: templates/analysis.html:478 templates/commercial_analysis.html:710
 msgid "Next Step"
-msgstr "അടുത്ത ഘട്ടം"
+msgstr "अगला कदम"
 
 #: templates/analysis.html:487 templates/commercial_analysis.html:719
 msgid "Next Steps:"
-msgstr "അടുത്ത ഘട്ടങ്ങൾ:"
+msgstr "अगले कदम:"
 
 #: templates/analysis.html:489 templates/commercial_analysis.html:721
 msgid "Contact local suppliers for price quotations on the recommended solutions"
 msgstr ""
-"ശുപാർശ ചെയ്യുന്ന പരിഹാരങ്ങളുടെ വിലവിവരങ്ങൾക്കായി പ്രാദേശിക "
-"വിതരണക്കാരുമായി ബന്ധപ്പെടുക"
+"अनुशंसित समाधानों पर मूल्य उद्धरण के लिए स्थानीय आपूर्तिकर्ताओं से संपर्क"
+" करें"
 
 #: templates/analysis.html:490 templates/commercial_analysis.html:722
 msgid "Consult with energy professionals for installation planning"
-msgstr "ഇൻസ്റ്റാളേഷൻ പ്ലാനിംഗിനായി എനർജി പ്രൊഫഷണലുകളുമായി കൂടിയാലോചിക്കുക"
+msgstr "स्थापना योजना के लिए ऊर्जा पेशेवरों से परामर्श करें"
 
 #: templates/analysis.html:491 templates/commercial_analysis.html:723
 msgid "Review the applicable government subsidy schemes for clean cooking"
-msgstr "ക്ലീൻ കുക്കിംഗിനായി ബാധകമായ സർക്കാർ സബ്‌സിഡി സ്കീമുകൾ അവലോകനം ചെയ്യുക"
+msgstr "स्वच्छ खाना पकाने के लिए लागू सरकारी सब्सिडी योजनाओं की समीक्षा करें"
 
 #: templates/analysis.html:492 templates/commercial_analysis.html:724
 msgid "Monitor your energy consumption and costs over time"
-msgstr "കാലക്രമേണ നിങ്ങളുടെ ഊർജ്ജ ഉപഭോഗവും ചെലവുകളും നിരീക്ഷിക്കുക"
+msgstr "समय के साथ अपनी ऊर्जा खपत और लागत की निगरानी करें"
 
 #: templates/analysis.html:505 templates/commercial_analysis.html:738
 msgid "Contributing to Clean Cooking Energy Research"
-msgstr "ക്ലീൻ കുക്കിംഗ് എനർജി ഗവേഷണത്തിന് സംഭാവന നൽകുന്നു"
+msgstr "स्वच्छ कुकिंग ऊर्जा अनुसंधान में योगदान"
 
 #: templates/analysis.html:508
 msgid ""
 "anonymised data helps strengthen cooking-energy policy in Kerala through "
 "research-backed methods that support a sustainable energy transition"
 msgstr ""
-"ഗവേഷണാധിഷ്ഠിത രീതികളിലൂടെ സുസ്ഥിര ഊർജ്ജ പരിവർത്തനത്തെ പിന്തുണച്ചുകൊണ്ട്, "
-"കേരളത്തിലെ പാചക ഊർജ്ജ നയം ശക്തിപ്പെടുത്താൻ അജ്ഞാതമാക്കിയ ഡാറ്റ "
-"സഹായിക്കുന്നു"
+"अज्ञात किया गया डेटा शोध-आधारित तरीकों के ज़रिए केरल में खाना पकाने की "
+"ऊर्जा नीति को मजबूत करने में मदद करता है, जो एक स्थायी ऊर्जा बदलाव को "
+"समर्थन देते हैं"
 
 #: templates/analysis.html:513 templates/commercial_analysis.html:746
 msgid "Analysis ID:"
-msgstr "അനാലിസിസ് ഐഡി:"
+msgstr "विश्लेषण आईडी:"
 
 #: templates/analysis.html:514 templates/commercial_analysis.html:747
 msgid "Generated:"
-msgstr "ജനറേറ്റ് ചെയ്തത്:"
+msgstr "उत्पन्न:"
 
 #: templates/analysis_selection.html:3
 msgid "Choose Your Analysis"
-msgstr "നിങ്ങളുടെ വിശകലനം തിരഞ്ഞെടുക്കുക"
+msgstr "अपना विश्लेषण चुनें"
 
 #: templates/analysis_selection.html:12
 msgid "Select the cooking category that best reflects your usage"
 msgstr ""
-"നിങ്ങളുടെ ഉപയോഗത്തെ ഏറ്റവും മികച്ച രീതിയിൽ പ്രതിഫലിപ്പിക്കുന്ന പാചക "
-"വിഭാഗം തിരഞ്ഞെടുക്കുക"
+"खाना पकाने की उस श्रेणी का चयन करें जो आपके उपयोग को सबसे अच्छी तरह "
+"दर्शाती है"
 
 #: templates/analysis_selection.html:22 templates/analysis_selection.html:26
 msgid "Household Cooking"
-msgstr "ഗാർഹിക പാചകം"
+msgstr "घरेलू खाना पकाना"
 
 #: templates/analysis_selection.html:34 templates/analysis_selection.html:56
 msgid "Select"
-msgstr "തിരഞ്ഞെടുക്കുക"
+msgstr "चुनें"
 
 #: templates/analysis_selection.html:46 templates/analysis_selection.html:49
 #: templates/commercial_analysis.html:30
@@ -550,11 +541,11 @@ msgstr "തിരഞ്ഞെടുക്കുക"
 #: templates/commercial_kitchen_profile.html:17
 #: templates/commercial_selection.html:17
 msgid "Commercial & Institutional Cooking"
-msgstr "വാണിജ്യ, സ്ഥാപന പാചകം"
+msgstr "वाणिज्यिक और संस्थागत कुकिंग"
 
 #: templates/analysis_selection.html:51
 msgid "(Schools, Hotels, Factories, and Community Kitchens)"
-msgstr "(സ്കൂളുകൾ, ഹോട്ടലുകൾ, ഫാക്ടറികൾ, കമ്മ്യൂണിറ്റി കിച്ചണുകൾ)"
+msgstr "(स्कूल, होटल, कारखाने और सामुदायिक रसोई)"
 
 #: templates/base.html:7
 msgid ""
@@ -562,9 +553,9 @@ msgid ""
 "Compare fuels, costs, and emissions to find cleaner, more affordable "
 "cooking options."
 msgstr ""
-"കേരളത്തിലെ നിങ്ങളുടെ ഗാർഹിക അല്ലെങ്കിൽ വാണിജ്യ പാചക ഊർജ്ജ ഉപയോഗം വിശകലനം "
-"ചെയ്യുക. കൂടുതൽ വൃത്തിയുള്ളതും താങ്ങാനാവുന്നതുമായ പാചക ഓപ്ഷനുകൾ "
-"കണ്ടെത്താൻ ഇന്ധനങ്ങൾ, ചെലവുകൾ, ഉദ്‌വമനം എന്നിവ താരതമ്യം ചെയ്യുക."
+"केरल में अपने घरेलू या व्यावसायिक खाना पकाने के ऊर्जा उपयोग का विश्लेषण "
+"करें। स्वच्छ, अधिक किफायती खाना पकाने के विकल्प खोजने के लिए ईंधन, लागत "
+"और उत्सर्जन की तुलना करें।"
 
 #: templates/base.html:8 templates/base.html:93 templates/contact_us.html:3
 msgid "Kerala Clean Cooking Tool"
@@ -589,11 +580,11 @@ msgstr "English"
 #: templates/base.html:157 templates/commercial_energy_calculation.html:562
 #: templates/energy_calculation.html:582
 msgid "Close"
-msgstr "അടയ്ക്കുക"
+msgstr "बंद करें"
 
 #: templates/base.html:176
 msgid "Thiruvananthapuram | Kerala"
-msgstr "തിരുവനന്തപുരം | കേരളം"
+msgstr "तिरुवनंतपुरम | केरल"
 
 #: templates/base.html:181
 msgid "© 2025 Vasudha Foundation & EMC Kerala."
@@ -601,69 +592,69 @@ msgstr "© 2025 Vasudha Foundation & EMC Kerala."
 
 #: templates/base.html:225
 msgid "Leave this page?"
-msgstr "ഈ പേജിൽ നിന്ന് പോകണോ?"
+msgstr "इस पेज से जाएं?"
 
 #: templates/base.html:226
 msgid "Your changes may not be saved."
-msgstr "നിങ്ങൾ വരുത്തിയ മാറ്റങ്ങൾ സേവ് ചെയ്യപ്പെടണമെന്നില്ല."
+msgstr "आपके किए गए बदलाव सेव नहीं हो सकते हैं।"
 
 #: templates/base.html:230
 msgid "Leave"
-msgstr "പോകുക"
+msgstr "छोड़ें"
 
 #: templates/base.html:233
 msgid "Stay on Page"
-msgstr "ഈ പേജിൽ തുടരുക"
+msgstr "पेज पर बने रहें"
 
 #: templates/commercial_analysis.html:3
 msgid "Commercial & Institutional Analysis Results"
-msgstr "കൊമേഴ്സ്യൽ & ഇൻസ്റ്റിറ്റ്യൂഷണൽ അനാലിസിസ് റിസൾട്ട്സ്"
+msgstr "वाणिज्यिक और संस्थागत विश्लेषण परिणाम"
 
 #: templates/commercial_analysis.html:32
 msgid "Commercial & Institutional Cooking Analysis Report"
-msgstr "കൊമേഴ്സ്യൽ & ഇൻസ്റ്റിറ്റ്യൂഷണൽ കുക്കിംഗ് അനാലിസിസ് റിപ്പോർട്ട്"
+msgstr "वाणिज्यिक और संस्थागत कुकिंग विश्लेषण रिपोर्ट"
 
 #: templates/commercial_analysis.html:35 templates/commercial_analysis.html:47
 msgid "Institution Type"
-msgstr "സ്ഥാപനത്തിന്റെ തരം"
+msgstr "संस्थान का प्रकार"
 
 #: templates/commercial_analysis.html:44 templates/commercial_selection.html:6
 #: templates/commercial_selection.html:7 templates/commercial_selection.html:22
 msgid "Institution Profile"
-msgstr "സ്ഥാപനത്തിന്റെ പ്രൊഫൈൽ"
+msgstr "संस्थान प्रोफ़ाइल"
 
 #: templates/commercial_analysis.html:51
 #: templates/commercial_selection.html:185
 msgid "Daily Servings"
-msgstr "പ്രതിദിന സെർവിംഗുകൾ"
+msgstr "दैनिक सर्विंग्स"
 
 #: templates/commercial_analysis.html:55
 msgid "Working Days/Month"
-msgstr "പ്രവൃത്തി ദിവസങ്ങൾ/മാസം"
+msgstr "कार्य दिवस/माह"
 
 #: templates/commercial_analysis.html:59
 msgid "Calculation Method"
-msgstr "കണക്കുകൂട്ടൽ രീതി"
+msgstr "गणना विधि"
 
 #: templates/commercial_analysis.html:73
 msgid "Selected Dishes"
-msgstr "തിരഞ്ഞെടുത്ത വിഭവങ്ങൾ"
+msgstr "चयनित व्यंजन"
 
 #: templates/commercial_analysis.html:78
 #: templates/commercial_energy_calculation.html:226
 #: templates/energy_calculation.html:230
 msgid "Category"
-msgstr "വിഭാഗം"
+msgstr "श्रेणी"
 
 #: templates/commercial_analysis.html:79
 msgid "Dish Name"
-msgstr "വിഭവത്തിന്റെ പേര്"
+msgstr "डिश का नाम"
 
 #: templates/commercial_analysis.html:80
 #: templates/commercial_energy_calculation.html:228
 #: templates/energy_calculation.html:232
 msgid "Fuel Type"
-msgstr "ഇന്ധനത്തിന്റെ തരം"
+msgstr "ईंधन का प्रकार"
 
 #: templates/commercial_analysis.html:90
 #: templates/commercial_energy_calculation.html:259
@@ -679,7 +670,7 @@ msgstr "PNG"
 
 #: templates/commercial_analysis.html:94
 msgid "Grid Electricity"
-msgstr "ഗ്രിഡ് വൈദ്യുതി"
+msgstr "ग्रिड बिजली"
 
 #: templates/commercial_analysis.html:96
 #: templates/commercial_energy_calculation.html:262
@@ -692,80 +683,80 @@ msgstr "Biomass"
 
 #: templates/commercial_analysis.html:177
 msgid "Source:"
-msgstr "ഉറവിടം:"
+msgstr "स्रोत:"
 
 #: templates/commercial_analysis.html:200
 msgid "Per Serving Metrics"
-msgstr "പെർ സെർവിംഗ് മെട്രിക്സ്"
+msgstr "प्रति सर्विंग मेट्रिक्स"
 
 #: templates/commercial_analysis.html:220
 msgid "Meal-wise Energy Breakdown"
-msgstr "മീൽ-വൈസ് എനർജി ബ്രേക്ക്ഡൗൺ"
+msgstr "भोजन-वार ऊर्जा विवरण"
 
 #: templates/commercial_analysis.html:225
 msgid "Meal"
-msgstr "ഭക്ഷണം"
+msgstr "भोजन"
 
 #: templates/commercial_analysis.html:226
 #: templates/commercial_energy_calculation.html:19
 msgid "Energy"
-msgstr "ഊർജ്ജം"
+msgstr "ऊर्जा"
 
 #: templates/commercial_analysis.html:228
 msgid "Percent of Total"
-msgstr "ആകെ ശതമാനം"
+msgstr "कुल का प्रतिशत"
 
 #: templates/commercial_analysis.html:632
 msgid "Health & Safety Evaluation"
-msgstr "ആരോഗ്യ സുരക്ഷാ വിലയിരുത്തൽ"
+msgstr "स्वास्थ्य और सुरक्षा मूल्यांकन"
 
 #: templates/commercial_analysis.html:639 templates/kitchen_profile.html:248
 msgid "Low Risk"
-msgstr "കുറഞ്ഞ അപകടസാധ്യത"
+msgstr "कम जोखिम"
 
 #: templates/commercial_analysis.html:641 templates/kitchen_profile.html:251
 msgid "Moderate Risk"
-msgstr "മിതമായ അപകടസാധ്യത"
+msgstr "मध्यम जोखिम"
 
 #: templates/commercial_analysis.html:643 templates/kitchen_profile.html:254
 msgid "High Risk"
-msgstr "ഉയർന്ന അപകടസാധ്യത"
+msgstr "उच्च जोखिम"
 
 #: templates/commercial_analysis.html:645 templates/kitchen_profile.html:257
 msgid "Very High Risk"
-msgstr "വളരെ ഉയർന്ന അപകടസാധ്യത"
+msgstr "बहुत उच्च जोखिम"
 
 #: templates/commercial_analysis.html:648
 msgid "Health Risk Level"
-msgstr "ആരോഗ്യ അപകടസാധ്യത നില"
+msgstr "स्वास्थ्य जोखिम स्तर"
 
 #: templates/commercial_analysis.html:656
 msgid "Peak PM2.5 (μg/m³)"
-msgstr "ഏറ്റവും ഉയർന്ന PM2.5 (μg/m³)"
+msgstr "अधिकतम PM2.5 (μg/m³)"
 
 #: templates/commercial_analysis.html:659
 msgid "WHO Safe Level"
-msgstr "WHO സുരക്ഷിത നില"
+msgstr "WHO सुरक्षित स्तर"
 
 #: templates/commercial_analysis.html:661
 msgid "Above WHO Guidelines"
-msgstr "WHO മാർഗ്ഗനിർദ്ദേശ പരിധിക്ക് മുകളിൽ"
+msgstr "WHO दिशानिर्देशों से अधिक"
 
 #: templates/commercial_analysis.html:670
 msgid "Health Risk Index"
-msgstr "ആരോഗ്യ അപകടസാധ്യത സൂചിക"
+msgstr "स्वास्थ्य जोखिम सूचकांक"
 
 #: templates/commercial_analysis.html:673
 msgid "Lower is better"
-msgstr "കുറയുന്നത് നല്ലതാണ്"
+msgstr "कम होना बेहतर है"
 
 #: templates/commercial_analysis.html:675
 msgid "Higher is worse"
-msgstr "കൂടുന്നത് മോശമാണ്"
+msgstr "अधिक होना खराब है"
 
 #: templates/commercial_analysis.html:685
 msgid "Health Advisory:"
-msgstr "ആരോഗ്യ ഉപദേശം:"
+msgstr "स्वास्थ्य सलाह:"
 
 #: templates/commercial_analysis.html:686
 msgid ""
@@ -773,23 +764,21 @@ msgid ""
 "guidelines. Consider cleaner cooking alternatives, especially if you have"
 " children or elderly family members."
 msgstr ""
-"നിലവിലെ പാചക ക്രമീകരണം WHO മാർഗ്ഗനിർദ്ദേശ പരിധിക്ക് മുകളിലുള്ള PM2.5 "
-"നിലകളിലേക്ക് നിങ്ങളെ വിധേയമാക്കുന്നു. കുട്ടികളോ മുതിർന്ന കുടുംബാംഗങ്ങളോ "
-"ഉണ്ടെങ്കിൽ പ്രത്യേകിച്ചും, ശുദ്ധ ഇന്ധന ബദലുകൾ പരിഗണിക്കുക."
+"आपकी वर्तमान खाना पकाने की व्यवस्था आपको WHO दिशानिर्देशों से अधिक PM2.5 "
+"स्तर के संपर्क में लाती है। स्वच्छ खाना पकाने के विकल्पों पर विचार करें, "
+"खासकर यदि आपके परिवार में बच्चे या बुजुर्ग सदस्य हैं।"
 
 #: templates/commercial_analysis.html:741
 msgid "Your data supports Kerala's clean cooking energy policy"
-msgstr ""
-"നിങ്ങളുടെ ഡാറ്റ കേരളത്തിന്റെ ക്ലീൻ കുക്കിംഗ് എനർജി നയത്തെ "
-"പിന്തുണയ്ക്കുന്നു"
+msgstr "आपका डेटा केरल की स्वच्छ कुकिंग ऊर्जा नीति का समर्थन करता है"
 
 #: templates/commercial_analysis.html:753
 msgid "Environmental Grade"
-msgstr "എൻവയോൺമെന്റൽ ഗ്രേഡ്"
+msgstr "पर्यावरण ग्रेड"
 
 #: templates/commercial_analysis.html:758
 msgid "Health Risk Score"
-msgstr "ഹെൽത്ത് റിസ്ക് സ്കോർ"
+msgstr "स्वास्थ्य जोखिम स्कोर"
 
 #: templates/commercial_energy_calculation.html:3
 #: templates/commercial_energy_calculation.html:6
@@ -798,68 +787,66 @@ msgstr "ഹെൽത്ത് റിസ്ക് സ്കോർ"
 #: templates/energy_calculation.html:3 templates/energy_calculation.html:6
 #: templates/energy_calculation.html:7 templates/energy_calculation.html:20
 msgid "Energy Assessment"
-msgstr "എനർജി അസസ്മെന്റ്"
+msgstr "ऊर्जा मूल्यांकन"
 
 #: templates/commercial_energy_calculation.html:6
 #: templates/kitchen_profile.html:6
 msgid "Step 3 of 4"
-msgstr "ഘട്ടം 3 / 4"
+msgstr "4 में से चरण 3"
 
 #: templates/commercial_energy_calculation.html:23
 msgid "For"
-msgstr "ഇതിനായി"
+msgstr "के लिए"
 
 #: templates/commercial_energy_calculation.html:25
 msgid "servings/day"
-msgstr "സെർവിംഗുകൾ/ദിവസം"
+msgstr "सर्विंग्स/दिन"
 
 #: templates/commercial_energy_calculation.html:26
 msgid "working days/month"
-msgstr "പ്രവൃത്തി ദിവസങ്ങൾ/മാസം"
+msgstr "कार्य दिवस/माह"
 
 #: templates/commercial_energy_calculation.html:35
 #: templates/energy_calculation.html:31
 msgid "Select a Calculation Method"
-msgstr "ഒരു കണക്കുകൂട്ടൽ രീതി തിരഞ്ഞെടുക്കുക"
+msgstr "गणना विधि चुनें"
 
 #: templates/commercial_energy_calculation.html:45
 #: templates/commercial_energy_calculation.html:52
 #: templates/energy_calculation.html:42 templates/energy_calculation.html:50
 msgid "Dish-based Modelling"
-msgstr "വിഭവങ്ങളെ അടിസ്ഥാനമാക്കിയുള്ള മോഡലിംഗ്"
+msgstr "डिश-आधारित मॉडलिंग"
 
 #: templates/commercial_energy_calculation.html:49
 #: templates/energy_calculation.html:46
 msgid "Dish Method"
-msgstr "വിഭവ രീതി"
+msgstr "व्यंजन विधि"
 
 #: templates/commercial_energy_calculation.html:53
 #: templates/energy_calculation.html:51
 msgid "Detailed meal analysis based on specific dish preparation"
-msgstr ""
-"നിർദ്ദിഷ്ട വിഭവം തയ്യാറാക്കുന്നത് അടിസ്ഥാനമാക്കിയുള്ള വിശദമായ ഭക്ഷണ "
-"വിശകലനം"
+msgstr "विशिष्ट व्यंजन तैयारी पर आधारित विस्तृत भोजन विश्लेषण"
 
 #: templates/commercial_energy_calculation.html:65
 #: templates/commercial_energy_calculation.html:73
 #: templates/energy_calculation.html:64 templates/energy_calculation.html:72
 msgid "Consumption-based Modelling"
-msgstr "ഉപഭോഗത്തെ അടിസ്ഥാനമാക്കിയുള്ള മോഡലിംഗ്"
+msgstr "खपत-आधारित मॉडलिंग"
 
 #: templates/commercial_energy_calculation.html:70
 #: templates/energy_calculation.html:69
 msgid "Consumption Method"
-msgstr "ഉപഭോഗ രീതി"
+msgstr "उपभोग विधि"
 
 #: templates/commercial_energy_calculation.html:74
 #: templates/energy_calculation.html:74
 msgid "Analysis based on aggregate fuel consumption data"
-msgstr "മൊത്തം ഇന്ധന ഉപഭോഗ ഡാറ്റ അടിസ്ഥാനമാക്കിയുള്ള വിശകലനം"
+msgstr "कुल ईंधन उपभोग डेटा पर आधारित विश्लेषण"
 
 #: templates/commercial_energy_calculation.html:89
 #: templates/energy_calculation.html:89
 msgid "Dish Selection & Current Fuel Usage"
-msgstr "വിഭവങ്ങൾ തിരഞ്ഞെടുക്കലും നിലവിലെ ഇന്ധന ഉപയോഗവും"
+msgstr "डिश चयन और वर्तमान ईंधन उपयोग"
 
 #: templates/commercial_energy_calculation.html:93
 #: templates/energy_calculation.html:93
@@ -867,13 +854,13 @@ msgid ""
 "Select the dishes you prepare regularly, then specify the energy sources "
 "applied to each category."
 msgstr ""
-"നിങ്ങൾ പതിവായി തയ്യാറാക്കുന്ന വിഭവങ്ങൾ തിരഞ്ഞെടുക്കുക, തുടർന്ന് ഓരോ "
-"വിഭാഗത്തിനും ഉപയോഗിക്കുന്ന ഊർജ്ജ സ്രോതസ്സുകൾ വ്യക്തമാക്കുക."
+"उन व्यंजनों का चयन करें जिन्हें आप नियमित रूप से तैयार करते हैं, फिर "
+"प्रत्येक श्रेणी में लागू ऊर्जा स्रोतों को निर्दिष्ट करें।"
 
 #: templates/commercial_energy_calculation.html:98
 #: templates/energy_calculation.html:98
 msgid "All fuels"
-msgstr "എല്ലാ ഇന്ധനങ്ങളും"
+msgstr "सभी ईंधन"
 
 #: templates/commercial_energy_calculation.html:108
 #: templates/commercial_energy_calculation.html:261
@@ -882,18 +869,18 @@ msgstr "എല്ലാ ഇന്ധനങ്ങളും"
 #: templates/energy_calculation.html:109 templates/energy_calculation.html:259
 #: templates/energy_calculation.html:529 templates/energy_calculation.html:626
 msgid "Electricity"
-msgstr "വൈദ്യുതി"
+msgstr "बिजली"
 
 #: templates/commercial_energy_calculation.html:127
 #: templates/commercial_energy_calculation.html:594
 #: templates/energy_calculation.html:128 templates/energy_calculation.html:615
 msgid "Breakfast"
-msgstr "പ്രഭാതഭക്ഷണം"
+msgstr "नाश्ता"
 
 #: templates/commercial_energy_calculation.html:130
 #: templates/energy_calculation.html:131
 msgid "Breakfast Type"
-msgstr "പ്രഭാതഭക്ഷണത്തിന്റെ തരം"
+msgstr "नाश्ते का प्रकार"
 
 #: templates/commercial_energy_calculation.html:133
 #: templates/commercial_energy_calculation.html:158
@@ -901,7 +888,7 @@ msgstr "പ്രഭാതഭക്ഷണത്തിന്റെ തരം"
 #: templates/energy_calculation.html:134 templates/energy_calculation.html:160
 #: templates/energy_calculation.html:187
 msgid "Normal"
-msgstr "സാധാരണ"
+msgstr "सामान्य"
 
 #: templates/commercial_energy_calculation.html:134
 #: templates/commercial_energy_calculation.html:159
@@ -909,7 +896,7 @@ msgstr "സാധാരണ"
 #: templates/energy_calculation.html:135 templates/energy_calculation.html:161
 #: templates/energy_calculation.html:188
 msgid "Heavy"
-msgstr "ഹെവി"
+msgstr "भारी"
 
 #: templates/commercial_energy_calculation.html:135
 #: templates/commercial_energy_calculation.html:160
@@ -917,125 +904,127 @@ msgstr "ഹെവി"
 #: templates/energy_calculation.html:136 templates/energy_calculation.html:162
 #: templates/energy_calculation.html:189
 msgid "Light"
-msgstr "ലൈറ്റ്"
+msgstr "हल्का"
 
 #: templates/commercial_energy_calculation.html:140
 #: templates/energy_calculation.html:141
 msgid "Select Breakfast Dishes (Multiple choices)"
-msgstr "പ്രഭാതഭക്ഷണ വിഭവങ്ങൾ തിരഞ്ഞെടുക്കുക (ഒന്നിലധികം ചോയ്‌സുകൾ)"
+msgstr "नाश्ते के व्यंजन चुनें (कई विकल्प)"
 
 #: templates/commercial_energy_calculation.html:154
 #: templates/commercial_energy_calculation.html:595
 #: templates/energy_calculation.html:156 templates/energy_calculation.html:616
 msgid "Lunch"
-msgstr "ഉച്ചഭക്ഷണം"
+msgstr "दोपहर का भोजन"
 
 #: templates/commercial_energy_calculation.html:156
 #: templates/energy_calculation.html:158
 msgid "Lunch Type"
-msgstr "ഉച്ചഭക്ഷണ തരം"
+msgstr "दोपहर के भोजन का प्रकार"
 
 #: templates/commercial_energy_calculation.html:165
 #: templates/energy_calculation.html:167
 msgid "Select Lunch Dishes (Multiple choices)"
-msgstr "ഉച്ചഭക്ഷണ വിഭവങ്ങൾ തിരഞ്ഞെടുക്കുക (ഒന്നിലധികം ചോയ്‌സുകൾ)"
+msgstr "लंच के व्यंजन चुनें (कई विकल्प)"
 
 #: templates/commercial_energy_calculation.html:180
 #: templates/commercial_energy_calculation.html:596
 #: templates/energy_calculation.html:182 templates/energy_calculation.html:617
 msgid "Dinner"
-msgstr "അത്താഴം"
+msgstr "रात का भोजन"
 
 #: templates/commercial_energy_calculation.html:182
 #: templates/energy_calculation.html:185
 msgid "Dinner Type"
-msgstr "അത്താഴ തരം"
+msgstr "डिनर का प्रकार"
 
 #: templates/commercial_energy_calculation.html:192
 #: templates/energy_calculation.html:194
 msgid "Select Dinner Dishes (Multiple choices)"
-msgstr "അത്താഴത്തിനുള്ള വിഭവങ്ങൾ തിരഞ്ഞെടുക്കുക (ഒന്നിലധികം ചോയ്‌സുകൾ)"
+msgstr "रात के खाने के व्यंजन चुनें (एकाधिक विकल्प)"
 
 #: templates/commercial_energy_calculation.html:206
 #: templates/commercial_energy_calculation.html:597
 #: templates/energy_calculation.html:209 templates/energy_calculation.html:618
 msgid "Snacks"
-msgstr "ലഘുഭക്ഷണങ്ങൾ"
+msgstr "स्नैक्स"
 
 #: templates/commercial_energy_calculation.html:208
 #: templates/energy_calculation.html:212
 msgid "Select Snacks (Multiple choices)"
-msgstr "ലഘുഭക്ഷണങ്ങൾ തിരഞ്ഞെടുക്കുക (ഒന്നിലധികം ചോയ്‌സുകൾ)"
+msgstr "स्नैक्स चुनें (एकाधिक विकल्प)"
 
 #: templates/commercial_energy_calculation.html:221
 #: templates/energy_calculation.html:225
 msgid "Selected Dishes Summary"
-msgstr "തിരഞ്ഞെടുത്ത വിഭവങ്ങളുടെ സംഗ്രഹം"
+msgstr "चयनित व्यंजनों का सारांश"
 
 #: templates/commercial_energy_calculation.html:227
 #: templates/energy_calculation.html:231
 msgid "Dish"
-msgstr "വിഭവം"
+msgstr "व्यंजन"
 
 #: templates/commercial_energy_calculation.html:246
 #: templates/energy_calculation.html:249
 msgid "Current Energy Consumption"
-msgstr "നിലവിലെ ഊർജ്ജ ഉപഭോഗം"
+msgstr "वर्तमान ऊर्जा खपत"
 
 #: templates/commercial_energy_calculation.html:250
 msgid "Enter your cooking fuel consumption to estimate energy use"
-msgstr "ഊർജ്ജ ഉപയോഗം കണക്കാക്കാൻ നിങ്ങളുടെ പാചക ഇന്ധന ഉപഭോഗം നൽകുക"
+msgstr ""
+"ऊर्जा उपयोग का अनुमान लगाने के लिए अपने खाना पकाने के ईंधन की खपत दर्ज "
+"करें"
 
 #: templates/commercial_energy_calculation.html:255
 #: templates/commercial_energy_calculation.html:258
 #: templates/energy_calculation.html:253 templates/energy_calculation.html:256
 msgid "Select Your Primary Cooking Fuel"
-msgstr "നിങ്ങളുടെ പ്രധാന പാചക ഇന്ധനം തിരഞ്ഞെടുക്കുക"
+msgstr "अपना प्राथमिक कुकिंग ईंधन चुनें"
 
 #: templates/commercial_energy_calculation.html:259
 #: templates/energy_calculation.html:257
 msgid "Liquefied Petroleum Gas"
-msgstr "ലിക്വിഫൈഡ് പെട്രോളിയം ഗ്യാസ്"
+msgstr "तरलीकृत पेट्रोलियम गैस"
 
 #: templates/commercial_energy_calculation.html:260
 #: templates/energy_calculation.html:258
 msgid "Piped Natural Gas"
-msgstr "പൈപ്പ്ഡ് നാച്ചുറൽ ഗ്യാസ്"
+msgstr "पाइप्ड प्राकृतिक गैस"
 
 #: templates/commercial_energy_calculation.html:263
 #: templates/commercial_energy_calculation.html:523
 #: templates/energy_calculation.html:260 templates/energy_calculation.html:545
 msgid "Traditional Solid Biomass"
-msgstr "പരമ്പരാഗത ഖര ബയോമാസ്"
+msgstr "पारंपरिक ठोस बायोमास"
 
 #: templates/commercial_energy_calculation.html:265
 #: templates/energy_calculation.html:261
 msgid "Mixed Usage"
-msgstr "മിക്സഡ് ഉപയോഗം"
+msgstr "मिश्रित उपयोग"
 
 #: templates/commercial_energy_calculation.html:267
 #: templates/energy_calculation.html:263
 msgid "Please select your primary cooking fuel"
-msgstr "ദയവായി നിങ്ങളുടെ പ്രധാന പാചക ഇന്ധനം തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया अपना प्राथमिक कुकिंग ईंधन चुनें"
 
 #: templates/commercial_energy_calculation.html:272
 #: templates/energy_calculation.html:268
 msgid "LPG Consumption Details"
-msgstr "LPG ഉപഭോഗ വിശദാംശങ്ങൾ"
+msgstr "LPG खपत विवरण"
 
 #: templates/commercial_energy_calculation.html:276
 msgid "Select the LPG cylinder types you use"
-msgstr "നിങ്ങൾ ഉപയോഗിക്കുന്ന LPG സിലിണ്ടർ തരങ്ങൾ തിരഞ്ഞെടുക്കുക"
+msgstr "आप जिस प्रकार के LPG सिलेंडर का उपयोग करते हैं, उसे चुनें"
 
 #: templates/commercial_energy_calculation.html:287
 msgid "Domestic LPG (14.2 kg)"
-msgstr "ഗാർഹിക LPG (14.2 kg)"
+msgstr "घरेलू LPG (14.2 kg)"
 
 #: templates/commercial_energy_calculation.html:291
 #: templates/commercial_energy_calculation.html:312
 #: templates/commercial_energy_calculation.html:478
 msgid "Monthly Cylinders"
-msgstr "പ്രതിമാസ സിലിണ്ടറുകൾ"
+msgstr "मासिक सिलेंडर"
 
 #: templates/commercial_energy_calculation.html:293
 msgid "e.g., 10"
@@ -1044,7 +1033,7 @@ msgstr "e.g., 10"
 #: templates/commercial_energy_calculation.html:295
 #: templates/commercial_energy_calculation.html:316
 msgid "Average price:"
-msgstr "ശരാശരി വില:"
+msgstr "औसत मूल्य:"
 
 #: templates/commercial_energy_calculation.html:295
 #: templates/commercial_energy_calculation.html:316
@@ -1053,7 +1042,7 @@ msgstr "cylinder"
 
 #: templates/commercial_energy_calculation.html:308
 msgid "Commercial LPG (19 kg)"
-msgstr "വാണിജ്യ LPG (19 kg)"
+msgstr "वाणिज्यिक LPG (19 kg)"
 
 #: templates/commercial_energy_calculation.html:314
 msgid "e.g., 5"
@@ -1062,28 +1051,28 @@ msgstr "e.g., 5"
 #: templates/commercial_energy_calculation.html:326
 #: templates/energy_calculation.html:326
 msgid "PNG Consumption Details"
-msgstr "PNG ഉപഭോഗ വിശദാംശങ്ങൾ"
+msgstr "PNG उपभोग विवरण"
 
 #: templates/commercial_energy_calculation.html:329
 #: templates/energy_calculation.html:329
 msgid "How would you like to provide PNG data?"
-msgstr "PNG ഡാറ്റ എങ്ങനെ നൽകാൻ ആഗ്രഹിക്കുന്നു?"
+msgstr "आप PNG डेटा किस तरह देना चाहेंगे?"
 
 #: templates/commercial_energy_calculation.html:336
 #: templates/energy_calculation.html:336
 msgid "Monthly bill amount"
-msgstr "പ്രതിമാസ ബിൽ തുക"
+msgstr "मासिक बिल राशि"
 
 #: templates/commercial_energy_calculation.html:345
 #: templates/energy_calculation.html:345
 msgid "Monthly consumption (SCM)"
-msgstr "പ്രതിമാസ ഉപഭോഗം (SCM)"
+msgstr "मासिक उपभोग (SCM)"
 
 #: templates/commercial_energy_calculation.html:353
 #: templates/commercial_energy_calculation.html:494
 #: templates/energy_calculation.html:362 templates/energy_calculation.html:516
 msgid "Monthly PNG Bill"
-msgstr "പ്രതിമാസ PNG ബിൽ"
+msgstr "मासिक PNG बिल"
 
 #: templates/commercial_energy_calculation.html:356
 msgid "e.g., 8500"
@@ -1092,12 +1081,12 @@ msgstr "e.g., 8500"
 #: templates/commercial_energy_calculation.html:357
 #: templates/energy_calculation.html:365
 msgid "Enter your typical monthly PNG bill amount"
-msgstr "നിങ്ങളുടെ സാധാരണ പ്രതിമാസ PNG ബിൽ തുക നൽകുക"
+msgstr "अपनी सामान्य मासिक PNG बिल राशि दर्ज करें"
 
 #: templates/commercial_energy_calculation.html:363
 #: templates/energy_calculation.html:369
 msgid "Monthly PNG Consumption"
-msgstr "പ്രതിമാസ PNG ഉപഭോഗം"
+msgstr "मासिक PNG उपभोग"
 
 #: templates/commercial_energy_calculation.html:366
 msgid "e.g., 250"
@@ -1106,22 +1095,22 @@ msgstr "e.g., 250"
 #: templates/commercial_energy_calculation.html:368
 #: templates/energy_calculation.html:373
 msgid "Standard Cubic Meters per month"
-msgstr "പ്രതിമാസം സ്റ്റാൻഡേർഡ് ക്യുബിക് മീറ്റർ"
+msgstr "प्रति माह स्टैंडर्ड क्यूबिक मीटर"
 
 #: templates/commercial_energy_calculation.html:371
 msgid "Rate per SCM"
-msgstr "ഒരു SCM-ന് നിരക്ക്"
+msgstr "प्रति SCM दर"
 
 #: templates/commercial_energy_calculation.html:383
 #: templates/energy_calculation.html:417
 msgid "Electricity Consumption for Cooking"
-msgstr "പാചകത്തിനുള്ള വൈദ്യുതി ഉപഭോഗം"
+msgstr "खाना पकाने के लिए बिजली की खपत"
 
 #: templates/commercial_energy_calculation.html:387
 #: templates/commercial_energy_calculation.html:510
 #: templates/energy_calculation.html:421 templates/energy_calculation.html:532
 msgid "Monthly Electricity for Cooking"
-msgstr "പാചകത്തിനുള്ള പ്രതിമാസ വൈദ്യുതി"
+msgstr "खाना पकाने के लिए मासिक बिजली"
 
 #: templates/commercial_energy_calculation.html:389
 msgid "e.g., 1200"
@@ -1130,21 +1119,19 @@ msgstr "e.g., 1200"
 #: templates/commercial_energy_calculation.html:390
 #: templates/energy_calculation.html:424
 msgid "Check electricity bill or estimate based on appliance usage"
-msgstr ""
-"വൈദ്യുതി ബിൽ പരിശോധിക്കുക അല്ലെങ്കിൽ ഉപകരണങ്ങളുടെ ഉപയോഗം അടിസ്ഥാനമാക്കി "
-"കണക്കാക്കുക"
+msgstr "बिजली के बिल की जाँच करें या उपकरण के उपयोग के आधार पर अनुमान लगाएं"
 
 #: templates/commercial_energy_calculation.html:393
 msgid "Electricity Rate"
-msgstr "വൈദ്യുതി നിരക്ക്"
+msgstr "बिजली दर"
 
 #: templates/commercial_energy_calculation.html:404
 msgid "Biogas Production Details"
-msgstr "ബയോഗ്യാസ് ഉൽപ്പാദന വിവരങ്ങൾ"
+msgstr "बायोगैस उत्पादन विवरण"
 
 #: templates/commercial_energy_calculation.html:408
 msgid "Daily Production"
-msgstr "പ്രതിദിന ഉൽപ്പാദനം"
+msgstr "दैनिक उत्पादन"
 
 #: templates/commercial_energy_calculation.html:411
 msgid "e.g., 15"
@@ -1152,7 +1139,7 @@ msgstr "e.g., 15"
 
 #: templates/commercial_energy_calculation.html:415
 msgid "Operating Cost"
-msgstr "പ്രവർത്തന ചെലവ്"
+msgstr "संचालन लागत"
 
 #: templates/commercial_energy_calculation.html:418
 msgid "e.g., 2000"
@@ -1161,11 +1148,11 @@ msgstr "e.g., 2000"
 #: templates/commercial_energy_calculation.html:426
 #: templates/energy_calculation.html:455
 msgid "Biomass Consumption Details"
-msgstr "ബയോമാസ് ഉപയോഗത്തിന്റെ വിശദാംശങ്ങൾ"
+msgstr "बायोमास खपत विवरण"
 
 #: templates/commercial_energy_calculation.html:430
 msgid "Monthly Quantity"
-msgstr "പ്രതിമാസ അളവ്"
+msgstr "मासिक मात्रा"
 
 #: templates/commercial_energy_calculation.html:434
 msgid "e.g., 500"
@@ -1173,71 +1160,71 @@ msgstr "e.g., 500"
 
 #: templates/commercial_energy_calculation.html:437
 msgid "Biomass Type"
-msgstr "ബയോമാസ് തരം"
+msgstr "बायोमास का प्रकार"
 
 #: templates/commercial_energy_calculation.html:439
 #: templates/energy_calculation.html:461
 msgid "Firewood"
-msgstr "വിറക്"
+msgstr "जलाऊ लकड़ी"
 
 #: templates/commercial_energy_calculation.html:440
 msgid "Coconut Shells/Husk"
-msgstr "ചിരട്ട/തൊണ്ട്"
+msgstr "नारियल के छिलके/भूसी"
 
 #: templates/commercial_energy_calculation.html:441
 msgid "Agricultural Residue"
-msgstr "കാർഷിക അവശിഷ്ടങ്ങൾ"
+msgstr "कृषि अवशेष"
 
 #: templates/commercial_energy_calculation.html:443
 msgid "Other"
-msgstr "മറ്റുള്ളവ"
+msgstr "अन्य"
 
 #: templates/commercial_energy_calculation.html:447
 msgid "Cost per kg"
-msgstr "ഒരു kg-ന് ചെലവ്"
+msgstr "प्रति kg लागत"
 
 #: templates/commercial_energy_calculation.html:456
 #: templates/energy_calculation.html:478
 msgid "Warning:"
-msgstr "മുന്നറിയിപ്പ്:"
+msgstr "चेतावनी:"
 
 #: templates/commercial_energy_calculation.html:456
 #: templates/energy_calculation.html:478
 msgid "Traditional biomass cooking has severe health and environmental impacts!"
 msgstr ""
-"പരമ്പരാഗത ബയോമാസ് പാചകം ഗുരുതരമായ ആരോഗ്യ, പാരിസ്ഥിതിക പ്രത്യാഘാതങ്ങൾ "
-"ഉണ്ടാക്കുന്നു!"
+"पारंपरिक बायोमास खाना पकाने के गंभीर स्वास्थ्य और पर्यावरणीय प्रभाव होते "
+"हैं!"
 
 #: templates/commercial_energy_calculation.html:462
 #: templates/energy_calculation.html:484
 msgid "Mixed Fuel Usage Details"
-msgstr "സമ്മിശ്ര ഇന്ധന ഉപയോഗത്തിന്റെ വിശദാംശങ്ങൾ"
+msgstr "मिश्रित ईंधन उपयोग विवरण"
 
 #: templates/commercial_energy_calculation.html:465
 #: templates/energy_calculation.html:487
 msgid "Enter the consumption details for each fuel type you use for cooking."
 msgstr ""
-"നിങ്ങൾ പാചകത്തിന് ഉപയോഗിക്കുന്ന ഓരോ ഇന്ധനത്തിന്റെയും ഉപയോഗ വിശദാംശങ്ങൾ "
-"നൽകുക."
+"खाना पकाने के लिए आपके द्वारा उपयोग किए जाने वाले प्रत्येक ईंधन प्रकार के"
+" लिए खपत विवरण दर्ज करें।"
 
 #: templates/commercial_energy_calculation.html:475
 msgid "LPG (Commercial 19 kg)"
-msgstr "LPG (വാണിജ്യം 19 kg)"
+msgstr "LPG (कमर्शियल 19 kg)"
 
 #: templates/commercial_energy_calculation.html:491
 #: templates/energy_calculation.html:513
 msgid "PNG (Piped Natural Gas)"
-msgstr "PNG (പൈപ്പ് ചെയ്ത പ്രകൃതിവാതകം)"
+msgstr "पीएनजी (पाइप्ड प्राकृतिक गैस)"
 
 #: templates/commercial_energy_calculation.html:526
 #: templates/energy_calculation.html:548
 msgid "Monthly Consumption"
-msgstr "പ്രതിമാസ ഉപഭോഗം"
+msgstr "मासिक खपत"
 
 #: templates/commercial_energy_calculation.html:529
 #: templates/energy_calculation.html:551
 msgid "Biomass cooking has health impacts"
-msgstr "ബയോമാസ് പാചകം ആരോഗ്യത്തെ ബാധിക്കുന്നു"
+msgstr "बायोमास कुकिंग का स्वास्थ्य पर प्रभाव पड़ता है"
 
 #: templates/commercial_energy_calculation.html:544
 #: templates/commercial_kitchen_profile.html:122
@@ -1245,7 +1232,7 @@ msgstr "ബയോമാസ് പാചകം ആരോഗ്യത്തെ ബ
 #: templates/energy_calculation.html:567 templates/household_profile.html:310
 #: templates/kitchen_profile.html:133
 msgid "Back"
-msgstr "തിരികെ"
+msgstr "पीछे"
 
 #: templates/commercial_energy_calculation.html:548
 #: templates/commercial_kitchen_profile.html:125
@@ -1255,64 +1242,64 @@ msgstr "തിരികെ"
 #: templates/energy_calculation.html:570 templates/household_profile.html:313
 #: templates/kitchen_profile.html:136
 msgid "Next"
-msgstr "അടുത്തത്"
+msgstr "अगला"
 
 #: templates/commercial_energy_calculation.html:561
 #: templates/energy_calculation.html:581
 msgid "Select fuel for"
-msgstr "ഇതിനായി ഇന്ധനം തിരഞ്ഞെടുക്കുക"
+msgstr "इसके लिए ईंधन चुनें"
 
 #: templates/commercial_energy_calculation.html:565
 #: templates/energy_calculation.html:585
 msgid "Choose a fuel from your current mix"
-msgstr "നിങ്ങളുടെ നിലവിലെ മിശ്രിതത്തിൽ നിന്ന് ഒരു ഇന്ധനം തിരഞ്ഞെടുക്കുക"
+msgstr "अपने वर्तमान मिश्रण से एक ईंधन चुनें"
 
 #: templates/commercial_energy_calculation.html:567
 #: templates/energy_calculation.html:588
 msgid "Select fuel"
-msgstr "ഇന്ധനം തിരഞ്ഞെടുക്കുക"
+msgstr "ईंधन चुनें"
 
 #: templates/commercial_energy_calculation.html:571
 #: templates/energy_calculation.html:592
 msgid "Cancel"
-msgstr "റദ്ദാക്കുക"
+msgstr "रद्द करें"
 
 #: templates/commercial_energy_calculation.html:573
 #: templates/energy_calculation.html:594
 msgid "Save"
-msgstr "സംരക്ഷിക്കുക"
+msgstr "सहेजें"
 
 #: templates/commercial_energy_calculation.html:600
 #: templates/energy_calculation.html:623
 msgid "Select fuel for this dish"
-msgstr "ഈ വിഭവത്തിനായി ഇന്ധനം തിരഞ്ഞെടുക്കുക"
+msgstr "इस व्यंजन के लिए ईंधन चुनें"
 
 #: templates/commercial_energy_calculation.html:601
 #: templates/energy_calculation.html:624
 msgid "Select fuels above to assign for this dish"
-msgstr "ഈ വിഭവത്തിനായി നൽകാൻ മുകളിലുള്ള ഇന്ധനങ്ങൾ തിരഞ്ഞെടുക്കുക"
+msgstr "इस व्यंजन के लिए निर्दिष्ट करने हेतु ऊपर से ईंधन चुनें"
 
 #: templates/commercial_energy_calculation.html:602
 #: templates/energy_calculation.html:625
 msgid "Not selected"
-msgstr "തിരഞ്ഞെടുത്തിട്ടില്ല"
+msgstr "नहीं चुना गया"
 
 #: templates/commercial_energy_calculation.html:890
 #: templates/energy_calculation.html:820
 msgid "Please select your current cooking fuels first."
-msgstr "ദയവായി നിങ്ങളുടെ നിലവിലെ പാചക ഇന്ധനങ്ങൾ ആദ്യം തിരഞ്ഞെടുക്കുക."
+msgstr "कृपया पहले अपने वर्तमान कुकिंग ईंधन का चयन करें।"
 
 #: templates/commercial_energy_calculation.html:937
 #: templates/energy_calculation.html:871
 msgid "Please select a fuel for this dish."
-msgstr "ഈ വിഭവത്തിനായി ദയവായി ഒരു ഇന്ധനം തിരഞ്ഞെടുക്കുക."
+msgstr "कृपया इस व्यंजन के लिए एक ईंधन चुनें।"
 
 #: templates/commercial_kitchen_profile.html:3
 #: templates/commercial_kitchen_profile.html:6
 #: templates/commercial_kitchen_profile.html:7
 #: templates/commercial_kitchen_profile.html:20
 msgid "Kitchen & Facility Profile"
-msgstr "അടുക്കളയുടെയും സൗകര്യങ്ങളുടെയും പ്രൊഫൈൽ"
+msgstr "रसोई और सुविधा प्रोफ़ाइल"
 
 #: templates/commercial_kitchen_profile.html:3
 #: templates/commercial_selection.html:3
@@ -1322,227 +1309,225 @@ msgstr "Kerala Clean Cooking Platform"
 #: templates/commercial_kitchen_profile.html:6
 #: templates/energy_calculation.html:6
 msgid "Step 2 of 4"
-msgstr "4-ൽ ഘട്ടം 2"
+msgstr "4 में से चरण 2"
 
 #: templates/commercial_kitchen_profile.html:19
 #: templates/kitchen_profile.html:15 templates/kitchen_profile.html:24
 msgid "Kitchen Icon"
-msgstr "അടുക്കള ഐക്കൺ"
+msgstr "रसोई आइकन"
 
 #: templates/commercial_kitchen_profile.html:22
 msgid "Describe your kitchen setup for an accurate analysis"
-msgstr "കൃത്യമായ വിശകലനത്തിനായി നിങ്ങളുടെ കിച്ചൺ സജ്ജീകരണം വിവരിക്കുക"
+msgstr "सटीक विश्लेषण के लिए अपने किचन सेटअप का वर्णन करें"
 
 #: templates/commercial_kitchen_profile.html:33
 #: templates/kitchen_profile.html:43
 msgid "Kitchen Details"
-msgstr "അടുക്കള വിവരങ്ങൾ"
+msgstr "रसोई का विवरण"
 
 #: templates/commercial_kitchen_profile.html:39
 #: templates/kitchen_profile.html:50
 msgid "Kitchen Ventilation Scenario"
-msgstr "അടുക്കള വെന്റിലേഷൻ സാഹചര്യം"
+msgstr "रसोई वेंटिलेशन परिदृश्य"
 
 #: templates/commercial_kitchen_profile.html:42
 #: templates/kitchen_profile.html:53
 msgid "Select scenario"
-msgstr "സാഹചര്യം തിരഞ്ഞെടുക്കുക"
+msgstr "परिदृश्य चुनें"
 
 #: templates/commercial_kitchen_profile.html:48
 #: templates/kitchen_profile.html:59
 msgid "exposure"
-msgstr "എക്സ്പോഷർ"
+msgstr "एक्सपोज़र"
 
 #: templates/commercial_kitchen_profile.html:52
 #: templates/kitchen_profile.html:63
 msgid "Please select a kitchen scenario"
-msgstr "ദയവായി ഒരു അടുക്കള സാഹചര്യം തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया रसोई का परिदृश्य चुनें"
 
 #: templates/commercial_kitchen_profile.html:53
 #: templates/kitchen_profile.html:64
 msgid "Affects health impact calculation"
-msgstr "ആരോഗ്യ ആഘാത കണക്കുകൂട്ടലിനെ ബാധിക്കുന്നു"
+msgstr "स्वास्थ्य प्रभाव की गणना को प्रभावित करता है"
 
 #: templates/commercial_kitchen_profile.html:63
 #: templates/kitchen_profile.html:77
 msgid "Cooking Patterns"
-msgstr "പാചക രീതികൾ"
+msgstr "खाना पकाने के पैटर्न"
 
 #: templates/commercial_kitchen_profile.html:69
 #: templates/kitchen_profile.html:82
 msgid "Daily Cooking Duration"
-msgstr "പ്രതിദിന പാചക ദൈർഘ്യം"
+msgstr "दैनिक खाना पकाने की अवधि"
 
 #: templates/commercial_kitchen_profile.html:69
 #: templates/kitchen_profile.html:84
 msgid "Hours"
-msgstr "മണിക്കൂറുകൾ"
+msgstr "घंटे"
 
 #: templates/commercial_kitchen_profile.html:73
 #: templates/kitchen_profile.html:87
 msgid "Total daily active cooking time"
-msgstr "പ്രതിദിന മൊത്തം സജീവ പാചക സമയം"
+msgstr "कुल दैनिक सक्रिय खाना पकाने का समय"
 
 #: templates/commercial_kitchen_profile.html:74
 #: templates/kitchen_profile.html:88
 msgid "Please enter daily cooking hours"
-msgstr "ദയവായി പ്രതിദിന പാചക മണിക്കൂറുകൾ നൽകുക"
+msgstr "कृपया दैनिक खाना पकाने के घंटे दर्ज करें"
 
 #: templates/commercial_kitchen_profile.html:75
 #: templates/kitchen_profile.html:89
 msgid "Aggregate time for all meal preparations"
-msgstr "എല്ലാ ഭക്ഷണ തയ്യാറെടുപ്പുകൾക്കുമുള്ള ആകെ സമയം"
+msgstr "सभी भोजन बनाने का कुल समय"
 
 #: templates/commercial_kitchen_profile.html:80
 msgid "Kitchen Staff Exposed"
-msgstr "അടുക്കളയിലെ ജീവനക്കാർക്ക് ഏൽക്കുന്നത്"
+msgstr "रसोई कर्मचारी प्रभावित"
 
 #: templates/commercial_kitchen_profile.html:84
 msgid "Workers regularly present in the cooking area"
-msgstr "പാചക സ്ഥലത്ത് സ്ഥിരമായി ഉണ്ടാകുന്ന തൊഴിലാളികൾ"
+msgstr "खाना पकाने के क्षेत्र में नियमित रूप से उपस्थित कर्मचारी"
 
 #: templates/commercial_kitchen_profile.html:85
 msgid "Please enter staff count"
-msgstr "ദയവായി ജീവനക്കാരുടെ എണ്ണം നൽകുക"
+msgstr "कृपया कर्मचारियों की संख्या दर्ज करें"
 
 #: templates/commercial_kitchen_profile.html:86
 msgid "Number of workers in the cooking area"
-msgstr "പാചക സ്ഥലത്തെ തൊഴിലാളികളുടെ എണ്ണം"
+msgstr "खाना पकाने के क्षेत्र में कर्मचारियों की संख्या"
 
 #: templates/commercial_kitchen_profile.html:96
 msgid "Budget & Energy Preferences"
-msgstr "ബജറ്റ് & എനർജി മുൻഗണനകൾ"
+msgstr "बजट और ऊर्जा प्राथमिकताएं"
 
 #: templates/commercial_kitchen_profile.html:102
 #: templates/commercial_selection.html:215 templates/kitchen_profile.html:113
 msgid "Investment Priority"
-msgstr "നിക്ഷേപ മുൻഗണന"
+msgstr "निवेश प्राथमिकता"
 
 #: templates/commercial_kitchen_profile.html:105
 #: templates/kitchen_profile.html:116
 msgid "Select Priority"
-msgstr "മുൻഗണന തിരഞ്ഞെടുക്കുക"
+msgstr "प्राथमिकता चुनें"
 
 #: templates/commercial_kitchen_profile.html:106
 #: templates/kitchen_profile.html:117
 msgid "Minimise Upfront Cost"
-msgstr "പ്രാരംഭ ചെലവ് കുറയ്ക്കുക"
+msgstr "अग्रिम लागत कम करें"
 
 #: templates/commercial_kitchen_profile.html:107
 #: templates/kitchen_profile.html:118
 msgid "Balanced Return on Investment"
-msgstr "നിക്ഷേപത്തിൽ നിന്നുള്ള സന്തുലിതമായ വരുമാനം"
+msgstr "निवेश पर संतुलित रिटर्न"
 
 #: templates/commercial_kitchen_profile.html:108
 #: templates/kitchen_profile.html:119
 msgid "Maximise Long-term Savings"
-msgstr "ദീർഘകാല സമ്പാദ്യം പരമാവധിയാക്കുക"
+msgstr "दीर्घकालिक बचत अधिकतम करें"
 
 #: templates/commercial_kitchen_profile.html:109
 #: templates/kitchen_profile.html:120
 msgid "Maximise Environmental Benefit"
-msgstr "പാരിസ്ഥിതിക നേട്ടം പരമാവധിയാക്കുക"
+msgstr "पर्यावरणीय लाभ अधिकतम करें"
 
 #: templates/commercial_kitchen_profile.html:112
 #: templates/kitchen_profile.html:123
 msgid "Please select budget preference"
-msgstr "ദയവായി ബജറ്റ് മുൻഗണന തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया बजट प्राथमिकता चुनें"
 
 #: templates/commercial_kitchen_profile.html:113
 #: templates/kitchen_profile.html:124
 msgid "Primary driver for financial decision making"
-msgstr "സാമ്പത്തിക തീരുമാനങ്ങൾക്കുള്ള പ്രാഥമിക ഘടകം"
+msgstr "वित्तीय निर्णय का मुख्य आधार"
 
 #: templates/commercial_kitchen_profile.html:155
 msgid "Processing"
-msgstr "പ്രോസസ്സ് ചെയ്യുന്നു"
+msgstr "प्रोसेस हो रहा है"
 
 #: templates/commercial_kitchen_profile.html:170
 msgid "Failed to save data"
-msgstr "ഡാറ്റ സംരക്ഷിക്കുന്നതിൽ പരാജയപ്പെട്ടു"
+msgstr "डेटा सहेजने में विफल"
 
 #: templates/commercial_kitchen_profile.html:176
 msgid "Network error occurred"
-msgstr "നെറ്റ്‌വർക്ക് പിശക് സംഭവിച്ചു"
+msgstr "नेटवर्क त्रुटि हुई"
 
 #: templates/commercial_selection.html:3 templates/error.html:89
 msgid "Commercial & Institutional Analysis"
-msgstr "വാണിജ്യ, സ്ഥാപന വിശകലനം"
+msgstr "वाणिज्यिक और संस्थागत विश्लेषण"
 
 #: templates/commercial_selection.html:6 templates/household_profile.html:6
 msgid "Step 1 of 4"
-msgstr "4-ൽ ഘട്ടം 1"
+msgstr "4 में से चरण 1"
 
 #: templates/commercial_selection.html:20
 msgid "Institution Icon"
-msgstr "സ്ഥാപനത്തിന്റെ ഐക്കൺ"
+msgstr "संस्थान आइकन"
 
 #: templates/commercial_selection.html:23
 msgid "Please provide your institution's details for a customised energy analysis"
-msgstr ""
-"ഇഷ്‌ടാനുസൃതമാക്കിയ ഊർജ്ജ വിശകലനത്തിനായി ദയവായി നിങ്ങളുടെ സ്ഥാപനത്തിന്റെ "
-"വിശദാംശങ്ങൾ നൽകുക"
+msgstr "अनुकूलित ऊर्जा विश्लेषण के लिए कृपया अपने संस्थान का विवरण प्रदान करें"
 
 #: templates/commercial_selection.html:36
 msgid "Select Institution Type"
-msgstr "സ്ഥാപനത്തിന്റെ തരം തിരഞ്ഞെടുക്കുക"
+msgstr "संस्थान का प्रकार चुनें"
 
 #: templates/commercial_selection.html:44
 msgid "School"
-msgstr "സ്കൂൾ"
+msgstr "स्कूल"
 
 #: templates/commercial_selection.html:52
 msgid "Anganwadi"
-msgstr "അംഗൻവാടി"
+msgstr "आंगनवाड़ी"
 
 #: templates/commercial_selection.html:60
 msgid "Hotel/Restaurant"
-msgstr "ഹോട്ടൽ/റെസ്റ്റോറന്റ്"
+msgstr "होटल/रेस्तरां"
 
 #: templates/commercial_selection.html:68
 msgid "Factory Canteen"
-msgstr "ഫാക്ടറി കാന്റീൻ"
+msgstr "फैक्ट्री कैंटीन"
 
 #: templates/commercial_selection.html:77
 msgid "Community Kitchen"
-msgstr "കമ്മ്യൂണിറ്റി കിച്ചൺ"
+msgstr "सामुदायिक रसोई"
 
 #: templates/commercial_selection.html:81
 msgid "Please select an institution type"
-msgstr "ദയവായി ഒരു സ്ഥാപനത്തിന്റെ തരം തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया संस्थान का प्रकार चुनें"
 
 #: templates/commercial_selection.html:91
 msgid "Basic Information"
-msgstr "അടിസ്ഥാന വിവരങ്ങൾ"
+msgstr "बुनियादी जानकारी"
 
 #: templates/commercial_selection.html:96
 msgid "Institution Name"
-msgstr "സ്ഥാപനത്തിന്റെ പേര്"
+msgstr "संस्थान का नाम"
 
 #: templates/commercial_selection.html:100
 msgid "Enter institution name"
-msgstr "സ്ഥാപനത്തിന്റെ പേര് നൽകുക"
+msgstr "संस्थान का नाम दर्ज करें"
 
 #: templates/commercial_selection.html:101
 msgid "Please enter institution name"
-msgstr "ദയവായി സ്ഥാപനത്തിന്റെ പേര് നൽകുക"
+msgstr "कृपया संस्थान का नाम दर्ज करें"
 
 #: templates/commercial_selection.html:105
 msgid "Contact Person"
-msgstr "ബന്ധപ്പെടേണ്ട വ്യക്തി"
+msgstr "संपर्क व्यक्ति"
 
 #: templates/commercial_selection.html:107 templates/feedback.html:211
 #: templates/household_profile.html:30
 msgid "Full Name"
-msgstr "മുഴുവൻ പേര്"
+msgstr "पूरा नाम"
 
 #: templates/commercial_selection.html:108
 msgid "Please enter contact person name"
-msgstr "ദയവായി ബന്ധപ്പെടേണ്ട വ്യക്തിയുടെ പേര് നൽകുക"
+msgstr "कृपया संपर्क व्यक्ति का नाम दर्ज करें"
 
 #: templates/commercial_selection.html:112 templates/household_profile.html:36
 msgid "Email Address"
-msgstr "ഇമെയിൽ വിലാസം"
+msgstr "ईमेल पता"
 
 #: templates/commercial_selection.html:114
 msgid "email@example.com"
@@ -1550,15 +1535,15 @@ msgstr "email@example.com"
 
 #: templates/commercial_selection.html:118 templates/household_profile.html:43
 msgid "Contact Number"
-msgstr "കോൺടാക്റ്റ് നമ്പർ"
+msgstr "संपर्क नंबर"
 
 #: templates/commercial_selection.html:120 templates/household_profile.html:45
 msgid "Country code"
-msgstr "രാജ്യ കോഡ്"
+msgstr "देश कोड"
 
 #: templates/commercial_selection.html:121 templates/household_profile.html:46
 msgid "India"
-msgstr "ഇന്ത്യ"
+msgstr "भारत"
 
 #: templates/commercial_selection.html:122 templates/household_profile.html:47
 msgid "UAE"
@@ -1566,7 +1551,7 @@ msgstr "UAE"
 
 #: templates/commercial_selection.html:123 templates/household_profile.html:48
 msgid "Sri Lanka"
-msgstr "ശ്രീലങ്ക"
+msgstr "श्रीलंका"
 
 #: templates/commercial_selection.html:124 templates/household_profile.html:49
 msgid "UK"
@@ -1578,523 +1563,516 @@ msgstr "USA"
 
 #: templates/commercial_selection.html:128 templates/feedback.html:234
 msgid "10-digit number"
-msgstr "10 അക്ക നമ്പർ"
+msgstr "10-अंकों का नंबर"
 
 #: templates/commercial_selection.html:139
 msgid "Location Details"
-msgstr "ലൊക്കേഷൻ വിവരങ്ങൾ"
+msgstr "स्थान विवरण"
 
 #: templates/commercial_selection.html:144
 msgid "Address"
-msgstr "വിലാസം"
+msgstr "पता"
 
 #: templates/commercial_selection.html:146
 msgid "Street, locality, landmark"
-msgstr "തെരുവ്, പ്രദേശം, ലാൻഡ്‌മാർക്ക്"
+msgstr "सड़क, मोहल्ला, सीमाचिह्न"
 
 #: templates/commercial_selection.html:150 templates/household_profile.html:81
 msgid "District"
-msgstr "ജില്ല"
+msgstr "ज़िला"
 
 #: templates/commercial_selection.html:152
 msgid "Select district"
-msgstr "ജില്ല തിരഞ്ഞെടുക്കുക"
+msgstr "ज़िला चुनें"
 
 #: templates/commercial_selection.html:158
 msgid "Please select district"
-msgstr "ദയവായി ജില്ല തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया ज़िला चुनें"
 
 #: templates/commercial_selection.html:162
 msgid "Area Type"
-msgstr "പ്രദേശത്തിന്റെ തരം"
+msgstr "क्षेत्र का प्रकार"
 
 #: templates/commercial_selection.html:164
 msgid "Select area type"
-msgstr "പ്രദേശത്തിന്റെ തരം തിരഞ്ഞെടുക്കുക"
+msgstr "क्षेत्र का प्रकार चुनें"
 
 #: templates/commercial_selection.html:165 templates/household_profile.html:100
 msgid "Urban"
-msgstr "നഗരം"
+msgstr "शहरी"
 
 #: templates/commercial_selection.html:165 templates/household_profile.html:100
 msgid "Municipal/Corporation"
-msgstr "മുനിസിപ്പൽ/കോർപ്പറേഷൻ"
+msgstr "नगर पालिका/निगम"
 
 #: templates/commercial_selection.html:167 templates/household_profile.html:102
 msgid "Rural"
-msgstr "ഗ്രാമം"
+msgstr "ग्रामीण"
 
 #: templates/commercial_selection.html:167 templates/household_profile.html:102
 msgid "Panchayat/Village"
-msgstr "പഞ്ചായത്ത്/വില്ലേജ്"
+msgstr "पंचायत/गाँव"
 
 #: templates/commercial_selection.html:169 templates/household_profile.html:104
 msgid "Please select area type"
-msgstr "ദയവായി ഏരിയ ടൈപ്പ് തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया क्षेत्र का प्रकार चुनें"
 
 #: templates/commercial_selection.html:179
 msgid "Operational Details"
-msgstr "പ്രവർത്തന വിവരങ്ങൾ"
+msgstr "परिचालन विवरण"
 
 #: templates/commercial_selection.html:190
 msgid "Average meals per day"
-msgstr "പ്രതിദിന ശരാശരി ഭക്ഷണങ്ങൾ"
+msgstr "प्रति दिन औसत भोजन"
 
 #: templates/commercial_selection.html:191
 msgid "Please enter daily servings"
-msgstr "ദയവായി പ്രതിദിന സെർവിംഗുകൾ നൽകുക"
+msgstr "कृपया दैनिक सर्विंग्स दर्ज करें"
 
 #: templates/commercial_selection.html:195
 msgid "Working Days per Month"
-msgstr "പ്രതിമാസ പ്രവൃത്തി ദിനങ്ങൾ"
+msgstr "प्रति माह कार्य दिवस"
 
 #: templates/commercial_selection.html:199
 msgid "Operating days monthly"
-msgstr "പ്രതിമാസ പ്രവർത്തന ദിനങ്ങൾ"
+msgstr "मासिक संचालन के दिन"
 
 #: templates/commercial_selection.html:200
 msgid "Please enter working days"
-msgstr "ദയവായി പ്രവൃത്തി ദിനങ്ങൾ നൽകുക"
+msgstr "कृपया कार्य दिवस दर्ज करें"
 
 #: templates/commercial_selection.html:210
 msgid "Energy & Budget Parameters"
-msgstr "എനർജി & ബജറ്റ് പാരാമീറ്ററുകൾ"
+msgstr "ऊर्जा और बजट पैरामीटर"
 
 #: templates/commercial_selection.html:217
 msgid "Not specified"
-msgstr "വ്യക്തമാക്കിയിട്ടില്ല"
+msgstr "निर्दिष्ट नहीं है"
 
 #: templates/commercial_selection.html:219
 msgid "Medium"
-msgstr "ഇടത്തരം"
+msgstr "मध्यम"
 
 #: templates/commercial_selection.html:221
 msgid "No Constraints"
-msgstr "നിയന്ത്രണങ്ങളില്ല"
+msgstr "कोई बाधा नहीं"
 
 #: templates/commercial_selection.html:227
 msgid "Are you interested in a solar rooftop?"
-msgstr "നിങ്ങൾക്ക് സോളാർ റൂഫ്‌ടോപ്പിൽ താല്പര്യമുണ്ടോ?"
+msgstr "क्या आप सोलर रूफटॉप में रुचि रखते हैं?"
 
 #: templates/commercial_selection.html:231 templates/household_profile.html:227
 msgid "No"
-msgstr "ഇല്ല"
+msgstr "नहीं"
 
 #: templates/commercial_selection.html:232
 msgid "Maybe"
-msgstr "ഒരുപക്ഷേ"
+msgstr "शायद"
 
 #: templates/commercial_selection.html:233 templates/household_profile.html:225
 msgid "Yes"
-msgstr "അതെ"
+msgstr "हाँ"
 
 #: templates/commercial_selection.html:239
 msgid "Available Roof Area"
-msgstr "ലഭ്യമായ റൂഫ് ഏരിയ"
+msgstr "उपलब्ध छत क्षेत्र"
 
 #: templates/commercial_selection.html:243
 msgid "Minimum 10 m² required"
-msgstr "കുറഞ്ഞത് 10 m² ആവശ്യമാണ്"
+msgstr "न्यूनतम 10 m² आवश्यक है"
 
 #: templates/commercial_selection.html:257 templates/household_profile.html:255
 msgid "Fuel Price Overrides"
-msgstr "ഇന്ധന വില ക്രമീകരണങ്ങൾ"
+msgstr "ईंधन मूल्य में बदलाव"
 
 #: templates/commercial_selection.html:259 templates/household_profile.html:257
 msgid ""
 "Optional. Defaults are loaded from the database; changes apply to this "
 "session only."
 msgstr ""
-"ഐച്ഛികം. സ്ഥിരസ്ഥിതി മൂല്യങ്ങൾ ഡാറ്റാബേസിൽ നിന്ന് എടുക്കുന്നു; മാറ്റങ്ങൾ "
-"ഈ സെഷനിൽ മാത്രം ബാധകമാണ്."
+"वैकल्पिक। डिफ़ॉल्ट मान डेटाबेस से लिए जाते हैं; बदलाव केवल इस सेशन पर "
+"लागू होंगे।"
 
 #: templates/commercial_selection.html:263 templates/household_profile.html:261
 msgid "LPG Cylinder Price"
-msgstr "LPG സിലിണ്ടർ വില"
+msgstr "LPG सिलेंडर की कीमत"
 
 #: templates/commercial_selection.html:268
 msgid "Price per 19 kg commercial cylinder"
-msgstr "19 kg വാണിജ്യ സിലിണ്ടറിന്റെ വില"
+msgstr "19 kg वाणिज्यिक सिलेंडर की कीमत"
 
 #: templates/commercial_selection.html:272 templates/household_profile.html:269
 msgid "PNG Rate"
-msgstr "PNG നിരക്ക്"
+msgstr "PNG दर"
 
 #: templates/commercial_selection.html:277 templates/household_profile.html:273
 msgid "Rate per standard cubic metre"
-msgstr "ഒരു സ്റ്റാൻഡേർഡ് ക്യുബിക് മീറ്ററിനുള്ള നിരക്ക്"
+msgstr "प्रति मानक घन मीटर दर"
 
 #: templates/commercial_selection.html:281 templates/household_profile.html:157
 #: templates/household_profile.html:277
 msgid "Electricity Tariff"
-msgstr "വൈദ്യുതി താരിഫ്"
+msgstr "बिजली टैरिफ"
 
 #: templates/commercial_selection.html:287
 msgid "Check your electricity bill for accurate rate"
-msgstr "കൃത്യമായ നിരക്കിനായി നിങ്ങളുടെ ഇലക്ട്രിസിറ്റി ബിൽ പരിശോധിക്കുക"
+msgstr "सटीक दर के लिए अपना बिजली बिल जांचें"
 
 #: templates/commercial_selection.html:292 templates/household_profile.html:287
 msgid "Biomass Cost"
-msgstr "ബയോമാസ് ചെലവ്"
+msgstr "बायोमास लागत"
 
 #: templates/commercial_selection.html:297 templates/household_profile.html:291
 msgid "Average cost per kg of firewood or biomass"
-msgstr "വിറകിന്റെയോ ബയോമാസിന്റെയോ ഒരു കിലോഗ്രാമിനുള്ള ശരാശരി ചെലവ്"
+msgstr "जलाऊ लकड़ी या बायोमास की प्रति kg औसत लागत"
 
 #: templates/commercial_selection.html:301 templates/household_profile.html:295
 msgid "Grid CO₂ Factor"
-msgstr "ഗ്രിഡ് CO₂ ഘടകം"
+msgstr "ग्रिड CO₂ कारक"
 
 #: templates/commercial_selection.html:307 templates/household_profile.html:300
 msgid "Kerala grid CO₂ intensity — affects the emission estimates"
-msgstr "കേരള ഗ്രിഡിന്റെ CO₂ തീവ്രത — ഉദ്‌വമന കണക്കുകളെ ബാധിക്കുന്നു"
+msgstr "केरल ग्रिड की CO₂ तीव्रता — उत्सर्जन अनुमान को प्रभावित करती है"
 
 #: templates/commercial_selection.html:335
 msgid "Number of Students"
-msgstr "വിദ്യാർത്ഥികളുടെ എണ്ണം"
+msgstr "छात्रों की संख्या"
 
 #: templates/commercial_selection.html:336
 msgid "Total enrolled students"
-msgstr "ആകെ എൻറോൾ ചെയ്ത വിദ്യാർത്ഥികൾ"
+msgstr "कुल नामांकित छात्र"
 
 #: templates/commercial_selection.html:340
 msgid "Registered Children"
-msgstr "രജിസ്റ്റർ ചെയ്ത കുട്ടികൾ"
+msgstr "पंजीकृत बच्चे"
 
 #: templates/commercial_selection.html:341
 msgid "Children in program"
-msgstr "പ്രോഗ്രാമിലെ കുട്ടികൾ"
+msgstr "कार्यक्रम में बच्चे"
 
 #: templates/commercial_selection.html:345
 msgid "Daily Customers"
-msgstr "പ്രതിദിന ഉപഭോക്താക്കൾ"
+msgstr "दैनिक ग्राहक"
 
 #: templates/commercial_selection.html:346
 msgid "Average customers per day"
-msgstr "പ്രതിദിന ശരാശരി ഉപഭോക്താക്കൾ"
+msgstr "प्रति दिन औसत ग्राहक"
 
 #: templates/commercial_selection.html:350
 msgid "Number of Employees"
-msgstr "ജീവനക്കാരുടെ എണ്ണം"
+msgstr "कर्मचारियों की संख्या"
 
 #: templates/commercial_selection.html:351
 msgid "Total workforce"
-msgstr "ആകെ തൊഴിലാളികൾ"
+msgstr "कुल कार्यबल"
 
 #: templates/commercial_selection.html:355
 msgid "Daily Meals"
-msgstr "പ്രതിദിന ഭക്ഷണങ്ങൾ"
+msgstr "दैनिक भोजन"
 
 #: templates/commercial_selection.html:356
 msgid "Meals served daily"
-msgstr "ദിവസവും വിളമ്പുന്ന ഭക്ഷണങ്ങൾ"
+msgstr "प्रतिदिन परोसा जाने वाला भोजन"
 
 #: templates/contact_us.html:3 templates/contact_us.html:11
 msgid "Contact Us"
-msgstr "ഞങ്ങളെ ബന്ധപ്പെടുക"
+msgstr "हमसे संपर्क करें"
 
 #: templates/contact_us.html:16
 msgid "Get in Touch"
-msgstr "ബന്ധപ്പെടുക"
+msgstr "संपर्क करें"
 
 #: templates/contact_us.html:17
 msgid "We welcome your queries. Please contact us using the details below."
 msgstr ""
-"നിങ്ങളുടെ ചോദ്യങ്ങളെ ഞങ്ങൾ സ്വാഗതം ചെയ്യുന്നു. താഴെ നൽകിയിരിക്കുന്ന "
-"വിവരങ്ങൾ ഉപയോഗിച്ച് ദയവായി ഞങ്ങളെ ബന്ധപ്പെടുക."
+"हम आपके प्रश्नों का स्वागत करते हैं। कृपया नीचे दिए गए विवरण का उपयोग "
+"करके हमसे संपर्क करें।"
 
 #: templates/energy_calculation.html:22
 msgid ""
 "Enter cooking energy data with either detailed menu inputs or existing "
 "consumption records"
 msgstr ""
-"വിശദമായ മെനു ഇൻപുട്ടുകളോ നിലവിലുള്ള ഉപഭോഗ രേഖകളോ ഉപയോഗിച്ച് പാചക ഊർജ്ജ "
-"ഡാറ്റ നൽകുക"
+"विस्तृत मेनू इनपुट या मौजूदा खपत रिकॉर्ड के साथ खाना पकाने की ऊर्जा का "
+"डेटा दर्ज करें"
 
 #: templates/energy_calculation.html:271
 msgid "Cylinder Size"
-msgstr "സിലിണ്ടർ വലുപ്പം"
+msgstr "सिलेंडर का आकार"
 
 #: templates/energy_calculation.html:273
 msgid "Domestic"
-msgstr "ഗാർഹികം"
+msgstr "घरेलू"
 
 #: templates/energy_calculation.html:274
 msgid "Commercial"
-msgstr "വാണിജ്യം"
+msgstr "व्यावसायिक"
 
 #: templates/energy_calculation.html:275
 msgid "Small"
-msgstr "ചെറുത്"
+msgstr "छोटा"
 
 #: templates/energy_calculation.html:279 templates/energy_calculation.html:500
 msgid "Cylinder Lasts (Days)"
-msgstr "സിലിണ്ടർ നീണ്ടുനിൽക്കുന്നത് (ദിവസങ്ങൾ)"
+msgstr "सिलेंडर चलता है (दिन)"
 
 #: templates/energy_calculation.html:282
 msgid "How many days does one cylinder last"
-msgstr "ഒരു സിലിണ്ടർ എത്ര ദിവസം നീണ്ടുനിൽക്കും"
+msgstr "एक सिलेंडर कितने दिन चलता है"
 
 #: templates/energy_calculation.html:285
 msgid "Price of a Cylinder"
-msgstr "ഒരു സിലിണ്ടറിന്റെ വില"
+msgstr "एक सिलेंडर की कीमत"
 
 #: templates/energy_calculation.html:294
 msgid "LPG Consumption Analysis"
-msgstr "LPG ഉപഭോഗ വിശകലനം"
+msgstr "LPG उपभोग विश्लेषण"
 
 #: templates/energy_calculation.html:299
 msgid "kWh per cylinder"
-msgstr "ഒരു സിലിണ്ടറിന് kWh"
+msgstr "प्रति सिलेंडर kWh"
 
 #: templates/energy_calculation.html:305 templates/energy_calculation.html:396
 msgid "Monthly energy (kWh)"
-msgstr "പ്രതിമാസ ഊർജ്ജം (kWh)"
+msgstr "मासिक ऊर्जा (kWh)"
 
 #: templates/energy_calculation.html:311
 msgid "Cylinders/month"
-msgstr "സിലിണ്ടറുകൾ/മാസം"
+msgstr "सिलेंडर/महीना"
 
 #: templates/energy_calculation.html:317 templates/energy_calculation.html:440
 msgid "Monthly Cost (₹)"
-msgstr "പ്രതിമാസ ചെലവ് (₹)"
+msgstr "मासिक लागत (₹)"
 
 #: templates/energy_calculation.html:354
 msgid "Daily average"
-msgstr "പ്രതിദിന ശരാശരി"
+msgstr "दैनिक औसत"
 
 #: templates/energy_calculation.html:377
 msgid "Daily Average Consumption"
-msgstr "പ്രതിദിന ശരാശരി ഉപഭോഗം"
+msgstr "दैनिक औसत खपत"
 
 #: templates/energy_calculation.html:381
 msgid "Daily average consumption"
-msgstr "പ്രതിദിന ശരാശരി ഉപഭോഗം"
+msgstr "दैनिक औसत खपत"
 
 #: templates/energy_calculation.html:385
 msgid "PNG Consumption Analysis"
-msgstr "PNG ഉപഭോഗ വിശകലനം"
+msgstr "PNG खपत विश्लेषण"
 
 #: templates/energy_calculation.html:390
 msgid "Monthly SCM"
-msgstr "പ്രതിമാസ SCM"
+msgstr "मासिक SCM"
 
 #: templates/energy_calculation.html:402
 msgid "Monthly Bill (₹)"
-msgstr "പ്രതിമാസ ബിൽ (₹)"
+msgstr "मासिक बिल (₹)"
 
 #: templates/energy_calculation.html:408
 msgid "Avg rate (₹/SCM)"
-msgstr "ശരാശരി നിരക്ക് (₹/SCM)"
+msgstr "औसत दर (₹/SCM)"
 
 #: templates/energy_calculation.html:429
 msgid "Electricity Consumption Analysis"
-msgstr "വൈദ്യുതി ഉപഭോഗ വിശകലനം"
+msgstr "बिजली खपत विश्लेषण"
 
 #: templates/energy_calculation.html:434
 msgid "Cooking energy (kWh)"
-msgstr "പാചക ഊർജ്ജം (kWh)"
+msgstr "खाना पकाने की ऊर्जा (kWh)"
 
 #: templates/energy_calculation.html:446
 msgid "Annual CO₂ (kg)"
-msgstr "വാർഷിക CO₂ (kg)"
+msgstr "वार्षिक CO₂ (kg)"
 
 #: templates/energy_calculation.html:459
 msgid "Type of biomass"
-msgstr "ബയോമാസിന്റെ തരം"
+msgstr "बायोमास का प्रकार"
 
 #: templates/energy_calculation.html:462
 msgid "Agricultural waste"
-msgstr "കാർഷിക മാലിന്യങ്ങൾ"
+msgstr "कृषि अपशिष्ट"
 
 #: templates/energy_calculation.html:463
 msgid "Cow dung cake"
-msgstr "ചാണകവറളി"
+msgstr "गोबर के उपले"
 
 #: templates/energy_calculation.html:464
 msgid "Mixed"
-msgstr "സമ്മിശ്രം"
+msgstr "मिश्रित"
 
 #: templates/energy_calculation.html:468
 msgid "Monthly consumption"
-msgstr "പ്രതിമാസ ഉപയോഗം"
+msgstr "मासिक खपत"
 
 #: templates/energy_calculation.html:472
 msgid "Estimate monthly biomass consumption in kg"
-msgstr "പ്രതിമാസ ബയോമാസ് ഉപയോഗം കിലോഗ്രാമിൽ കണക്കാക്കുക"
+msgstr "किलोग्राम में मासिक बायोमास खपत का अनुमान लगाएं"
 
 #: templates/energy_calculation.html:621
 msgid "Vegetarian"
-msgstr "വെജിറ്റേറിയൻ"
+msgstr "शाकाहारी"
 
 #: templates/energy_calculation.html:622
 msgid "Non-Vegetarian"
-msgstr "നോൺ-വെജിറ്റേറിയൻ"
+msgstr "मांसाहारी"
 
 #: templates/energy_calculation.html:1301
 #: templates/energy_calculation.html:1366
 msgid "Calculating your energy consumption…"
-msgstr "നിങ്ങളുടെ ഊർജ്ജ ഉപഭോഗം കണക്കാക്കുന്നു…"
+msgstr "आपकी ऊर्जा खपत की गणना की जा रही है…"
 
 #: templates/energy_calculation.html:1307
 msgid "Please select primary fuel"
-msgstr "ദയവായി പ്രാഥമിക ഇന്ധനം തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया प्राथमिक ईंधन का चयन करें"
 
 #: templates/energy_calculation.html:1361
 msgid "Please select at least one fuel type"
-msgstr "ദയവായി ഒരു ഇന്ധനമെങ്കിലും തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया कम से कम एक ईंधन प्रकार चुनें"
 
 #: templates/error.html:3
 msgid "Error"
-msgstr "പിശക്"
+msgstr "त्रुटि"
 
 #: templates/error.html:35
 msgid "Page not found"
-msgstr "പേജ് ലഭ്യമല്ല"
+msgstr "पेज नहीं मिला"
 
 #: templates/error.html:36
 msgid "The requested page may have been moved or deleted."
-msgstr "അഭ്യർത്ഥിച്ച പേജ് മാറ്റുകയോ നീക്കം ചെയ്യുകയോ ചെയ്തിരിക്കാം."
+msgstr "अनुरोधित पेज को स्थानांतरित या हटाया जा चुका हो सकता है।"
 
 #: templates/error.html:41
 msgid "Server Error"
-msgstr "സെർവർ പിശക്"
+msgstr "सर्वर त्रुटि"
 
 #: templates/error.html:57
 msgid "Return to Home"
-msgstr "ഹോമിലേക്ക് മടങ്ങുക"
+msgstr "होम पर वापस जाएं"
 
 #: templates/error.html:61
 msgid "Go Back"
-msgstr "തിരികെ പോവുക"
+msgstr "वापस जाएं"
 
 #: templates/error.html:66 templates/index.html:25
 msgid "Start Analysis"
-msgstr "വിശകലനം ആരംഭിക്കുക"
+msgstr "विश्लेषण शुरू करें"
 
 #: templates/error.html:75
 msgid "Quick Links"
-msgstr "ദ്രുത ലിങ്കുകൾ"
+msgstr "त्वरित लिंक"
 
 #: templates/error.html:81
 msgid "Residential Analysis"
-msgstr "പാർപ്പിട വിശകലനം"
+msgstr "आवासीय विश्लेषण"
 
 #: templates/error.html:97
 msgid "About"
-msgstr "ഇതിനെക്കുറിച്ച്"
+msgstr "परिचय"
 
 #: templates/feedback.html:3
 msgid "Feedback & Government Schemes"
-msgstr "ഫീഡ്‌ബാക്കും സർക്കാർ പദ്ധതികളും"
+msgstr "प्रतिक्रिया और सरकारी योजनाएं"
 
 #: templates/feedback.html:18
 msgid "Analysis Complete!"
-msgstr "വിശകലനം പൂർത്തിയായി!"
+msgstr "विश्लेषण पूरा हुआ!"
 
 #: templates/feedback.html:19
 msgid ""
 "You are one step closer to cleaner, smarter cooking. Please tell us how "
 "we can help."
 msgstr ""
-"നിങ്ങൾ കൂടുതൽ വൃത്തിയുള്ളതും മികച്ചതുമായ പാചകത്തിലേക്ക് ഒരു പടി കൂടി "
-"അടുത്തിരിക്കുന്നു. ഞങ്ങൾക്ക് എങ്ങനെ സഹായിക്കാനാകുമെന്ന് ദയവായി ഞങ്ങളോട് "
-"പറയുക."
+"आप स्वच्छ, स्मार्ट खाना पकाने के एक कदम करीब हैं। कृपया हमें बताएं कि हम "
+"कैसे मदद कर सकते हैं।"
 
 #: templates/feedback.html:33
 msgid "Would you like to know more about electric cooking or clean cooking?"
-msgstr ""
-"ഇലക്ട്രിക് പാചകത്തെക്കുറിച്ചോ ക്ലീൻ പാചകത്തെക്കുറിച്ചോ കൂടുതലറിയാൻ നിങ്ങൾ"
-" ആഗ്രഹിക്കുന്നുണ്ടോ?"
+msgstr "क्या आप इलेक्ट्रिक कुकिंग या स्वच्छ कुकिंग के बारे में अधिक जानना चाहेंगे?"
 
 #: templates/feedback.html:46
 msgid "Yes, I would like to know more"
-msgstr "അതെ, എനിക്ക് കൂടുതലറിയാൻ താൽപ്പര്യമുണ്ട്"
+msgstr "हाँ, मैं और जानना चाहूँगा"
 
 #: templates/feedback.html:59
 msgid "No, I have enough information"
-msgstr "ഇല്ല, എനിക്ക് മതിയായ വിവരങ്ങളുണ്ട്"
+msgstr "नहीं, मेरे पास पर्याप्त जानकारी है"
 
 #: templates/feedback.html:76
 msgid "Your Consent"
-msgstr "നിങ്ങളുടെ സമ്മതം"
+msgstr "आपकी सहमति"
 
 #: templates/feedback.html:86
 msgid "Allow government authorities to contact me"
-msgstr "എന്നെ ബന്ധപ്പെടാൻ സർക്കാർ അധികാരികളെ അനുവദിക്കുക"
+msgstr "सरकारी अधिकारियों को मुझसे संपर्क करने की अनुमति दें"
 
 #: templates/feedback.html:88
 msgid ""
 "I permit government authorities and scheme coordinators to contact me by "
 "phone or email regarding the selected programmes and subsidy schemes."
 msgstr ""
-"തിരഞ്ഞെടുത്ത പ്രോഗ്രാമുകളെയും സബ്‌സിഡി സ്കീമുകളെയും കുറിച്ച് ഫോണിലൂടെയോ "
-"ഇമെയിലിലൂടെയോ എന്നെ ബന്ധപ്പെടാൻ സർക്കാർ അധികാരികളെയും സ്കീം "
-"കോർഡിനേറ്റർമാരെയും ഞാൻ അനുവദിക്കുന്നു."
+"मैं सरकारी अधिकारियों और योजना समन्वयकों को चयनित कार्यक्रमों और सब्सिडी "
+"योजनाओं के संबंध में फोन या ईमेल द्वारा मुझसे संपर्क करने की अनुमति देता "
+"हूं।"
 
 #: templates/feedback.html:99
 msgid "Do you need further support or assistance with any of the following?"
-msgstr ""
-"ഇനിപ്പറയുന്നവയിൽ ഏതെങ്കിലുമൊന്നിന് നിങ്ങൾക്ക് കൂടുതൽ പിന്തുണയോ സഹായമോ "
-"ആവശ്യമുണ്ടോ?"
+msgstr "क्या आपको निम्नलिखित में से किसी के लिए और सहायता या मदद की आवश्यकता है?"
 
 #: templates/feedback.html:114
 msgid "Solar Rooftop Installation"
-msgstr "സോളാർ റൂഫ്ടോപ്പ് ഇൻസ്റ്റാളേഷൻ"
+msgstr "सोलर रूफटॉप इंस्टॉलेशन"
 
 #: templates/feedback.html:115
 msgid "PM Surya Ghar subsidy and installation"
-msgstr "പിഎം സൂര്യ ഘർ സബ്സിഡിയും ഇൻസ്റ്റാളേഷനും"
+msgstr "पीएम सूर्य घर सब्सिडी और इंस्टॉलेशन"
 
 #: templates/feedback.html:132
 msgid "Electric Cooking"
-msgstr "ഇലക്ട്രിക് കുക്കിംഗ്"
+msgstr "इलेक्ट्रिक कुकिंग"
 
 #: templates/feedback.html:134
 msgid "Induction stoves, electric pressure cookers and more"
-msgstr "ഇൻഡക്ഷൻ സ്റ്റൗവുകൾ, ഇലക്ട്രിക് പ്രഷർ കുക്കറുകൾ എന്നിവയും അതിലേറെയും"
+msgstr "इंडक्शन स्टोव, इलेक्ट्रिक प्रेशर कुकर और बहुत कुछ"
 
 #: templates/feedback.html:150
 msgid "PNG Connections"
-msgstr "PNG കണക്ഷനുകൾ"
+msgstr "PNG कनेक्शन"
 
 #: templates/feedback.html:152
 msgid "Piped Natural Gas availability"
-msgstr "പൈപ്പ്ഡ് നാച്ചുറൽ ഗ്യാസ് ലഭ്യത"
+msgstr "पाइप्ड नेचुरल गैस की उपलब्धता"
 
 #: templates/feedback.html:169
 msgid "Government Schemes & Support"
-msgstr "സർക്കാർ പദ്ധതികളും പിന്തുണയും"
+msgstr "सरकारी योजनाएं और सहायता"
 
 #: templates/feedback.html:170
 msgid "Ujjwala, City Gas Distribution and existing subsidies"
-msgstr "ഉജ്ജ്വല, സിറ്റി ഗ്യാസ് വിതരണം, നിലവിലുള്ള സബ്സിഡികൾ"
+msgstr "उज्ज्वला, सिटी गैस वितरण और मौजूदा सब्सिडी"
 
 #: templates/feedback.html:187
 msgid "None — I have all the information I need"
-msgstr "ഒന്നുമില്ല — എനിക്ക് ആവശ്യമായ എല്ലാ വിവരങ്ങളും ലഭിച്ചു"
+msgstr "कोई नहीं — मेरे पास मेरी जरूरत की सभी जानकारी है"
 
 #: templates/feedback.html:188
 msgid "Thank you for using the platform"
-msgstr "പ്ലാറ്റ്ഫോം ഉപയോഗിച്ചതിന് നന്ദി"
+msgstr "प्लेटफ़ॉर्म का उपयोग करने के लिए धन्यवाद"
 
 #: templates/feedback.html:203
 msgid "Verify Your Contact Information"
-msgstr "നിങ്ങളുടെ കോൺടാക്റ്റ് വിവരങ്ങൾ പരിശോധിച്ചുറപ്പിക്കുക"
+msgstr "अपनी संपर्क जानकारी सत्यापित करें"
 
 #: templates/feedback.html:207
 msgid "Please confirm or update your details below"
-msgstr ""
-"ദയവായി താഴെ നിങ്ങളുടെ വിവരങ്ങൾ സ്ഥിരീകരിക്കുകയോ അപ്ഡേറ്റ് ചെയ്യുകയോ "
-"ചെയ്യുക"
+msgstr "कृपया नीचे अपने विवरण की पुष्टि करें या अपडेट करें"
 
 #: templates/feedback.html:215 templates/household_profile.html:32
 msgid "Your Name"
-msgstr "നിങ്ങളുടെ പേര്"
+msgstr "आपका नाम"
 
 #: templates/feedback.html:216 templates/household_profile.html:33
 msgid "Please enter your name"
-msgstr "ദയവായി നിങ്ങളുടെ പേര് നൽകുക"
+msgstr "कृपया अपना नाम दर्ज करें"
 
 #: templates/feedback.html:220
 msgid "Email"
@@ -2102,7 +2080,7 @@ msgstr "Email"
 
 #: templates/feedback.html:225 templates/household_profile.html:40
 msgid "Please enter a valid email address"
-msgstr "ദയവായി സാധുവായ ഒരു ഇമെയിൽ വിലാസം നൽകുക"
+msgstr "कृपया एक वैध ईमेल पता दर्ज करें"
 
 #: templates/feedback.html:229
 msgid "Phone"
@@ -2110,158 +2088,152 @@ msgstr "Phone"
 
 #: templates/feedback.html:235
 msgid "Please enter a valid 10-digit mobile number"
-msgstr "ദയവായി സാധുവായ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക"
+msgstr "कृपया एक वैध 10-अंकों का मोबाइल नंबर दर्ज करें"
 
 #: templates/feedback.html:247 templates/feedback.html:282
 msgid "Submit"
-msgstr "സമർപ്പിക്കുക"
+msgstr "सबमिट करें"
 
 #: templates/feedback.html:281
 msgid "Submit and Get Support"
-msgstr "സമർപ്പിച്ച് പിന്തുണ നേടുക"
+msgstr "सबमिट करें और सहायता प्राप्त करें"
 
 #: templates/feedback.html:321
 msgid "Please select an option for Question A"
-msgstr "ദയവായി ചോദ്യം A-യ്ക്ക് ഒരു ഉത്തരം തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया प्रश्न A के लिए एक विकल्प चुनें"
 
 #: templates/feedback_success.html:3
 msgid "Thank You"
-msgstr "നന്ദി"
+msgstr "धन्यवाद"
 
 #: templates/feedback_success.html:18
 msgid "Thank You!"
-msgstr "നന്ദി!"
+msgstr "धन्यवाद!"
 
 #: templates/feedback_success.html:20
 msgid "Your feedback and scheme preferences have been submitted successfully."
-msgstr "നിങ്ങളുടെ ഫീഡ്‌ബാക്കും സ്കീം മുൻഗണനകളും വിജയകരമായി സമർപ്പിച്ചു."
+msgstr "आपकी प्रतिक्रिया और योजना प्राथमिकताएं सफलतापूर्वक सबमिट कर दी गई हैं।"
 
 #: templates/feedback_success.html:25
 msgid "What Happens Next?"
-msgstr "അടുത്തതായി എന്ത് സംഭവിക്കും?"
+msgstr "आगे क्या होगा?"
 
 #: templates/feedback_success.html:28
 msgid "Government authorities will contact you regarding your selected schemes"
-msgstr ""
-"നിങ്ങൾ തിരഞ്ഞെടുത്ത സ്കീമുകളെക്കുറിച്ച് സർക്കാർ അധികാരികൾ നിങ്ങളെ "
-"ബന്ധപ്പെടുന്നതാണ്"
+msgstr "सरकारी अधिकारी आपकी चयनित योजनाओं के संबंध में आपसे संपर्क करेंगे"
 
 #: templates/feedback_success.html:30
 msgid "Your anonymised data helps improve clean cooking policy in Kerala"
-msgstr ""
-"നിങ്ങളുടെ അജ്ഞാത ഡാറ്റ കേരളത്തിലെ ക്ലീൻ കുക്കിംഗ് നയം മെച്ചപ്പെടുത്താൻ "
-"സഹായിക്കുന്നു"
+msgstr "आपका अनाम डेटा केरल में स्वच्छ कुकिंग नीति को बेहतर बनाने में मदद करता है"
 
 #: templates/feedback_success.html:33
 msgid "You can start a new analysis to explore more scenarios"
-msgstr ""
-"കൂടുതൽ സാഹചര്യങ്ങൾ പര്യവേക്ഷണം ചെയ്യുന്നതിനായി നിങ്ങൾക്ക് ഒരു പുതിയ "
-"വിശകലനം ആരംഭിക്കാവുന്നതാണ്"
+msgstr "आप अधिक परिदृश्यों का पता लगाने के लिए एक नया विश्लेषण शुरू कर सकते हैं"
 
 #: templates/feedback_success.html:40
 msgid "Start New Analysis"
-msgstr "പുതിയ വിശകലനം ആരംഭിക്കുക"
+msgstr "नया विश्लेषण शुरू करें"
 
 #: templates/feedback_success.html:51
 msgid "Schemes You Selected"
-msgstr "നിങ്ങൾ തിരഞ്ഞെടുത്ത സ്കീമുകൾ"
+msgstr "आपके द्वारा चयनित योजनाएं"
 
 #: templates/feedback_success.html:57
 msgid "PM Surya Ghar Solar"
-msgstr "പിഎം സൂര്യ ഘർ സോളാർ"
+msgstr "पीएम सूर्य घर सोलर"
 
 #: templates/feedback_success.html:58
 msgid "Solar Subsidy Scheme"
-msgstr "സോളാർ സബ്സിഡി സ്കീം"
+msgstr "सौर सब्सिडी योजना"
 
 #: templates/feedback_success.html:66
 msgid "PNG Connection"
-msgstr "PNG കണക്ഷൻ"
+msgstr "PNG कनेक्शन"
 
 #: templates/feedback_success.html:67
 msgid "City Gas Distribution"
-msgstr "സിറ്റി ഗ്യാസ് ഡിസ്ട്രിബ്യൂഷൻ"
+msgstr "सिटी गैस डिस्ट्रीब्यूशन"
 
 #: templates/feedback_success.html:75
 msgid "PM Ujjwala Yojana"
-msgstr "PM ഉജ്ജ്വല യോജന"
+msgstr "पीएम उज्ज्वला योजना"
 
 #: templates/feedback_success.html:76
 msgid "LPG Subsidy"
-msgstr "LPG സബ്സിഡി"
+msgstr "LPG सब्सिडी"
 
 #: templates/household_profile.html:3 templates/household_profile.html:6
 #: templates/household_profile.html:13
 msgid "Household Profile"
-msgstr "ഗാർഹിക പ്രൊഫൈൽ"
+msgstr "परिवार प्रोफ़ाइल"
 
 #: templates/household_profile.html:25
 msgid "Personal Information"
-msgstr "വ്യക്തിഗത വിവരങ്ങൾ"
+msgstr "व्यक्तिगत जानकारी"
 
 #: templates/household_profile.html:38
 msgid "Your Email Address"
-msgstr "നിങ്ങളുടെ ഇമെയിൽ വിലാസം"
+msgstr "आपका ईमेल पता"
 
 #: templates/household_profile.html:52
 msgid "Phone Number"
-msgstr "ഫോൺ നമ്പർ"
+msgstr "फ़ोन नंबर"
 
 #: templates/household_profile.html:56
 msgid "Please enter a valid phone number"
-msgstr "ദയവായി സാധുവായ ഒരു ഫോൺ നമ്പർ നൽകുക"
+msgstr "कृपया एक वैध फ़ोन नंबर दर्ज करें"
 
 #: templates/household_profile.html:66
 msgid "Household Details"
-msgstr "ഗാർഹിക വിവരങ്ങൾ"
+msgstr "परिवार का विवरण"
 
 #: templates/household_profile.html:71
 msgid "Number of Household Members"
-msgstr "കുടുംബാംഗങ്ങളുടെ എണ്ണം"
+msgstr "परिवार के सदस्यों की संख्या"
 
 #: templates/household_profile.html:75
 msgid "Total number of residents"
-msgstr "താമസക്കാരുടെ ആകെ എണ്ണം"
+msgstr "निवासियों की कुल संख्या"
 
 #: templates/household_profile.html:76
 msgid "Please enter household size"
-msgstr "ദയവായി കുടുംബത്തിന്റെ വലുപ്പം നൽകുക"
+msgstr "कृपया परिवार का आकार दर्ज करें"
 
 #: templates/household_profile.html:83
 msgid "Select District"
-msgstr "ജില്ല തിരഞ്ഞെടുക്കുക"
+msgstr "ज़िला चुनें"
 
 #: templates/household_profile.html:92
 msgid "Please select your district"
-msgstr "ദയവായി നിങ്ങളുടെ ജില്ല തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया अपना जिला चुनें"
 
 #: templates/household_profile.html:96
 msgid "Area Classification"
-msgstr "ഏരിയ ക്ലാസിഫിക്കേഷൻ"
+msgstr "क्षेत्र वर्गीकरण"
 
 #: templates/household_profile.html:98
 msgid "Select Area Classification"
-msgstr "ഏരിയ ക്ലാസിഫിക്കേഷൻ തിരഞ്ഞെടുക്കുക"
+msgstr "क्षेत्र वर्गीकरण चुनें"
 
 #: templates/household_profile.html:108
 msgid "Monthly Household Income"
-msgstr "പ്രതിമാസ കുടുംബ വരുമാനം"
+msgstr "मासिक पारिवारिक आय"
 
 #: templates/household_profile.html:111
 msgid "Example: 50,000"
-msgstr "ഉദാഹരണം: 50,000"
+msgstr "उदाहरण: 50,000"
 
 #: templates/household_profile.html:112 templates/household_profile.html:114
 msgid "Used for financial feasibility analysis"
-msgstr "സാമ്പത്തിക സാധ്യത വിശകലനത്തിനായി ഉപയോഗിക്കുന്നു"
+msgstr "वित्तीय व्यवहार्यता विश्लेषण के लिए उपयोग किया जाता है"
 
 #: templates/household_profile.html:115
 msgid "Select Monthly Income"
-msgstr "പ്രതിമാസ വരുമാനം തിരഞ്ഞെടുക്കുക"
+msgstr "मासिक आय चुनें"
 
 #: templates/household_profile.html:116
 msgid "Less than 50,000"
-msgstr "50,000-ൽ താഴെ"
+msgstr "50,000 से कम"
 
 #: templates/household_profile.html:117
 msgid "50,000 - 70,000"
@@ -2277,618 +2249,608 @@ msgstr "1,00,000 - 1,50,000"
 
 #: templates/household_profile.html:120
 msgid "Above 1,50,000"
-msgstr "1,50,000-ന് മുകളിൽ"
+msgstr "1,50,000 से ऊपर"
 
 #: templates/household_profile.html:126
 msgid "Monthly Household Income Range"
-msgstr "ഒരു മാസത്തെ വരുമാനം"
+msgstr "मासिक पारिवारिक आय सीमा"
 
 #: templates/household_profile.html:131
 msgid "From"
-msgstr "മുതൽ"
+msgstr "से"
 
 #: templates/household_profile.html:132
 msgid "Enter the lower value of the income range"
-msgstr "വരുമാന പരിധിയുടെ ഏറ്റവും കുറഞ്ഞ മൂല്യം നൽകുക"
+msgstr "आय सीमा का न्यूनतम मूल्य दर्ज करें"
 
 #: templates/household_profile.html:138
 msgid "To"
-msgstr "വരെ"
+msgstr "तक"
 
 #: templates/household_profile.html:139
 msgid "Enter the upper value of the income range"
-msgstr "വരുമാന പരിധിയുടെ ഏറ്റവും ഉയർന്ന മൂല്യം നൽകുക"
+msgstr "आय सीमा का अधिकतम मूल्य दर्ज करें"
 
 #: templates/household_profile.html:152
 msgid "Economic Parameters"
-msgstr "സാമ്പത്തിക മാനദണ്ഡങ്ങൾ"
+msgstr "आर्थिक मानदंड"
 
 #: templates/household_profile.html:161
 msgid "Current applicable tariff rate"
-msgstr "നിലവിൽ ബാധകമായ താരിഫ് നിരക്ക്"
+msgstr "वर्तमान लागू टैरिफ दर"
 
 #: templates/household_profile.html:162
 msgid "Please enter electricity tariff"
-msgstr "വൈദ്യുതി താരിഫ് നൽകുക"
+msgstr "कृपया बिजली टैरिफ दर्ज करें"
 
 #: templates/household_profile.html:166
 msgid "LPG Subsidy Status"
-msgstr "LPG സബ്സിഡി നില"
+msgstr "LPG सब्सिडी स्थिति"
 
 #: templates/household_profile.html:168
 msgid "Select Status"
-msgstr "നില തിരഞ്ഞെടുക്കുക"
+msgstr "स्थिति चुनें"
 
 #: templates/household_profile.html:169
 msgid "Non-Subsidised"
-msgstr "സബ്സിഡിയില്ലാത്തത്"
+msgstr "सब्सिडी रहित"
 
 #: templates/household_profile.html:170
 msgid "Subsidised"
-msgstr "സബ്സിഡിയുള്ളത്"
+msgstr "सब्सिडी सहित"
 
 #: templates/household_profile.html:172
 msgid "Please select LPG subsidy status"
-msgstr "LPG സബ്സിഡി നില തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया LPG सब्सिडी स्थिति चुनें"
 
 #: templates/household_profile.html:176
 msgid "Financing Interest Rate"
-msgstr "ധനസഹായ പലിശ നിരക്ക്"
+msgstr "वित्तपोषण ब्याज दर"
 
 #: templates/household_profile.html:180
 msgid "Assumed interest rate for capital investment"
-msgstr "മൂലധന നിക്ഷേപത്തിനുള്ള ആനുമാനിക പലിശ നിരക്ക്"
+msgstr "पूंजी निवेश के लिए अनुमानित ब्याज दर"
 
 #: templates/household_profile.html:181
 msgid "Please enter loan interest rate"
-msgstr "വായ്പ പലിശ നിരക്ക് നൽകുക"
+msgstr "कृपया ऋण ब्याज दर दर्ज करें"
 
 #: templates/household_profile.html:185
 msgid "Loan Tenure"
-msgstr "വായ്പ കാലാവധി"
+msgstr "ऋण अवधि"
 
 #: templates/household_profile.html:185
 msgid "Years"
-msgstr "വർഷം"
+msgstr "वर्ष"
 
 #: templates/household_profile.html:188
 msgid "Select Tenure"
-msgstr "കാലാവധി തിരഞ്ഞെടുക്കുക"
+msgstr "अवधि चुनें"
 
 #: templates/household_profile.html:195
 msgid "Please select loan tenure"
-msgstr "വായ്പ കാലാവധി തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया ऋण अवधि चुनें"
 
 #: templates/household_profile.html:198
 msgid "Primary Optimisation Goal"
-msgstr "പ്രാഥമിക ലക്ഷ്യം"
+msgstr "प्राथमिक लक्ष्य"
 
 #: templates/household_profile.html:200
 msgid "Balanced Approach"
-msgstr "സന്തുലിത സമീപനം"
+msgstr "संतुलित दृष्टिकोण"
 
 #: templates/household_profile.html:201
 msgid "Cost Minimisation"
-msgstr "ചെലവ് ലഘൂകരണം"
+msgstr "लागत न्यूनीकरण"
 
 #: templates/household_profile.html:202
 msgid "Health & Safety"
-msgstr "ആരോഗ്യവും സുരക്ഷയും"
+msgstr "स्वास्थ्य और सुरक्षा"
 
 #: templates/household_profile.html:203
 msgid "Environmental Impact"
-msgstr "പരിസ്ഥിതി ആഘാതം"
+msgstr "पर्यावरणीय प्रभाव"
 
 #: templates/household_profile.html:205
 msgid ""
 "Determines how the final recommendation is weighted across cost, health, "
 "and sustainability factors."
 msgstr ""
-"ചെലവ്, ആരോഗ്യം, സുസ്ഥിരത ഘടകങ്ങൾ അടിസ്ഥാനത്തിൽ അന്തിമ ശുപാർശ "
-"നിർണ്ണയിക്കുന്ന മാനദണ്ഡം."
+"यह तय करता है कि अंतिम सिफारिश में लागत, स्वास्थ्य और स्थिरता जैसे कारकों"
+" को कितना महत्व दिया जाए।"
 
 #: templates/household_profile.html:206
 msgid "Please select your priority"
-msgstr "ദയവായി നിങ്ങളുടെ മുൻഗണന തിരഞ്ഞെടുക്കുക"
+msgstr "कृपया अपनी प्राथमिकता चुनें"
 
 #: templates/household_profile.html:216
 msgid "Solar Rooftop"
-msgstr "സോളാർ റൂഫ്ടോപ്പ്"
+msgstr "सोलर रूफटॉप"
 
 #: templates/household_profile.html:221
 msgid "Are you willing to consider a solar rooftop?"
-msgstr "ഒരു സോളാർ റൂഫ്ടോപ്പ് പരിഗണിക്കാൻ നിങ്ങൾക്ക് താല്പര്യമുണ്ടോ?"
+msgstr "क्या आप सोलर रूफटॉप पर विचार करने के इच्छुक हैं?"
 
 #: templates/household_profile.html:223
 msgid "Select an option"
-msgstr "ഒരു ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക"
+msgstr "एक विकल्प चुनें"
 
 #: templates/household_profile.html:229
 msgid "Please indicate your preference for a solar rooftop"
-msgstr "സോളാർ റൂഫ്ടോപ്പിനായുള്ള നിങ്ങളുടെ താല്പര്യം ദയവായി വ്യക്തമാക്കുക"
+msgstr "कृपया सोलर रूफटॉप के लिए अपनी प्राथमिकता बताएं"
 
 #: templates/household_profile.html:234
 msgid "Available rooftop area"
-msgstr "ലഭ്യമായ റൂഫ്ടോപ്പ് വിസ്തീർണ്ണം"
+msgstr "उपलब्ध रूफटॉप क्षेत्र"
 
 #: templates/household_profile.html:239
 msgid "Enter area"
-msgstr "വിസ്തീർണ്ണം നൽകുക"
+msgstr "क्षेत्र दर्ज करें"
 
 #: templates/household_profile.html:242
 msgid "Minimum 10 m² required for solar installation"
-msgstr "സോളാർ ഇൻസ്റ്റാളേഷന് കുറഞ്ഞത് 10 m² ആവശ്യമാണ്"
+msgstr "सोलर इंस्टॉलेशन के लिए न्यूनतम 10 m² आवश्यक है"
 
 #: templates/household_profile.html:265
 msgid "Price per 14.2 kg domestic cylinder"
-msgstr "14.2 kg ഗാർഹിക സിലിണ്ടറിന്റെ വില"
+msgstr "14.2 kg घरेलू सिलेंडर की कीमत"
 
 #: templates/household_profile.html:282
 msgid "Check your electricity bill for the applicable slab rate"
-msgstr "ബാധകമായ സ്ലാബ് നിരക്കിനായി നിങ്ങളുടെ വൈദ്യുതി ബിൽ പരിശോധിക്കുക"
+msgstr "लागू स्लैब दर के लिए अपना बिजली बिल जांचें"
 
 #: templates/household_profile.html:458
 msgid "Energy efficiency gain from economies of scale"
-msgstr "സ്കെയിലിന്റെ സമ്പദ്‌വ്യവസ്ഥയിൽ നിന്നുള്ള ഊർജ്ജ കാര്യക്ഷമത നേട്ടം"
+msgstr "इकोनॉमीज़ ऑफ़ स्केल से ऊर्जा दक्षता लाभ"
 
 #: templates/index.html:3
 msgid "Kerala Clean Cooking Tool - Home"
-msgstr "Kerala Clean Cooking Tool - ഹോം"
+msgstr "Kerala Clean Cooking Tool - होम"
 
 #: templates/index.html:14
 msgid "Clean Cooking"
-msgstr "ക്ലീൻ കുക്കിംഗ്"
+msgstr "स्वच्छ कुकिंग"
 
 #: templates/index.html:20
 msgid ""
 "A research-driven analytical tool that identifies the most efficient "
 "cooking-energy solutions for diverse use cases across Kerala."
 msgstr ""
-"കേരളത്തിലുടനീളമുള്ള വിവിധ ഉപയോഗങ്ങൾക്കായി ഏറ്റവും കാര്യക്ഷമമായ പാചക-ഊർജ്ജ"
-" പരിഹാരങ്ങൾ കണ്ടെത്തുന്ന ഒരു ഗവേഷണ-അധിഷ്ഠിത അനലിറ്റിക്കൽ ടൂൾ."
+"एक शोध-आधारित विश्लेषणात्मक उपकरण जो पूरे केरल में विविध उपयोग के मामलों "
+"के लिए सबसे कुशल खाना पकाने-ऊर्जा समाधानों की पहचान करता है।"
 
 #: templates/index.html:32
 msgid "Districts Covered"
-msgstr "ഉൾപ്പെടുത്തിയ ജില്ലകൾ"
+msgstr "शामिल ज़िले"
 
 #: templates/index.html:37
 msgid "Clean-fuel Options Modelled"
-msgstr "മോഡൽ ചെയ്ത ശുദ്ധ ഇന്ധന ഓപ്ഷനുകൾ"
+msgstr "मॉडल किए गए स्वच्छ ईंधन विकल्प"
 
 #: templates/index.html:42
 msgid "Evidence-based Methodology"
-msgstr "തെളിവ്-അടിസ്ഥാന രീതിശാസ്ത്രം"
+msgstr "साक्ष्य-आधारित पद्धति"
 
 #: templates/index.html:48
 msgid "How It Works"
-msgstr "ഇത് എങ്ങനെ പ്രവർത്തിക്കുന്നു"
+msgstr "यह कैसे काम करता है"
 
 #: templates/info.html:3
 msgid "Information & Methodology"
-msgstr "വിവരങ്ങളും രീതിശാസ്ത്രവും"
+msgstr "जानकारी और कार्यप्रणाली"
 
 #: templates/info.html:11
 msgid "About the Platform"
-msgstr "പ്ലാറ്റ്‌ഫോമിനെക്കുറിച്ച്"
+msgstr "प्लेटफ़ॉर्म के बारे में"
 
 #: templates/info.html:12
 msgid "Platform overview is designed, validated, and kept up to date."
-msgstr ""
-"പ്ലാറ്റ്‌ഫോം അവലോകനം രൂപകൽപ്പന ചെയ്യുകയും സാധൂകരിക്കുകയും കാലികമായി "
-"നിലനിർത്തുകയും ചെയ്യുന്നു."
+msgstr "प्लेटफ़ॉर्म अवलोकन को डिज़ाइन, मान्य और अद्यतित रखा गया है।"
 
 #: templates/info.html:18
 msgid "Key Features"
-msgstr "പ്രധാന സവിശേഷതകൾ"
+msgstr "मुख्य विशेषताएँ"
 
 #: templates/info.html:28
 msgid "Flexible assessment options"
-msgstr "വഴക്കമുള്ള വിലയിരുത്തൽ ഓപ്ഷനുകൾ"
+msgstr "लचीले मूल्यांकन विकल्प"
 
 #: templates/info.html:29
 msgid ""
 "Use meal data or totals inputs or summarize existing fuel "
 "consumption—whichever fits your data best."
 msgstr ""
-"ഭക്ഷണ ഡാറ്റയോ മൊത്തം ഇൻപുട്ടുകളോ ഉപയോഗിക്കുക അല്ലെങ്കിൽ നിലവിലുള്ള ഇന്ധന "
-"ഉപഭോഗം സംഗ്രഹിക്കുക—നിങ്ങളുടെ ഡാറ്റയ്ക്ക് ഏറ്റവും അനുയോജ്യമായത് ഏതാണോ "
-"അത്."
+"भोजन डेटा या कुल इनपुट का उपयोग करें या मौजूदा ईंधन खपत को संक्षेप में "
+"प्रस्तुत करें—जो भी आपके डेटा के लिए सबसे उपयुक्त हो।"
 
 #: templates/info.html:31
 msgid "Granular dish-level energy modelling"
-msgstr "ഗ്രാനുലാർ ഡിഷ്-ലെവൽ എനർജി മോഡലിംഗ്"
+msgstr "विस्तृत डिश-स्तरीय ऊर्जा मॉडलिंग"
 
 #: templates/info.html:33
 msgid "Historical consumption analysis"
-msgstr "ചരിത്രപരമായ ഉപഭോഗ വിശകലനം"
+msgstr "ऐतिहासिक खपत विश्लेषण"
 
 #: templates/info.html:35
 msgid "Multi-fuel scenario comparison"
-msgstr "മൾട്ടി-ഫ്യുവൽ സാഹചര്യ താരതമ്യം"
+msgstr "मल्टी-फ्यूल परिदृश्य तुलना"
 
 #: templates/info.html:47
 msgid "Health risk evaluation"
-msgstr "ആരോഗ്യ അപകടസാധ്യതാ വിലയിരുത്തൽ"
+msgstr "स्वास्थ्य जोखिम मूल्यांकन"
 
 #: templates/info.html:48
 msgid "WHO-based health risk analysis guidance and highlights vulnerable groups."
 msgstr ""
-"WHO മാനദണ്ഡങ്ങൾ അടിസ്ഥാനമാക്കിയുള്ള ആരോഗ്യ അപകടസാധ്യതാ വിശകലനവും ദുർബല "
-"വിഭാഗങ്ങളെക്കുറിച്ചുള്ള സൂചനകളും."
+"WHO-आधारित स्वास्थ्य जोखिम विश्लेषण मार्गदर्शन और संवेदनशील समूहों को "
+"उजागर करता है।"
 
 #: templates/info.html:50
 msgid "WHO air quality benchmarking"
-msgstr "WHO വായു ഗുണനിലവാര മാനദണ്ഡം"
+msgstr "WHO वायु गुणवत्ता बेंचमार्किंग"
 
 #: templates/info.html:52
 msgid "Peak exposure modelling"
-msgstr "പീക്ക് എക്സ്പോഷർ മോഡലിംഗ്"
+msgstr "पीक एक्सपोजर मॉडलिंग"
 
 #: templates/info.html:53
 msgid "Vulnerable group protection"
-msgstr "ദുർബല വിഭാഗങ്ങളുടെ സംരക്ഷണം"
+msgstr "कमजोर समूह की सुरक्षा"
 
 #: templates/info.html:64
 msgid "Environmental impact"
-msgstr "പാരിസ്ഥിതിക ആഘാതം"
+msgstr "पर्यावरणीय प्रभाव"
 
 #: templates/info.html:65
 msgid "Lifecycle carbon accounting across all fuel options."
-msgstr "എല്ലാ ഇന്ധന ഓപ്ഷനുകളിലുമുള്ള ലൈഫ് സൈക്കിൾ കാർബൺ അക്കൗണ്ടിംഗ്."
+msgstr "सभी ईंधन विकल्पों में जीवनचक्र कार्बन लेखांकन।"
 
 #: templates/info.html:67
 msgid "CO₂ emissions quantification"
-msgstr "CO₂ ഉദ്‌വമന അളവ് നിർണ്ണയം"
+msgstr "CO₂ उत्सर्जन का आकलन"
 
 #: templates/info.html:69
 msgid "Sustainability grading system"
-msgstr "സുസ്ഥിരതാ ഗ്രേഡിംഗ് സിസ്റ്റം"
+msgstr "स्थिरता ग्रेडिंग प्रणाली"
 
 #: templates/info.html:71
 msgid "Social cost of carbon"
-msgstr "കാർബണിന്റെ സാമൂഹിക ചെലവ്"
+msgstr "कार्बन की सामाजिक लागत"
 
 #: templates/info.html:83
 msgid "Clean cooking recommendations and transition strategies."
-msgstr "ശുദ്ധമായ പാചകത്തിനുള്ള ശുപാർശകളും മാറ്റത്തിനായുള്ള തന്ത്രങ്ങളും."
+msgstr "स्वच्छ खाना पकाने की सिफारिशें और संक्रमण रणनीतियाँ।"
 
 #: templates/info.html:85
 msgid "Multi-criteria decision analysis"
-msgstr "മൾട്ടി-ക്രൈറ്റീരിയ ഡിസിഷൻ അനാലിസിസ്"
+msgstr "बहु-मानदंड निर्णय विश्लेषण"
 
 #: templates/info.html:87
 msgid "Cost & savings comparison"
-msgstr "ചെലവുകളുടെയും സമ്പാദ്യങ്ങളുടെയും താരതമ്യം"
+msgstr "लागत और बचत की तुलना"
 
 #: templates/info.html:88
 msgid "Feasibility assessment"
-msgstr "സാധ്യതാ വിലയിരുത്തൽ"
+msgstr "व्यवहार्यता मूल्यांकन"
 
 #: templates/info.html:100
 msgid "Research-Validated Methodology"
-msgstr "ഗവേഷണത്തിലൂടെ സാധൂകരിച്ച രീതിശാസ്ത്രം"
+msgstr "अनुसंधान-मान्य कार्यप्रणाली"
 
 #: templates/info.html:105
 msgid "Energy Calculations"
-msgstr "ഊർജ്ജ കണക്കുകൂട്ടലുകൾ"
+msgstr "ऊर्जा गणना"
 
 #: templates/info.html:107
 msgid "Ministry of Petroleum & Natural Gas formulas"
-msgstr "പെട്രോളിയം, പ്രകൃതി വാതക മന്ത്രാലയത്തിന്റെ ഫോർമുലകൾ"
+msgstr "पेट्रोलियम और प्राकृतिक गैस मंत्रालय के सूत्र"
 
 #: templates/info.html:108
 msgid "Gas utilities slab structure"
-msgstr "ഗ്യാസ് യൂട്ടിലിറ്റികളുടെ സ്ലാബ് ഘടന"
+msgstr "गैस उपयोगिताओं की स्लैब संरचना"
 
 #: templates/info.html:109
 msgid "Thermal efficiency standards"
-msgstr "താപ കാര്യക്ഷമതാ മാനദണ്ഡങ്ങൾ"
+msgstr "थर्मल दक्षता मानक"
 
 #: templates/info.html:110
 msgid "Economies of scale for larger households"
-msgstr "വലിയ കുടുംബങ്ങൾക്കുള്ള ഇക്കണോമീസ് ഓഫ് സ്കെയിൽ"
+msgstr "बड़े परिवारों के लिए पैमाने की अर्थव्यवस्थाएं"
 
 #: templates/info.html:114
 msgid "Economic Analysis"
-msgstr "സാമ്പത്തിക വിശകലനം"
+msgstr "आर्थिक विश्लेषण"
 
 #: templates/info.html:116
 msgid "RBI interest rates and inflation"
-msgstr "RBI പലിശ നിരക്കും പണപ്പെരുപ്പവും"
+msgstr "RBI ब्याज दरें और मुद्रास्फीति"
 
 #: templates/info.html:117
 msgid "NPV & levelized 25-year cost"
-msgstr "NPV & 25 വർഷ ലെവലൈസ്ഡ് ചെലവ്"
+msgstr "NPV और 25-वर्षीय लेवलाइज्ड लागत"
 
 #: templates/info.html:118
 msgid "Solar investment analysis"
-msgstr "സൗരോർജ്ജ നിക്ഷേപ വിശകലനം"
+msgstr "सौर निवेश विश्लेषण"
 
 #: templates/info.html:119
 msgid "EMI and financing options"
-msgstr "EMI, ധനസഹായ ഓപ്ഷനുകൾ"
+msgstr "EMI और वित्तपोषण विकल्प"
 
 #: templates/info.html:128
 msgid "Data Privacy Commitment"
-msgstr "ഡാറ്റാ സ്വകാര്യതാ പ്രതിബദ്ധത"
+msgstr "डेटा गोपनीयता प्रतिबद्धता"
 
 #: templates/info.html:129
 msgid ""
 "Anonymised data only, stored securely to strengthen cooking-energy policy"
 " in Kerala. Personal details are optional."
 msgstr ""
-"കേരളത്തിലെ പാചക-ഊർജ്ജ നയം ശക്തിപ്പെടുത്തുന്നതിനായി സുരക്ഷിതമായി "
-"സൂക്ഷിച്ചിരിക്കുന്ന അജ്ഞാത ഡാറ്റ മാത്രം. വ്യക്തിഗത വിവരങ്ങൾ നിർബന്ധമില്ല."
+"केवल अनाम डेटा, केरल में खाना पकाने-ऊर्जा नीति को मजबूत करने के लिए "
+"सुरक्षित रूप से संग्रहीत किया जाता है। व्यक्तिगत विवरण वैकल्पिक हैं।"
 
 #: templates/info.html:139
 msgid "Support & Resources"
-msgstr "പിന്തുണയും വിഭവങ്ങളും"
+msgstr "सहायता और संसाधन"
 
 #: templates/info.html:147
 msgid "Need Help?"
-msgstr "സഹായം ആവശ്യമുണ്ടോ?"
+msgstr "क्या सहायता चाहिए?"
 
 #: templates/info.html:148
 msgid "Support is available for using the tool and interpreting your results."
 msgstr ""
-"ടൂൾ ഉപയോഗിക്കുന്നതിനും നിങ്ങളുടെ ഫലങ്ങൾ വ്യാഖ്യാനിക്കുന്നതിനും പിന്തുണ "
-"ലഭ്യമാണ്."
+"टूल का उपयोग करने और आपके परिणामों की व्याख्या करने के लिए सहायता उपलब्ध "
+"है।"
 
 #: templates/info.html:155
 msgid "Download a PDF report of your analysis results."
-msgstr "നിങ്ങളുടെ വിശകലന ഫലങ്ങളുടെ ഒരു PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക."
+msgstr "अपने विश्लेषण परिणामों की एक PDF रिपोर्ट डाउनलोड करें।"
 
 #: templates/info.html:163
 msgid "Share results with family or energy consultants."
-msgstr "കുടുംബാംഗങ്ങളുമായോ എനർജി കൺസൾട്ടന്റുമായോ ഫലങ്ങൾ പങ്കിടുക."
+msgstr "परिवार या ऊर्जा सलाहकारों के साथ परिणाम साझा करें।"
 
 #: templates/kitchen_profile.html:3 templates/kitchen_profile.html:6
 #: templates/kitchen_profile.html:7 templates/kitchen_profile.html:17
 #: templates/kitchen_profile.html:26
 msgid "Kitchen & Health Details"
-msgstr "അടുക്കള, ആരോഗ്യ വിവരങ്ങൾ"
+msgstr "रसोई और स्वास्थ्य विवरण"
 
 #: templates/kitchen_profile.html:19 templates/kitchen_profile.html:30
 msgid ""
 "Describe your kitchen details and health considerations for an accurate "
 "analysis."
 msgstr ""
-"കൃത്യമായ വിശകലനത്തിനായി നിങ്ങളുടെ അടുക്കള വിവരങ്ങളും ആരോഗ്യ പരിഗണനകളും "
-"വിവരിക്കുക."
+"सटीक विश्लेषण के लिए अपनी रसोई के विवरण और स्वास्थ्य संबंधी विचारों का "
+"वर्णन करें।"
 
 #: templates/kitchen_profile.html:93
 msgid "No. of Members Sensitive to Smoke"
-msgstr "പുക അലർജിയുള്ള അംഗങ്ങളുടെ എണ്ണം"
+msgstr "धुएं के प्रति संवेदनशील सदस्यों की संख्या"
 
 #: templates/kitchen_profile.html:96
 msgid "Children <5 years or elderly >65 years"
-msgstr "5 വയസ്സിൽ താഴെ കുട്ടികൾ അല്ലെങ്കിൽ 65 വയസ്സിന് മുകളിൽ മുതിർന്നവർ"
+msgstr "5 वर्ष से कम आयु के बच्चे या 65 वर्ष से अधिक आयु के बुज़ुर्ग"
 
 #: templates/kitchen_profile.html:97
 msgid "Please enter number of sensitive members"
-msgstr "ദയവായി പുക അലർജിയുള്ള അംഗങ്ങളുടെ എണ്ണം നൽകുക"
+msgstr "कृपया संवेदनशील सदस्यों की संख्या दर्ज करें"
 
 #: templates/kitchen_profile.html:98
 msgid "Residents requiring higher air quality standards"
-msgstr "ഉന്നത വായു ഗുണനിലവാരം ആവശ്യമുള്ള താമസക്കാർ"
+msgstr "उच्च वायु गुणवत्ता मानकों की आवश्यकता वाले निवासी"
 
 #: templates/kitchen_profile.html:108
 msgid "Budget & Renewable Energy Preferences"
-msgstr "ബജറ്റ് & പുനരുപയോഗ ഊർജ്ജ മുൻഗണനകൾ"
+msgstr "बजट और नवीकरणीय ऊर्जा प्राथमिकताएं"
 
-# UI accessibility, navigation and form guidance updates.
+msgid "Network error: Unable to load chart data"
+msgstr "नेटवर्क त्रुटि: चार्ट डेटा लोड नहीं हो सका"
+
+msgid "Failed to load chart data"
+msgstr "चार्ट डेटा लोड करने में विफल"
+
+msgid "No chart data is available for this analysis."
+msgstr "इस विश्लेषण के लिए कोई चार्ट डेटा उपलब्ध नहीं है।"
+
+msgid "Retry"
+msgstr "पुनः प्रयास करें"
+
+msgid "Saves"
+msgstr "बचत"
+
+msgid "Costs"
+msgstr "लागत"
+
+msgid "Lowest Operating Cost"
+msgstr "सबसे कम परिचालन लागत"
+
+msgid "Lowest CO₂"
+msgstr "सबसे कम CO₂"
+
+msgid "Best Grade"
+msgstr "सर्वश्रेष्ठ ग्रेड"
+
+msgid "Reduces by"
+msgstr "की कमी"
+
+msgid "Cost Efficiency"
+msgstr "लागत दक्षता"
+
+msgid "Low Emissions"
+msgstr "कम उत्सर्जन"
+
+msgid "Health Safety"
+msgstr "स्वास्थ्य सुरक्षा"
+
+msgid "Overall Rating"
+msgstr "समग्र रेटिंग"
+
+msgid "ROI & Payback calculation"
+msgstr "ROI और पेबैक गणना"
+
+msgid "NPV and payback calculations"
+msgstr "NPV और पेबैक गणना"
+
 #: templates/base.html:108
 msgid "Change language"
-msgstr "ഭാഷ മാറ്റുക"
+msgstr "भाषा बदलें"
 
 #: templates/commercial_energy_calculation.html:1096
 #: templates/energy_calculation.html:1245
 msgid "Choose a cooking fuel beside each selected dish."
-msgstr "തിരഞ്ഞെടുത്ത ഓരോ വിഭവത്തിനും ഒപ്പം ഒരു പാചക ഇന്ധനം തിരഞ്ഞെടുക്കുക."
+msgstr "प्रत्येक चयनित व्यंजन के बगल में एक कुकिंग ईंधन चुनें।"
 
 #: templates/commercial_energy_calculation.html:53
 #: templates/energy_calculation.html:51
 msgid "Choose this if you know which dishes you cook and the fuels you use."
 msgstr ""
-"നിങ്ങൾ പാചകം ചെയ്യുന്ന വിഭവങ്ങളും ഉപയോഗിക്കുന്ന ഇന്ധനങ്ങളും അറിയാമെങ്കിൽ "
-"ഇത് തിരഞ്ഞെടുക്കുക."
+"इसे चुनें यदि आप जानते हैं कि आप कौन से व्यंजन पकाते हैं और किन ईंधनों का"
+" उपयोग करते हैं।"
 
 #: templates/commercial_energy_calculation.html:74
 #: templates/energy_calculation.html:74
 msgid "Choose this if you know your fuel bills, refills or electricity use."
-msgstr ""
-"നിങ്ങളുടെ ഇന്ധന ബില്ലുകൾ, റീഫില്ലുകൾ അല്ലെങ്കിൽ വൈദ്യുതി ഉപയോഗം എന്നിവ "
-"അറിയാമെങ്കിൽ ഇത് തിരഞ്ഞെടുക്കുക."
+msgstr "इसे चुनें यदि आप अपने ईंधन बिल, रिफिल या बिजली के उपयोग को जानते हैं।"
 
 #: templates/commercial_kitchen_profile.html:113
 #: templates/kitchen_profile.html:124
 msgid "Choose what matters most when comparing cooking options."
-msgstr "പാചക ഓപ്ഷനുകൾ താരതമ്യം ചെയ്യുമ്പോൾ ഏറ്റവും പ്രധാനപ്പെട്ടത് തിരഞ്ഞെടുക്കുക."
+msgstr ""
+"खाना पकाने के विकल्पों की तुलना करते समय चुनें कि क्या सबसे ज्यादा मायने "
+"रखता है।"
 
 #: templates/feedback.html:325
 msgid "Choose whether you would like more information about clean cooking."
-msgstr ""
-"ക്ലീൻ കുക്കിംഗിനെക്കുറിച്ച് നിങ്ങൾക്ക് കൂടുതൽ വിവരങ്ങൾ വേണമോ എന്ന് "
-"തിരഞ്ഞെടുക്കുക."
+msgstr "चुनें कि क्या आप स्वच्छ खाना पकाने के बारे में अधिक जानकारी चाहते हैं।"
 
 #: templates/base.html:250
 msgid "Continue editing"
-msgstr "എഡിറ്റിംഗ് തുടരുക"
+msgstr "संपादन जारी रखें"
 
 #: templates/base.html:221
 msgid "Could not change the language. Please try again."
-msgstr "ഭാഷ മാറ്റാൻ കഴിഞ്ഞില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക."
+msgstr "भाषा नहीं बदली जा सकी। कृपया पुनः प्रयास करें।"
 
 #: templates/base.html:253
 msgid "Discard changes"
-msgstr "മാറ്റങ്ങൾ ഉപേക്ഷിക്കുക"
+msgstr "बदलाव छोड़ें"
 
 #: templates/base.html:245
 msgid "Discard your changes?"
-msgstr "നിങ്ങളുടെ മാറ്റങ്ങൾ ഉപേക്ഷിക്കണോ?"
+msgstr "क्या आप अपने बदलावों को छोड़ना चाहते हैं?"
 
 #: templates/commercial_energy_calculation.html:1112
 #: templates/energy_calculation.html:1261
 msgid "Enter a value for this field."
-msgstr "ഈ ഫീൽഡിനായി ഒരു മൂല്യം നൽകുക."
+msgstr "इस फ़ील्ड के लिए एक मान दर्ज करें।"
 
 #: templates/analysis.html:478 templates/commercial_analysis.html:710
 msgid "Feedback & Support"
-msgstr "ഫീഡ്‌ബാക്കും പിന്തുണയും"
+msgstr "फीडबैक और सपोर्ट"
 
 #: templates/analysis_selection.html:29
 msgid "For daily cooking at home, for you and your family."
-msgstr "നിങ്ങൾക്കും നിങ്ങളുടെ കുടുംബത്തിനും വീട്ടിലെ ദൈനംദിന പാചകത്തിന്."
+msgstr "घर पर रोज़ाना खाना पकाने के लिए, आपके और आपके परिवार के लिए।"
 
 #: templates/commercial_selection.html:257 templates/household_profile.html:255
 msgid "Fuel prices for your estimate"
-msgstr "നിങ്ങളുടെ എസ്റ്റിമേറ്റിനായുള്ള ഇന്ധന വിലകൾ"
+msgstr "आपके अनुमान के लिए ईंधन की कीमतें"
 
 #: templates/kitchen_profile.html:98
 msgid "Include children, older adults and anyone sensitive to cooking smoke."
 msgstr ""
-"കുട്ടികൾ, പ്രായമായവർ, പാചക പുകയോട് അലർജിയുള്ള ആരെങ്കിലും എന്നിവരെ "
-"ഉൾപ്പെടുത്തുക."
+"बच्चों, वृद्ध वयस्कों और खाना पकाने के धुएं के प्रति संवेदनशील किसी भी "
+"व्यक्ति को शामिल करें।"
 
 #: templates/commercial_kitchen_profile.html:75
 #: templates/kitchen_profile.html:89
 msgid "Include the time spent preparing all meals in a typical day."
-msgstr ""
-"ഒരു സാധാരണ ദിവസത്തിൽ എല്ലാ ഭക്ഷണവും തയ്യാറാക്കാൻ എടുക്കുന്ന സമയം "
-"ഉൾപ്പെടുത്തുക."
+msgstr "एक सामान्य दिन में सभी भोजन तैयार करने में बिताया गया समय शामिल करें।"
 
 #: templates/commercial_selection.html:259 templates/household_profile.html:257
 msgid ""
 "Optional. Use the suggested prices, or enter the prices you pay for this "
 "assessment."
 msgstr ""
-"ഓപ്ഷണൽ. നിർദ്ദേശിച്ച വിലകൾ ഉപയോഗിക്കുക, അല്ലെങ്കിൽ ഈ വിലയിരുത്തലിനായി "
-"നിങ്ങൾ നൽകുന്ന വിലകൾ നൽകുക."
+"वैकल्पिक। सुझाई गई कीमतों का उपयोग करें, या इस मूल्यांकन के लिए आपके "
+"द्वारा भुगतान की जाने वाली कीमतें दर्ज करें।"
 
 #: templates/commercial_energy_calculation.html:1104
 #: templates/energy_calculation.html:1253
 msgid "Ready. Continue to the next step when your entries are complete."
-msgstr ""
-"തയ്യാറാണ്. നിങ്ങളുടെ എൻട്രികൾ പൂർത്തിയാകുമ്പോൾ അടുത്ത ഘട്ടത്തിലേക്ക് "
-"തുടരുക."
+msgstr "तैयार है। आपकी प्रविष्टियां पूरी होने पर अगले चरण पर जारी रखें।"
 
 #: templates/commercial_energy_calculation.html:1101
 #: templates/energy_calculation.html:1250
 msgid "Select at least one LPG cylinder type."
-msgstr "കുറഞ്ഞത് ഒരു LPG സിലിണ്ടർ തരം തിരഞ്ഞെടുക്കുക."
+msgstr "कम से कम एक LPG सिलिंडर प्रकार चुनें।"
 
 #: templates/commercial_energy_calculation.html:1095
 #: templates/energy_calculation.html:1244
 msgid "Select at least one dish you prepare."
-msgstr "നിങ്ങൾ തയ്യാറാക്കുന്ന ഒരു വിഭവമെങ്കിലും തിരഞ്ഞെടുക്കുക."
+msgstr "कम से कम एक व्यंजन चुनें जिसे आप बनाते हैं।"
 
 #: templates/commercial_energy_calculation.html:1100
 #: templates/energy_calculation.html:1249
 msgid "Select at least one fuel in your mixed usage."
-msgstr "നിങ്ങളുടെ മിക്സഡ് ഉപയോഗത്തിൽ കുറഞ്ഞത് ഒരു ഇന്ധനമെങ്കിലും തിരഞ്ഞെടുക്കുക."
+msgstr "अपने मिश्रित उपयोग में कम से कम एक ईंधन चुनें।"
 
 #: templates/commercial_energy_calculation.html:1094
 #: templates/energy_calculation.html:1243
 msgid "Select your cooking fuels above to continue."
-msgstr "തുടരുന്നതിന് മുകളിൽ നിങ്ങളുടെ പാചക ഇന്ധനങ്ങൾ തിരഞ്ഞെടുക്കുക."
+msgstr "जारी रखने के लिए ऊपर अपने कुकिंग ईंधन का चयन करें।"
 
 #: templates/commercial_energy_calculation.html:1099
 #: templates/energy_calculation.html:1248
 msgid "Select your primary cooking fuel to continue."
-msgstr "തുടരുന്നതിന് നിങ്ങളുടെ പ്രധാന പാചക ഇന്ധനം തിരഞ്ഞെടുക്കുക."
+msgstr "जारी रखने के लिए अपना प्राथमिक कुकिंग ईंधन चुनें।"
 
 #: templates/base.html:69
 msgid "Skip to main content"
-msgstr "പ്രധാന ഉള്ളടക്കത്തിലേക്ക് പോവുക"
+msgstr "मुख्य सामग्री पर जाएं"
 
 #: templates/analysis_selection.html:34
 msgid "Start household assessment"
-msgstr "ഗാർഹിക വിലയിരുത്തൽ ആരംഭിക്കുക"
+msgstr "घरेलू मूल्यांकन शुरू करें"
 
 #: templates/analysis_selection.html:56
 msgid "Start institution assessment"
-msgstr "സ്ഥാപന വിലയിരുത്തൽ ആരംഭിക്കുക"
+msgstr "संस्थागत मूल्यांकन शुरू करें"
 
 #: templates/base.html:246
 msgid ""
 "The changes on this step have not been submitted. Continue editing to "
 "keep them, or discard them to leave this step."
 msgstr ""
-"ഈ ഘട്ടത്തിലെ മാറ്റങ്ങൾ സമർപ്പിച്ചിട്ടില്ല. അവ നിലനിർത്താൻ എഡിറ്റിംഗ് "
-"തുടരുക, അല്ലെങ്കിൽ ഈ ഘട്ടത്തിൽ നിന്ന് പുറത്തുകടക്കാൻ അവ ഉപേക്ഷിക്കുക."
+"इस चरण के बदलाव सबमिट नहीं किए गए हैं। उन्हें रखने के लिए संपादन जारी "
+"रखें, या इस चरण को छोड़ने के लिए उन्हें छोड़ दें।"
 
 #: templates/error.html:42
 msgid "We could not complete this request. Try again, or return to the home page."
 msgstr ""
-"ഞങ്ങൾക്ക് ഈ അഭ്യർത്ഥന പൂർത്തിയാക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക, "
-"അല്ലെങ്കിൽ ഹോം പേജിലേക്ക് മടങ്ങുക."
+"हम इस अनुरोध को पूरा नहीं कर सके। पुनः प्रयास करें, या होम पेज पर वापस "
+"जाएं।"
 
 #: templates/commercial_energy_calculation.html:98
 #: templates/energy_calculation.html:98
 msgid "Which fuels do you currently cook with?"
-msgstr "നിങ്ങൾ നിലവിൽ ഏത് ഇന്ധനങ്ങളാണ് പാചകത്തിന് ഉപയോഗിക്കുന്നത്?"
+msgstr "वर्तमान में आप किन ईंधनों से खाना पकाते हैं?"
 
 #: static/js/main.js:37
 msgid "Please enter a valid number"
-msgstr "സാധുവായ നമ്പർ നൽകുക"
+msgstr "एक मान्य संख्या दर्ज करें"
 
 #: templates/commercial_kitchen_profile.html templates/kitchen_profile.html
 msgid "Very Low"
-msgstr "വളരെ കുറവ്"
+msgstr "बहुत कम"
 
 #: templates/base.html:178
 msgid "Links"
-msgstr "ലിങ്കുകൾ"
+msgstr "लिंक"
 
 #: templates/info.html:143
 msgid "These options become available once your analysis is complete."
-msgstr "നിങ്ങളുടെ വിശകലനം പൂർത്തിയാകുമ്പോൾ ഈ ഓപ്ഷനുകൾ ലഭ്യമാകും."
-
-#~ msgid "Network error: Unable to load chart data"
-#~ msgstr "നെറ്റ്‌വർക്ക് പിശക്: ചാർട്ട് ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല"
-
-#~ msgid "Failed to load chart data"
-#~ msgstr "ചാർട്ട് ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു"
-
-#~ msgid "No chart data is available for this analysis."
-#~ msgstr "ഈ വിശകലനത്തിന് ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല."
-
-#~ msgid "Retry"
-#~ msgstr "വീണ്ടും ശ്രമിക്കുക"
-
-#~ msgid "Saves"
-#~ msgstr "ലാഭം"
-
-#~ msgid "Costs"
-#~ msgstr "ചെലവ്"
-
-#~ msgid "Lowest Operating Cost"
-#~ msgstr "ഏറ്റവും കുറഞ്ഞ പ്രവർത്തന ചെലവ്"
-
-#~ msgid "Lowest CO₂"
-#~ msgstr "കുറഞ്ഞ CO₂ ഉദ്‌വമനം"
-
-#~ msgid "Best Grade"
-#~ msgstr "മികച്ച ഗ്രേഡ്"
-
-#~ msgid "Reduces by"
-#~ msgstr "കുറക്കൽ"
-
-#~ msgid "Cost Efficiency"
-#~ msgstr "ചെലവ് കാര്യക്ഷമത"
-
-#~ msgid "Low Emissions"
-#~ msgstr "കുറഞ്ഞ ഉദ്‌വമനം"
-
-#~ msgid "Health Safety"
-#~ msgstr "ആരോഗ്യ സുരക്ഷ"
-
-#~ msgid "Overall Rating"
-#~ msgstr "മൊത്തത്തിലുള്ള റേറ്റിംഗ്"
-
-#~ msgid "ROI & Payback calculation"
-#~ msgstr "ROI, തിരിച്ചടവ് കണക്കുകൂട്ടൽ"
-
-#~ msgid "NPV and payback calculations"
-#~ msgstr "NPV, തിരിച്ചടവ് കണക്കുകൂട്ടൽ"
+msgstr "आपका विश्लेषण पूरा होने के बाद ये विकल्प उपलब्ध हो जाते हैं।"
 
