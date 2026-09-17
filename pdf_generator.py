@@ -82,7 +82,7 @@ class DesignSystem:
     CONTENT_WIDTH = PAGE_WIDTH - (2 * MARGIN_HORIZONTAL)
     
     # Logo sizes (optimized)
-    LOGO_HEIGHT_HEADER = 45  # Main header logos
+    LOGO_HEIGHT_HEADER = 65  # Main header logos
     LOGO_HEIGHT_FOOTER = 25  # Footer logos
     
     # Chart dimensions
@@ -105,7 +105,7 @@ SUPPORTED_REPORT_LOCALES = {'en', 'ml', 'hi'}
 
 REPORT_I18N = {
     'en': {
-        'platform_name': 'Keralam Clean Cooking Insights Platform',
+        'platform_name': 'Kerala Clean Cooking Insights Platform',
         'report_residential_title': 'Cooking Energy Analysis',
         'report_residential_subtitle': 'Residential Household Report',
         'report_commercial_title': 'Commercial Energy Analysis',
@@ -1375,7 +1375,7 @@ def create_header_table(title, subtitle, styles, locale='en'):
         img_vasudha = Spacer(1, logo_height)
     
     try:
-        img_emc = Image(emc_logo, height=logo_height, width=logo_height*1.2, 
+        img_emc = Image(emc_logo, height=logo_height*1.25, width=logo_height*1.75, 
                        kind='proportional')
     except:
         img_emc = Spacer(1, logo_height)
