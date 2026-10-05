@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Cooking Survey</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-green: #004d40;
+            --brand-soft: #e0f2f1;
+            --brand: #00897b;
+            --radius-lg: 12px;
+            --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --shadow-green: 0 4px 12px rgba(0, 77, 64, 0.08);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-bottom: 50px;
+        }
+
+        .header-container {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .top-bar {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .green-strip {
+            background-color: var(--brand-green);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-title {
+            color: var(--brand-green);
+            font-weight: 700;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .section-heading {
+            color: var(--brand-green);
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 0.75rem;
+            border-color: #ced4da;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 0.25rem rgba(0, 137, 123, 0.25);
+        }
+
+        .btn-nav-next {
+            background-color: var(--brand-green);
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-nav-next:hover {
+            background-color: #00332a;
+            color: white;
+        }
+
+        .btn-nav-back {
+            background-color: transparent;
+            color: var(--brand-green);
+            border: 1px solid var(--brand-green);
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-nav-back:hover {
+            background-color: var(--brand-soft);
+            color: var(--brand-green);
+        }
+
+        .radio-card {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-card:hover {
+            background-color: var(--brand-soft);
+            border-color: var(--brand);
+        }
+
+        .radio-card input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .step-container {
+            display: none;
+        }
+
+        .step-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-indicator {
+            font-size: 0.875rem;
+            color: var(--brand);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container mb-4">
+        <div class="green-strip">
+            <div class="d-flex align-items-center">
+                <span class="ms-2 text-white fw-bold fs-5">Clean Cooking Survey</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div id="selection-screen" class="step-container active">
+                    <div class="text-center mb-4">
+                        <h1 class="page-title mb-2">Select Respondent Type</h1>
+                        <p class="text-muted">Please choose the type of respondent for this survey.</p>
+                    </div>
+
+                    <div class="card shadow-green">
+                        <div class="card-body">
+                            <form id="respondent-type-form">
+                                <div class="mb-4">
+                                    <label class="form-label d-block mb-3">Nature of Respondent *</label>
+
+                                    <label class="radio-card d-block">
+                                        <input type="radio" name="respondent_type" value="Household" required>
+                                        Household
+                                    </label>
+
+                                    <label class="radio-card d-block">
+                                        <input type="radio" name="respondent_type" value="Anganwadi Centre">
+                                        Anganwadi Centre
+                                    </label>
+
+                                    <label class="radio-card d-block">
+                                        <input type="radio" name="respondent_type" value="School with Mid Day Meal Programme">
+                                        School with Mid Day Meal Programme
+                                    </label>
+
+                                    <label class="radio-card d-block">
+                                        <input type="radio" name="respondent_type" value="Gram Panchayat Representative">
+                                        Gram Panchayat Representative
+                                    </label>
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-nav-next" id="start-btn">Start Survey <i class="bi bi-arrow-right ms-2"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="survey-container" style="display: none;">
+                    <div class="text-center mb-4">
+                        <h1 class="page-title mb-2" id="survey-title">Survey</h1>
+                    </div>
+
+                    <div id="progress-wrapper" class="mb-4">
+                        <div class="d-flex justify-content-between">
+                            <span class="progress-indicator" id="step-indicator">Step 1 of X</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" id="progress-bar" role="progressbar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <form id="main-survey-form">
+                        <!-- Sections will be injected here -->
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Data embedded as JSON -->
+    <script id="survey-data" type="application/json">
+    {"Household": [{"title": "Personal Information of Respondent", "questions": [{"text": "Full Name * (Required)", "required": true, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Email Address", "required": false, "type": "email input", "options": ["Valid email address format"]}, {"text": "Contact Number * (Required)", "required": true, "type": "phone input", "options": ["10 numeric digits (pattern: [0-9]{10}) with +91 country code"]}]}, {"title": "Personal Information", "questions": [{"text": "Country Code", "required": false, "type": "dropdown select", "options": ["+91 (India)", "+971 (UAE)", "+94 (Sri Lanka)", "+44 (UK)", "+1 (USA)"]}]}, {"title": "Household Details", "questions": [{"text": "Number of Household Members * (Required)", "required": true, "type": "number input, with specified labels", "options": ["Min: 0, Max: 20 (integer) against these labels,", "Adult (18-59 years old):", "Dependent (Above 59):", "Children (Below 18):", "Younger childer (below 5):"]}, {"text": "District * (Required)", "required": true, "type": "dropdown select", "options": ["Districts based on State selection"]}, {"text": "Area Classification * (Required)", "required": true, "type": "text input", "options": ["Urban (Municipal/Corporation)", "Rural (Panchayat/Village)"]}, {"text": "How many member stay at home during the day", "required": true, "type": "number input, with specified labels", "options": ["Min: 0, Max: 20 (integer) against these labels,", "Adult (18-59 years old):", "Dependent (Above 59):", "Children (Below 18):", "Younger childer (below 5):"]}, {"text": "Annual Household Income (\u20b9) * (Required)", "required": true, "type": "dropdown select", "options": ["Less than 1,50,000", "1,50,000- 2,50,000", "2,50,000-3,50,000", "More than 3,50,000"]}]}, {"title": "Electricity Supply & Consumption", "questions": [{"text": "How many hours in a day do you face electricity outages?* (Required)", "required": true, "type": "dropdown select", "options": ["No outage", "Less than 30 minutes", "1-2 hours/day", "2-3 hours/day", "3-5 hours/day or more"]}, {"text": "What time in the day do you experience power outage?", "required": false, "type": "dropdown select", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)", "At night (7 pm onwards)"]}, {"text": "What time in the day is reliable electricity available?* (Required)", "required": true, "type": "checkboxes", "options": ["Overnight (12am to 6am)", "Morning (6am-11am)", "Noon (11am-2pm)", "Afternoon/Early Evening (2pm-6pm)", "Evening (6pm-12pm)"]}]}, {"title": "Solar Rooftop", "questions": [{"text": "Are you willing to consider a solar rooftop? * (Required)", "required": true, "type": "dropdown / radio", "options": ["Yes", "No"]}, {"text": "Available rooftop area (m\u00b2) (Required)", "required": true, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 1 m\u00b2"]}]}, {"title": "Fuel Prices for Your Estimate (Optional Baseline Overrides)", "questions": [{"text": "LPG Cylinder Price (\u20b9)", "required": false, "type": "number input", "options": ["Min: 100", "Max: 5000", "Step: 0.5"]}, {"text": "PNG Rate (\u20b9/SCM)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 0.1"]}, {"text": "Electricity Tariff (\u20b9/kWh)", "required": false, "type": "number input", "options": ["Min: 1", "Max: 20", "Step: 0.1"]}, {"text": "Biomass Cost (\u20b9/kg)", "required": false, "type": "number input", "options": ["Min: 0", "Max: 100", "Step: 0.5"]}, {"text": "Grid CO\u2082 Factor (kg CO\u2082/kWh)", "required": false, "type": "number input", "options": ["Min: 0.0", "Max: 1.0", "Step: 0.01"]}, {"text": "LPG Cylinder Price (\u20b9)", "required": false, "type": "number input", "options": ["Min: 100", "Max: 5000", "Step: 0.5"]}, {"text": "PNG Rate (\u20b9/SCM)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 0.1"]}, {"text": "Electricity Tariff (\u20b9/kWh)", "required": false, "type": "number input", "options": ["Min: 1", "Max: 20", "Step: 0.1"]}, {"text": "Biomass Cost (\u20b9/kg)", "required": false, "type": "number input", "options": ["Min: 0", "Max: 100", "Step: 0.5"]}, {"text": "Grid CO\u2082 Factor (kg CO\u2082/kWh)", "required": false, "type": "number input", "options": ["Min: 0.0", "Max: 1.0", "Step: 0.01"]}]}, {"title": "Data of Solar PV", "questions": [{"text": "Have you installed have a solar roof top connection?", "required": true, "type": "dropdown select", "options": ["Yes", "No"]}, {"text": "If yes, What is the capacity of your solar rooftop system? (in kWp)", "required": false, "type": "number input", "options": []}, {"text": "If no, would you consider installing rooftop solar?", "required": false, "type": "dropdown select", "options": ["Yes", "No", "Maybe", "Do not have enough information"]}, {"text": "What is the total roof area of your house? (in sq. ft.)", "required": true, "type": "number input", "options": []}]}, {"title": "Kitchen Set-Up", "questions": [{"text": "Kitchen Ventilation Scenario * (Required)", "required": true, "type": "radio option", "options": ["Open Kitchen - Very Low (4% exposure)", "Chimney - Low (25% exposure)", "Exhaust Fan - Moderate (60% exposure)", "No Exhaust - High (80% exposure)"]}]}, {"title": "Cooking Needs", "questions": [{"text": "What time does cooking take place in your household?", "required": true, "type": "dropdown select", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)", "At night (7 pm onwards)"]}, {"text": "Average Cooking Duration per Day (Hours) * (Required)", "required": true, "type": "number input", "options": []}]}, {"title": "Work Division & Agency (who cooks/procures, who decides?)", "questions": [{"text": "Who is responsible for cooking for the family?* (Required)", "required": true, "type": "dropdown", "options": ["Men", "Women", "Any Other members (please specify)", "No fixed responsibility/Depends upon availability"]}, {"text": "Who decides which fuel to procure?", "required": true, "type": "dropdown", "options": ["Men", "Women", "Any Other members (please specify)", "Both/Either"]}, {"text": "Who gets the fuel?* (Required)", "required": true, "type": "multi- choice checkbox", "options": ["Men", "Women", "Any Other members (please specify)", "No fixed responsibility/Depends upon availability"]}, {"text": "What time do you go to procure the fuel? mode of", "required": true, "type": "multi- choice checkbox", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)", "At night (7 pm onwards)"]}, {"text": "Average Number of Trips per Month* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "Average Hours per Procurement of Fuel * (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "What are the challenges in procuring the fuel?* (Required)", "required": true, "type": "text input", "options": []}, {"text": "Who gets the fuel?* (Required)", "required": true, "type": "dropdown", "options": ["Men", "Women", "Any Other members (please specify)", "No fixed responsibility/Depends upon availability", "Delivery done to home"]}, {"text": "Average Hours per Procurement of Fuel * (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "Average Number of Trips per Month* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "What are the challenges in procuring the fuel?* (Required)", "required": true, "type": "text input", "options": []}, {"text": "In the past year, did you face challenges with supply of LPG cylinders.", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "If yes what did you do to meet your cooking requirment needs", "required": false, "type": "text input", "options": []}, {"text": "What are the challenges in using this source for cooking?* (Required)", "required": true, "type": "text input", "options": []}]}, {"title": "Fuel Use & Stacking", "questions": [{"text": "Select all applicable cooking fuels and sequence them as per the usage* (Required)", "required": true, "type": "drop and sequence", "options": ["LPG", "PNG", "Electricity", "Biogas", "Traditional Solid Biomass (firewood)"]}, {"text": "What % of fuel stacking is done? (ex. 20% from firewood and 80%  from LPG)", "required": false, "type": "text", "options": []}, {"text": "What are the top 3 factors responsible for deciding to use this fuel?* (In the order of you preference)", "required": true, "type": "multi- choice checkbox", "options": ["Cost", "Availability and Reliability of supply", "Availability of the required infrastructure/ appliances (e.g., stove/ utensils/ chula)", "Type of food being cooked/Taste of food", "Cooking time", "Ease and convenience of use", "Season or weather", "Health & Safety (Smoke/fumes produced)", "Other (Please specify)"]}, {"text": "What are the top 3 factors responsible for deciding to use this fuel?* (In the order of you preference)", "required": true, "type": "multi- choice checkbox", "options": ["Cost", "Availability and Reliability of supply", "Availability of the required infrastructure/ appliances (e.g., stove/ utensils/ chula)", "Type of food being cooked/Taste of food", "Cooking time", "Ease and convenience of use", "Season or weather", "Health & Safety (Smoke/fumes produced)", "Other (Please specify)"]}]}, {"title": "Seasonality", "questions": [{"text": "Do you change your fuel source depending on seasonal availability? (for eg. use of LPG during monsoon)", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "If yes, which fuel sources do you use and in which season?", "required": false, "type": "text", "options": []}]}, {"title": "Transition Factors & Outcomes", "questions": [{"text": "In the past, have you ever transitioned or tried to tansition from one type of fuel to another? (in the last 10 years)", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "Which fuel did you shift to and when?* \n(ex: firewood to LPG, in 2016)", "required": false, "type": "text input", "options": []}, {"text": "If switched already, did it resulted in any of the following?* (Required)", "required": false, "type": "multi- choice checkbox", "options": ["Leisure Time/Rest", "Additional Hours of Caregiving (Children/Dependents)", "Additional income generation", "Additional Hours for Personal Education/Skilling", "Additional Hours for Other Household Chores", "Health Benefits for Self/Family Members", "Increased in Children's Attendance/Participation in School", "Others (Please specify)"]}, {"text": "Are you considering shifting to another cooking fuel or appliance?* (Required)", "required": true, "type": "radio option", "options": ["Yes", "No", "Not Sure"]}, {"text": "Which fuel or appliance are you considering shifting to?* (Required)", "required": false, "type": "checkbox", "options": ["LPG", "PNG", "Electricity", "Biomass", "Biogas", "Solar cooker", "Improved biomass cookstove", "Others, please specify", "None / I am not aware of any alternatives"]}, {"text": "Why have you not made the shift yet?", "required": false, "type": "checkbox", "options": ["Upfront cost is too high", "Required connection or infrastructure is not available", "Fuel Supply is not sufficiently available or reliable", "High tunning/recurring cost", "Concern about cooking time/performance", "Person who usually cooks does not prefer it", "Other household members do not support the change", "Other (Please specify)"]}, {"text": "What support or factors would influence you to transition?", "required": true, "type": "checkbox", "options": ["Better availability/access", "More reliable supply", "Recommendation/information from others on success or positive change", "Availability of financial support/incentives", "Other"]}]}, {"title": "Fuel Data", "questions": [{"text": "Do you have a gas connection ?", "required": false, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "Which year did you get a gas connection?", "required": false, "type": "number input", "options": []}, {"text": "What was the price of the first cylinder you purchased? (in Rs.)", "required": false, "type": "number input", "options": []}, {"text": "How many cylinders have you purchase since then?", "required": false, "type": "number input", "options": []}]}, {"title": "Health Impact", "questions": [{"text": "Have you or anyone who regularly cooks in your household experienced any of the following while or after cooking?* (Required)", "required": true, "type": "multi- choice checkbox", "options": ["Eye irritation/watering", "Coughing", "Difficulty breathing/breathlessness", "Headache/dizziness", "Throat irritation", "None of these", "Other (Please specify)"]}, {"text": "Are you aware that exposure to cooking smoke/fumes can affect health and that some cooking fuels/appliances can reduce this exposure?", "required": true, "type": "radio option", "options": ["Yes", "No", "Not Sure"]}]}, {"title": "Fuel Use", "questions": [{"text": "What are the top 3 factors responsible for deciding to use this fuel?* (In the order of you preference)", "required": true, "type": "checkbox", "options": ["Cost", "Availability and Reliability of supply", "Availability of the required infrastructure/ appliances (e.g., stove/ utensils/ chula)", "Type of food being cooked/Taste of food", "Cooking time", "Ease and convenience of use", "Season or weather", "Health & Safety (Smoke/fumes produced)", "Other (Please specify)"]}, {"text": "Did you have to shift your cooking schedule to match electricity supply?", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "What was your experience of buying and setting up the additional infastructure required for cooking on electric/ industion cookstoves? (purchase of appliances, utensils, etc.)", "required": true, "type": "text input", "options": []}]}, {"title": "Awareness of Alternative Cooking Options", "questions": [{"text": "What other cooking fuels or appliances are you aware of? Select all that apply* (Required)", "required": true, "type": "checkbox", "options": ["LPG", "PNG", "Electricity", "Biogas", "Solar cooker", "Improved biomass cookstove", "Others, please specify", "None / I am not aware of any alternatives"]}, {"text": "From where did you hear about these fuels/appliances?", "required": false, "type": "checkbox", "options": ["Family members or relatives and friends", "Local fuel supplier/distributor/ retailer shops", "Government schemes or programmes", "Self-help group/community organisation", "NGO", "School/college", "Workplace", "Other (Please specify)"]}]}, {"title": "Calculation Method Selection", "questions": [{"text": "Select a Calculation Method (Required)", "required": true, "type": "radio button", "options": ["Dish-based Modelling ('dish')", "Consumption-based Modelling ('consumption')"]}]}, {"title": "Method A: Consumption-based Modelling", "questions": [{"text": "Select Your Primary Cooking Fuel * (Required)", "required": true, "type": "-", "options": ["Autofills from Q14"]}, {"text": "LPG: Cylinder Size", "required": false, "type": "text input", "options": ["14.2 kg (Domestic)", "19 kg (Commercial)", "5 kg (Small)"]}, {"text": "LPG: Cylinder Lasts (Days)", "required": false, "type": "number input", "options": ["Min: 1", "Max: 180 days"]}, {"text": "LPG: Price of a Cylinder (\u20b9)", "required": false, "type": "number input", "options": ["Min: 200", "Max: 1500"]}, {"text": "PNG: Data Input Method", "required": false, "type": "text input", "options": ["Monthly bill amount ('bill')", "Monthly consumption (SCM) ('scm')", "Daily average ('daily')"]}, {"text": "PNG: Monthly PNG Bill (\u20b9)", "required": false, "type": "number input", "options": ["Min: 100", "Max: 10000"]}, {"text": "PNG: Monthly PNG Consumption (SCM)", "required": false, "type": "number input", "options": ["Min: 5", "Max: 200", "Step: 1 SCM"]}, {"text": "PNG: Daily Average Consumption (SCM)", "required": false, "type": "number input", "options": ["Min: 0.5", "Max: 10", "Step: 0.1 SCM"]}, {"text": "Electricity: Monthly Electricity for Cooking (kWh)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 5 kWh"]}, {"text": "Biomass: Type of Biomass", "required": false, "type": "text input", "options": ["Firewood", "Agricultural waste", "Cow dung cake", "Mixed"]}, {"text": "Biomass: Monthly Consumption (kg)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500 kg"]}, {"text": "Mixed Usage: LPG Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Refill days (1-180)"]}, {"text": "Mixed Usage: PNG Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly bill (\u20b9 100 - 5000)"]}, {"text": "Mixed Usage: Electricity Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly kWh (5 - 200)"]}, {"text": "Mixed Usage: Biomass Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly kg (10 - 300)"]}]}, {"title": "Method B: Dish-based Modelling", "questions": [{"text": "Which fuels do you currently cook with? * (Required)", "required": true, "type": "text input", "options": ["Autofills from Q14"]}, {"text": "Breakfast Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Breakfast Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Appam", "Idli", "Dosa", "Puttu", "Upma", "Poori", "etc."]}, {"text": "Lunch Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Lunch Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Rice Meals", "Sambar", "Fish Curry", "Chicken Curry", "Thoran", "Moru Curry", "etc."]}, {"text": "Dinner Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Dinner Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Chappathi", "Kanji with Payar", "Vegetable Stew", "Dosa", "etc."]}, {"text": "Select Snacks Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Tea/Coffee", "Banana Fritters (Pazham Pori)", "Sukhiyan", "Parippu Vada", "etc."]}]}], "Anganwadi Centre": [{"title": "Centre & Respondent Details", "questions": [{"text": "Name of the AWC* (Required)", "required": false, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Centre Code/ID, if any (Poshan Tracker linked)", "required": false, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Full Name of the Respondent* (Required)", "required": true, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Role of Respondent* (Required)", "required": true, "type": "dropdown select", "options": ["Anganwadi Worker/Helper", "Anganwadi Cook", "Supervisor/ICDS Official", "Other AWC Staff"]}, {"text": "Email Address", "required": false, "type": "email input", "options": ["Valid email address format"]}, {"text": "Contact Number * (Required)", "required": true, "type": "phone input", "options": ["10 numeric digits (pattern: [0-9]{10}) with +91 country code"]}, {"text": "How many days a month does the Centre operate?* (Required)", "required": true, "type": "integer", "options": ["Valid non-empty integer value"]}, {"text": "What are the Centre's usual operating hours on a typical working day?* (Required)", "required": true, "type": "dropdown select", "options": ["Less than 4 hours", "4\u20136 hours", "6\u20138 hours", "8\u201310 hours", "More than 10 hours", "Varies significantly by day", "Other (specify)"]}, {"text": "How many children are currently registered at this Centre?* (Required)", "required": true, "type": "integer", "options": ["Valid non-empty integer value"]}, {"text": "Is the Anganwadi building taken on rent?", "required": true, "type": "dropdown select", "options": ["Yes", "No, it is privately owned", "No, it is a government building"]}]}, {"title": "Electricity Supply & Consumption", "questions": [{"text": "How many hours in a day do you face electricity outages?* (Required)", "required": true, "type": "dropdown select", "options": ["No outage", "Less than 30 minutes", "1-2 hours/day", "2-3 hours/day", "3-5 hours/day or more"]}, {"text": "What time in the day do you experience power outage?", "required": false, "type": "dropdown select", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)"]}, {"text": "Does electricity availability affect when food is prepared or cooked at the centre?", "required": true, "type": "dropdown select", "options": ["Yes, cooking is scheduled around electricity availability", "Yes, cooking is delayed/advanced when electricity is unavailable", "No", "Not applicable, electricity is not used for cooking"]}]}, {"title": "Data for Solar PV", "questions": [{"text": "Does the AWC have a solar roof top connection?", "required": true, "type": "dropdown select", "options": ["Yes", "No"]}, {"text": "If yes, What is the capacity of the solar rooftop system? (in kWp)", "required": false, "type": "number input", "options": []}, {"text": "What is the capacity of the battery back up?", "required": false, "type": "number input", "options": []}, {"text": "If no, would you consider installing rooftop solar?", "required": false, "type": "dropdown select", "options": ["Yes", "No", "Maybe", "Do not have enough information"]}, {"text": "What is the total roof area of your house? (in sq. ft.)", "required": true, "type": "number input", "options": []}]}, {"title": "Kitchen Set-Up", "questions": [{"text": "How is the Centre's cooking area/kitchen arranged?\n* (Required)", "required": true, "type": "dropdown select", "options": ["Dedicated kitchen within AWC building", "Cooking within AWC in a shared room where other activities also take place", "Dedicated/separate cooking area outside AWC building", "Open/outdoor area without dedicated cooking structure", "Shared kitchen with school", "Shared kitchen with another institution/community facility", "Food prepared elsewhere and brought to AWC", "Other (Please specify)"]}, {"text": "Kitchen Ventilation Scenario * (Required)", "required": true, "type": "radio option", "options": ["Open Kitchen - Very Low", "Chimney - Low", "Exhaust Fan - Moderate", "No Exhaust - High", "No dedicated ventilation"]}]}, {"title": "Cooking Needs", "questions": [{"text": "On a typical day, how many children are served food at the Centre?* (Required)", "required": true, "type": "integer", "options": ["Valid non-empty integer value"]}, {"text": "What time does cooking take place in the AWC?", "required": true, "type": "dropdown select", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)"]}, {"text": "Average Cooking Duration per Day (Hours) * (Required)", "required": true, "type": "number input", "options": ["Min: 0.5", "Max: 8.0", "Step: 0.5 hours"]}, {"text": "What meals (dishes) are made in the AWC for Breafast?", "required": true, "type": "text", "options": []}, {"text": "What meals (dishes) are made in the AWC for Breafast?", "required": true, "type": "text", "options": []}]}, {"title": "Work Division & Agency (who cooks/procures, who decides?)", "questions": [{"text": "Who is responsible for cooking?* (Required)", "required": true, "type": "radio option", "options": ["Anganwadi Worker/Helper", "Anganwadi Cook", "Supervisor/ICDS Official", "Other AWC Staff", "No fixed responsibility, depends upon the availability"]}, {"text": "Who decides the fuel source to be used in the Anganwadi ?* (Required)", "required": true, "type": "dropdown", "options": ["Anganwadi Worker/Helper", "Anganwadi Cook", "Supervisor/ICDS Official", "Other AWC Staff", "No fixed responsibility, depends upon the availability"]}, {"text": "Who is responsible for procuring fuel?* (Required)", "required": true, "type": "dropdown", "options": ["Anganwadi Worker/Helper", "Anganwadi Cook", "Supervisor/ICDS Official", "Other AWC Staff", "No fixed responsibility, depends upon the availability", "Fuel is delivered to the Centre (by a nearby NGO/Agency)"]}, {"text": "What time do you go to procure the fuel? mode of", "required": true, "type": "multi- choice checkbox", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)"]}, {"text": "Average Number of Trips for Fuel Procurement in a Month* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "Average hours taken per trip to procure fuel* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "What are the challenges in procuring the fuel?* (Required)", "required": true, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Who is responsible for procuring fuel?* (Required)", "required": true, "type": "dropdown", "options": ["Anganwadi Worker/Helper", "Anganwadi Cook", "Supervisor/ICDS Official", "Other AWC Staff", "No fixed responsibility, depends upon the availability", "Fuel is delivered to the Centre (by a nearby NGO/Agency)"]}, {"text": "Average Hours per Procurement of Fuel * (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "Average Number of Trips per Month* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "What are the challenges in procuring the fuel?* (Required)", "required": true, "type": "text input", "options": [""]}, {"text": "What are the challenges in using this source for cooking?* (Required)", "required": true, "type": "text input", "options": []}]}, {"title": "Fuel Use & Stacking", "questions": [{"text": "Select all applicable cooking fuels and sequence them as per the usage* (Required)", "required": true, "type": "drop and sequence", "options": ["LPG", "PNG", "Electricity", "Biogas", "Traditional Solid Biomass", "Improved biomas cookstoves"]}, {"text": "What % of fuel stacking is done? (ex. 20% from firewood and 80%  from LPG)", "required": false, "type": "text", "options": []}, {"text": "What are the top 3 factors responsible for deciding which fuel to use?* (Required)", "required": true, "type": "checkbox", "options": ["Cost", "Reliability and availability of supply", "Availability/reliability of the required equipment(e.g., electricity connection, gas connection)", "Cooking time", "Ease and convenience of use", "Suitability for different cooking methods", "Location of the kitchen/cooking area", "Health & Safety (Smoke/fumes produced)", "Familiarity or habit", "Preference of the person who cooks", "Predetermined by AWC", "Other (Please specify)"]}, {"text": "What are the top 3 factors responsible for deciding to use this fuel?* (In the order of you preference)", "required": true, "type": "multi- choice checkbox", "options": ["Cost", "Availability and Reliability of supply", "Availability of the required infrastructure/ appliances (e.g., stove/ utensils/ chula)", "Type of food being cooked/Taste of food", "Cooking time", "Ease and convenience of use", "Season or weather", "Health & Safety (Smoke/fumes produced)", "Other (Please specify)"]}]}, {"title": "Transition Factors & Outcomes", "questions": [{"text": "In the past, has the AWC ever transitioned or tried to tansition from one type of fuel to another? (in the past 10 years)", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "Which fuel did you shift to and when?* \n(ex: firewood to LPG, in 2015)", "required": false, "type": "text input", "options": []}, {"text": "If switched already, has it resulted in any of the following?* (Required)", "required": true, "type": "multi- choice checkbox", "options": ["Less time spent on cooking and food preparation", "Less time/effort spent on procuring, collecting or arranging fuel", "Less effort spent on cleaning and maintaining the cooking area/equipment", "Less exposure to smoke/fumes and associated discomfort during cooking", "More time available for other Anganwadi responsibilities (such as, activities with children, record-keeping, administrative work)", "No significant change", "Other (Please specify)"]}, {"text": "Is the AWC considering shifting to another cooking fuel or appliance?* (Required)", "required": true, "type": "radio option", "options": ["Yes", "No", "Not Sure", "Have already shifted recently (within an year)"]}, {"text": "Which fuel or appliance is the AWC considering shifting to?* (Required)", "required": true, "type": "checkbox", "options": ["LPG", "PNG", "Electricity", "Biogas", "Solar cooker", "Improved biomass cookstove", "Others, please specify", "None / I am not aware of any alternatives"]}, {"text": "Why has the Centre not made the shift yet?", "required": false, "type": "checkbox", "options": ["Upfront cost is too high", "Required connection/infrastructure is unavailable", "Fuel/appliance is not readily available locally", "Supply is unreliable", "Running cost is a concern", "Uncertainty about suitability for the Centre's cooking needs", "Concern about cooking time/performance", "Person responsible for cooking does not prefer it", "Other staff do not support the change", "Need more information/training", "Procurement/administrative approval is required", "Budget/funding is not available", "Other (specify)"]}, {"text": "What factors made you switch already/are influencing you to consider other fuels?* (Required)", "required": true, "type": "checkbox", "options": ["Better availability/access", "More reliable supply", "Recommendation/information from others on success or positive change", "Availability of financial support/incentives", "Other"]}]}, {"title": "Health Impact", "questions": [{"text": "Have you or anyone who regularly cooks in the Centre experienced any of the following while or after cooking?* (Required)", "required": true, "type": "checkbox", "options": ["Eye irritation/watering", "Coughing", "Difficulty breathing/breathlessness", "Headache/dizziness", "Throat irritation", "None of these", "Other (Please specify)"]}, {"text": "Are you aware that exposure to cooking smoke/fumes can affect health and that some cooking fuels/appliances can reduce this exposure?", "required": true, "type": "radio option", "options": ["Yes", "No", "Not Sure"]}]}, {"title": "Operational Aspects", "questions": [{"text": "Is a repair and servicing and ecosystem easily available for your gas stove and equipment?", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "In the past year, did you face challenges with supply of LPG cylinders.", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "If yes what did you do to meet your cooking requirment needs", "required": false, "type": "text input", "options": []}]}, {"title": "Fuel Use", "questions": [{"text": "What are the top 3 factors responsible for deciding to use this fuel?* (In the order of you preference)", "required": true, "type": "checkbox", "options": ["Cost", "Availability and Reliability of supply", "Availability of the required infrastructure/ appliances (e.g., stove/ utensils/ chula)", "Type of food being cooked/Taste of food", "Cooking time", "Ease and convenience of use", "Season or weather", "Health & Safety (Smoke/fumes produced)", "Other (Please specify)"]}, {"text": "Did you have to shift your cooking schedule to match electricity supply?", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "What was your experience of buying and setting up the additional infastructure required for cooking on electric/ industion cookstoves? (purchase of appliances, utensils, etc.)", "required": true, "type": "text input", "options": []}]}, {"title": "Awareness of Alternative Cooking Options", "questions": [{"text": "What cleaner cooking fuels or appliances are you aware of that could be used at the Centre? Select all that apply* (Required)", "required": true, "type": "checkbox", "options": ["LPG (if using biomass)", "PNG", "Electricity", "Biogas", "Solar cooker", "Improved biomass cookstove", "Others, please specify", "None / I am not aware of any alternatives"]}, {"text": "How much information do you have about using them for cooking at this Centre?* (Required)", "required": true, "type": "radio option", "options": ["Know how to use them and understand their main benefits", "Know about them but need more information before considering them", "Have heard of them but know very little about them", "Not sure which option would be suitable for this Centre"]}, {"text": "From where did you hear about these fuels/appliances?", "required": false, "type": "checkbox", "options": ["Family members or relatives and friends", "Local fuel supplier/distributor/ retailer shops", "Government schemes or programmes", "Self-help group/community organisation", "NGO", "School/college", "Workplace", "Other (Please specify)"]}]}, {"title": "Fuel Prices for Your Estimate (Optional Baseline Overrides)", "questions": [{"text": "LPG Cylinder Price (\u20b9)", "required": false, "type": "number input", "options": ["Min: 100", "Max: 5000", "Step: 0.5"]}, {"text": "PNG Rate (\u20b9/SCM)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 0.1"]}, {"text": "Electricity Tariff (\u20b9/kWh)", "required": false, "type": "number input", "options": ["Min: 1", "Max: 20", "Step: 0.1"]}, {"text": "Biomass Cost (\u20b9/kg)", "required": false, "type": "number input", "options": ["Min: 0", "Max: 100", "Step: 0.5"]}, {"text": "Grid CO\u2082 Factor (kg CO\u2082/kWh)", "required": false, "type": "number input", "options": ["Min: 0.0", "Max: 1.0", "Step: 0.01"]}]}, {"title": "Calculation Method Selection", "questions": [{"text": "Select a Calculation Method (Required)", "required": true, "type": "radio button", "options": ["Dish-based Modelling ('dish')", "Consumption-based Modelling ('consumption')"]}]}, {"title": "Method A: Consumption-based Modelling", "questions": [{"text": "Select Your Primary Cooking Fuel * (Required)", "required": true, "type": "-", "options": ["Autofills from Q14"]}, {"text": "LPG: Cylinder Size", "required": false, "type": "text input", "options": ["14.2 kg (Domestic)", "19 kg (Commercial)", "5 kg (Small)"]}, {"text": "LPG: Cylinder Lasts (Days)", "required": false, "type": "number input", "options": ["Min: 1", "Max: 180 days"]}, {"text": "LPG: Price of a Cylinder (\u20b9)", "required": false, "type": "number input", "options": ["Min: 200", "Max: 1500"]}, {"text": "PNG: Data Input Method", "required": false, "type": "text input", "options": ["Monthly bill amount ('bill')", "Monthly consumption (SCM) ('scm')", "Daily average ('daily')"]}, {"text": "PNG: Monthly PNG Bill (\u20b9)", "required": false, "type": "number input", "options": ["Min: 100", "Max: 10000"]}, {"text": "PNG: Monthly PNG Consumption (SCM)", "required": false, "type": "number input", "options": ["Min: 5", "Max: 200", "Step: 1 SCM"]}, {"text": "PNG: Daily Average Consumption (SCM)", "required": false, "type": "number input", "options": ["Min: 0.5", "Max: 10", "Step: 0.1 SCM"]}, {"text": "Electricity: Monthly Electricity for Cooking (kWh)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 5 kWh"]}, {"text": "Biomass: Type of Biomass", "required": false, "type": "text input", "options": ["Firewood", "Agricultural waste", "Cow dung cake", "Mixed"]}, {"text": "Biomass: Monthly Consumption (kg)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500 kg"]}, {"text": "Mixed Usage: LPG Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Refill days (1-180)"]}, {"text": "Mixed Usage: PNG Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly bill (\u20b9 100 - 5000)"]}, {"text": "Mixed Usage: Electricity Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly kWh (5 - 200)"]}, {"text": "Mixed Usage: Biomass Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly kg (10 - 300)"]}]}, {"title": "Method B: Dish-based Modelling", "questions": [{"text": "Which fuels do you currently cook with? * (Required)", "required": true, "type": "text input", "options": ["Autofills from Q14"]}, {"text": "Breakfast Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Breakfast Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Appam", "Idli", "Dosa", "Puttu", "Upma", "Poori", "etc."]}, {"text": "Lunch Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Lunch Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Rice Meals", "Sambar", "Fish Curry", "Chicken Curry", "Thoran", "Moru Curry", "etc."]}, {"text": "Dinner Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Dinner Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Chappathi", "Kanji with Payar", "Vegetable Stew", "Dosa", "etc."]}, {"text": "Select Snacks Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Tea/Coffee", "Banana Fritters (Pazham Pori)", "Sukhiyan", "Parippu Vada", "etc."]}]}], "School with Mid Day Meal Programme": [{"title": "School & Respondent Details", "questions": [{"text": "Name of the School * (Required)", "required": false, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Full Name of the Respondent* (Required)", "required": true, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Role of Respondent* (Required)", "required": true, "type": "dropdown select", "options": ["Principal/Head Teacher", "MDM In-Charge", "Cook/Helper", "School Management Committee Representative", "Other School Staff (Please specify)"]}, {"text": "Email Address", "required": false, "type": "email input", "options": ["Valid email address format"]}, {"text": "Contact Number * (Required)", "required": true, "type": "phone input", "options": ["10 numeric digits (pattern: [0-9]{10}) with +91 country code"]}, {"text": "How many days a month does the school operate?* (Required)", "required": true, "type": "integer", "options": ["Valid non-empty integer value"]}, {"text": "What are the school's usual operating hours on a typical working day?* (Required)", "required": true, "type": "dropdown select", "options": ["Less than 4 hours", "4\u20136 hours", "More than 6\u20138 hours", "More than 8\u201310 hours", "More than 10 hours", "Varies significantly by day", "Other (specify)"]}]}, {"title": "Centre & Respondent Details", "questions": [{"text": "How many children are currently registered at this School?* (Required)", "required": true, "type": "integer", "options": ["Valid non-empty integer value"]}]}, {"title": "Electricity Supply & Consumption", "questions": [{"text": "How many hours in a day do you face electricity outages?* (Required)", "required": true, "type": "dropdown select", "options": ["No outage", "Less than 30 minutes", "1-2 hours/day", "2-3 hours/day", "3-5 hours/day or more"]}, {"text": "What time in the day do you experience power outage?", "required": false, "type": "dropdown select", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)"]}, {"text": "Does electricity availability affect when food is prepared or cooked at the School?", "required": true, "type": "dropdown select", "options": ["Yes, cooking is scheduled around electricity availability", "Yes, cooking is delayed/advanced when electricity is unavailable", "No", "Not applicable, electricity is not used for cooking"]}]}, {"title": "Data for Solar PV", "questions": [{"text": "Does the school have a solar roof top connection?", "required": true, "type": "dropdown select", "options": ["Yes", "No"]}, {"text": "If yes, What is the capacity of the solar rooftop system? (in kWp)", "required": false, "type": "number input", "options": []}, {"text": "What is the capacity of the battery back up?", "required": false, "type": "number input", "options": []}, {"text": "If no, would you consider installing rooftop solar?", "required": false, "type": "dropdown select", "options": ["Yes", "No", "Maybe", "Do not have enough information"]}, {"text": "What is the total roof area of the school ? (in sq. ft.)", "required": true, "type": "number input", "options": []}]}, {"title": "Kitchen Set-Up", "questions": [{"text": "How is the school'scooking area/kitchen arranged?\n* (Required)", "required": true, "type": "dropdown select", "options": ["Dedicated kitchen within the school building", "Cooking within the school in a shared room where other activities also take place", "Dedicated/separate cooking area outside the school building", "Open/outdoor area without dedicated cooking structure", "Shared kitchen with another institution/community facility", "Food prepared elsewhere and brought to the school", "Other (Please specify)"]}, {"text": "Kitchen Ventilation Scenario * (Required)", "required": true, "type": "radio option", "options": ["Open Kitchen - Very Low", "Chimney - Low", "Exhaust Fan - Moderate", "No Exhaust - High", "No dedicated ventilation"]}]}, {"title": "Cooking Needs", "questions": [{"text": "How many days per week are MDM/PM Poshan Meals normally served?* (Required)", "required": true, "type": "integer", "options": ["Valid non-empty integer value"]}, {"text": "On a typical day, how many students are served MDM?* (Required)", "required": true, "type": "integer", "options": ["Valid non-empty integer value"]}, {"text": "Does the school serve MDM to any staff in addition to students?", "required": true, "type": "radio option", "options": ["Yes (specify number)", "No"]}, {"text": "What time does cooking take place in the School?", "required": true, "type": "dropdown select", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)"]}, {"text": "Average Cooking Duration per Day (Hours) * (Required)", "required": true, "type": "number input", "options": ["Min: 0.5", "Max: 8.0", "Step: 0.5 hours"]}, {"text": "What factors determine what and when food is cooked in the school?", "required": false, "type": "checkbox", "options": ["Prescribed/approved menu", "Number of children attending", "Availability of ingredients", "Availability of cooking fuel", "Availability of electricity", "Time available for cooking", "Availability of cooking staff/helpers", "Other (specify)"]}]}, {"title": "Work Division & Agency (who cooks/procures, who decides?)", "questions": [{"text": "Who is responsible for cooking?* (Required)", "required": true, "type": "radio option", "options": ["Cook-cum-Helper exclusively hired by school", "Cook-cum-Helper shared with another school/institution", "SHG/Community Groups", "Other Centralised Kitchens/Private Catering Agencies", "Other Government/Departmental Arrangement", "No fixed responsibility, depends upon the availability"]}, {"text": "Who decides the fuel source to be used in the School?* (Required)", "required": true, "type": "dropdown", "options": ["Anganwadi Worker/Helper", "Anganwadi Cook", "Supervisor/ICDS Official", "Other AWC Staff", "No fixed responsibility, depends upon the availability"]}, {"text": "Who is responsible for procuring fuel?* (Required)", "required": true, "type": "dropdown", "options": ["Cook-cum-Helper exclusively hired by school", "Cook-cum-Helper shared with another school/institution", "SHG/Community Groups", "Other Centralised/Private Agencies", "Other Government/Departmental Arrangement", "No fixed responsibility, depends upon the availability"]}, {"text": "What time do you go to procure the fuel? mode of", "required": true, "type": "multi- choice checkbox", "options": ["Early Morning (6 am to 11 am)", "Noon time (11:00 am to 1 pm)", "Afternoon (1 pm - 4pm)", "Evening (4pm to 7pm)"]}, {"text": "Average Number of Trips for Fuel Procurement in a Month* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "Average hours taken per trip to procure fuel* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "What are the challenges in procuring the fuel?* (Required)", "required": true, "type": "text input", "options": ["Valid non-empty text string"]}, {"text": "Who is responsible for procuring fuel?* (Required)", "required": true, "type": "dropdown", "options": ["Cook-cum-Helper exclusively hired by school", "Cook-cum-Helper shared with another school/institution", "SHG/Community Groups", "Other Centralised/Private Agencies", "Other Government/Departmental Arrangement", "No fixed responsibility, depends upon the availability"]}, {"text": "Average Hours per Procurement of Fuel * (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "Average Number of Trips per Month* (Required)", "required": true, "type": "number input", "options": ["Min: 0", "Max: 50.0"]}, {"text": "What are the challenges in procuring the fuel?* (Required)", "required": true, "type": "text input", "options": [""]}, {"text": "What are the challenges in using this source for cooking?* (Required)", "required": true, "type": "text input", "options": []}]}, {"title": "Fuel Use & Stacking", "questions": [{"text": "Select all applicable cooking fuels and sequence them as per the usage* (Required)", "required": true, "type": "drop and sequence", "options": ["LPG", "PNG", "Electricity", "Biogas", "Traditional Solid Biomass", "Improved biomas cookstoves"]}, {"text": "What % of fuel stacking is done? (ex. 20% from firewood and 80%  from LPG)", "required": false, "type": "text", "options": []}, {"text": "What are the top 3 factors responsible for deciding which fuel to use?* (Required)", "required": true, "type": "checkbox", "options": ["Cost", "Reliability and availability of supply", "Availability/reliability of the required equipment(e.g., electricity connection, gas connection)", "Cooking time", "Ease and convenience of use", "Suitability for different cooking methods", "Location of the kitchen/cooking area", "Health & Safety (Smoke/fumes produced)", "Familiarity or habit", "Preference of the person who cooks", "Predetermined by AWC", "Other (Please specify)"]}, {"text": "What are the top 3 factors responsible for deciding to use this fuel?* (In the order of you preference)", "required": true, "type": "multi- choice checkbox", "options": ["Cost", "Availability and Reliability of supply", "Availability of the required infrastructure/ appliances (e.g., stove/ utensils/ chula)", "Type of food being cooked/Taste of food", "Cooking time", "Ease and convenience of use", "Season or weather", "Health & Safety (Smoke/fumes produced)", "Other (Please specify)"]}]}, {"title": "Transition Factors & Outcomes", "questions": [{"text": "In the past, has the School ever transitioned or tried to tansition from one type of fuel to another?", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "Which fuel did you shift to and when?* \n(ex: firewood to LPG, in 2015)", "required": false, "type": "text input", "options": []}, {"text": "If switched already, has it resulted in any of the following?* (Required)", "required": true, "type": "multi- choice checkbox", "options": ["Less time spent on cooking and food preparation", "Less time/effort spent on procuring, collecting or arranging fuel", "Less effort spent on cleaning and maintaining the cooking area/equipment", "Less exposure to smoke/fumes and associated discomfort during cooking", "More time available for other Anganwadi responsibilities (such as, activities with children, record-keeping, administrative work)", "No significant change", "Other (Please specify)"]}, {"text": "Is the School considering shifting to another cooking fuel or appliance?* (Required)", "required": true, "type": "radio option", "options": ["Yes", "No", "Not Sure", "Have already shifted recently (within an year)"]}, {"text": "Which fuel or appliance is the School considering shifting to?* (Required)", "required": true, "type": "checkbox", "options": ["LPG", "PNG", "Electricity", "Biogas", "Solar cooker", "Improved biomass cookstove", "Others, please specify", "None / I am not aware of any alternatives"]}, {"text": "Why has the School not made the shift yet?", "required": false, "type": "checkbox", "options": ["Upfront cost is too high", "Required connection/infrastructure is unavailable", "Fuel/appliance is not readily available locally", "Supply is unreliable", "Running cost is a concern", "Uncertainty about suitability for the Centre's cooking needs", "Concern about cooking time/performance", "Person responsible for cooking does not prefer it", "Other staff do not support the change", "Need more information/training", "Procurement/administrative approval is required", "Budget/funding is not available", "Other (specify)"]}, {"text": "What factors made you switch already/are influencing you to consider other fuels?* (Required)", "required": true, "type": "checkbox", "options": ["Better availability/access", "More reliable supply", "Recommendation/information from others on success or positive change", "Availability of financial support/incentives", "Other"]}]}, {"title": "Health Impact", "questions": [{"text": "Have you or anyone who regularly cooks in the School experienced any of the following while or after cooking?* (Required)", "required": true, "type": "checkbox", "options": ["Eye irritation/watering", "Coughing", "Difficulty breathing/breathlessness", "Headache/dizziness", "Throat irritation", "None of these", "Other (Please specify)"]}, {"text": "Are you aware that exposure to cooking smoke/fumes can affect health and that some cooking fuels/appliances can reduce this exposure?", "required": true, "type": "radio option", "options": ["Yes", "No", "Not Sure"]}]}, {"title": "Operational Aspects", "questions": [{"text": "Is a repair and servicing and ecosystem easily available for your gas stove and equipment?", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "In the past year, did you face challenges with supply of LPG cylinders.", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "If yes what did you do to meet your cooking requirment needs", "required": false, "type": "text input", "options": []}]}, {"title": "Fuel Use", "questions": [{"text": "What are the top 3 factors responsible for deciding to use this fuel?* (In the order of you preference)", "required": true, "type": "checkbox", "options": ["Cost", "Availability and Reliability of supply", "Availability of the required infrastructure/ appliances (e.g., stove/ utensils/ chula)", "Type of food being cooked/Taste of food", "Cooking time", "Ease and convenience of use", "Season or weather", "Health & Safety (Smoke/fumes produced)", "Other (Please specify)"]}, {"text": "Did you have to shift your cooking schedule to match electricity supply?", "required": true, "type": "dropdown", "options": ["Yes", "No"]}, {"text": "What was your experience of buying and setting up the additional infastructure required for cooking on electric/ industion cookstoves? (purchase of appliances, utensils, etc.)", "required": true, "type": "text input", "options": []}]}, {"title": "Awareness of Alternative Cooking Options", "questions": [{"text": "What cleaner cooking fuels or appliances are you aware of that could be used at the School ? Select all that apply* (Required)", "required": true, "type": "checkbox", "options": ["LPG (if using biomass)", "PNG", "Electricity", "Biogas", "Solar cooker", "Improved biomass cookstove", "Others, please specify", "None / I am not aware of any alternatives"]}, {"text": "How much information do you have about using them for cooking at this School?* (Required)", "required": true, "type": "radio option", "options": ["Know how to use them and understand their main benefits", "Know about them but need more information before considering them", "Have heard of them but know very little about them", "Not sure which option would be suitable for this Centre"]}, {"text": "From where did you hear about these fuels/appliances?", "required": false, "type": "checkbox", "options": ["Family members or relatives and friends", "Local fuel supplier/distributor/ retailer shops", "Government schemes or programmes", "Self-help group/community organisation", "NGO", "School/college", "Workplace", "Other (Please specify)"]}]}, {"title": "Fuel Prices for Your Estimate (Optional Baseline Overrides)", "questions": [{"text": "LPG Cylinder Price (\u20b9)", "required": false, "type": "number input", "options": ["Min: 100", "Max: 5000", "Step: 0.5"]}, {"text": "PNG Rate (\u20b9/SCM)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 0.1"]}, {"text": "Electricity Tariff (\u20b9/kWh)", "required": false, "type": "number input", "options": ["Min: 1", "Max: 20", "Step: 0.1"]}, {"text": "Biomass Cost (\u20b9/kg)", "required": false, "type": "number input", "options": ["Min: 0", "Max: 100", "Step: 0.5"]}, {"text": "Grid CO\u2082 Factor (kg CO\u2082/kWh)", "required": false, "type": "number input", "options": ["Min: 0.0", "Max: 1.0", "Step: 0.01"]}]}, {"title": "Calculation Method Selection", "questions": [{"text": "Select a Calculation Method (Required)", "required": true, "type": "radio button", "options": ["Dish-based Modelling ('dish')", "Consumption-based Modelling ('consumption')"]}]}, {"title": "Method A: Consumption-based Modelling", "questions": [{"text": "Select Your Primary Cooking Fuel * (Required)", "required": true, "type": "-", "options": ["Autofills from Q14"]}, {"text": "LPG: Cylinder Size", "required": false, "type": "text input", "options": ["14.2 kg (Domestic)", "19 kg (Commercial)", "5 kg (Small)"]}, {"text": "LPG: Cylinder Lasts (Days)", "required": false, "type": "number input", "options": ["Min: 1", "Max: 180 days"]}, {"text": "LPG: Price of a Cylinder (\u20b9)", "required": false, "type": "number input", "options": ["Min: 200", "Max: 1500"]}, {"text": "PNG: Data Input Method", "required": false, "type": "text input", "options": ["Monthly bill amount ('bill')", "Monthly consumption (SCM) ('scm')", "Daily average ('daily')"]}, {"text": "PNG: Monthly PNG Bill (\u20b9)", "required": false, "type": "number input", "options": ["Min: 100", "Max: 10000"]}, {"text": "PNG: Monthly PNG Consumption (SCM)", "required": false, "type": "number input", "options": ["Min: 5", "Max: 200", "Step: 1 SCM"]}, {"text": "PNG: Daily Average Consumption (SCM)", "required": false, "type": "number input", "options": ["Min: 0.5", "Max: 10", "Step: 0.1 SCM"]}, {"text": "Electricity: Monthly Electricity for Cooking (kWh)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500", "Step: 5 kWh"]}, {"text": "Biomass: Type of Biomass", "required": false, "type": "text input", "options": ["Firewood", "Agricultural waste", "Cow dung cake", "Mixed"]}, {"text": "Biomass: Monthly Consumption (kg)", "required": false, "type": "number input", "options": ["Min: 10", "Max: 500 kg"]}, {"text": "Mixed Usage: LPG Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Refill days (1-180)"]}, {"text": "Mixed Usage: PNG Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly bill (\u20b9 100 - 5000)"]}, {"text": "Mixed Usage: Electricity Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly kWh (5 - 200)"]}, {"text": "Mixed Usage: Biomass Component", "required": false, "type": "checkbox / toggle", "options": ["Toggle checkbox + Monthly kg (10 - 300)"]}]}, {"title": "Method B: Dish-based Modelling", "questions": [{"text": "Which fuels do you currently cook with? * (Required)", "required": true, "type": "text input", "options": ["Autofills from Q14"]}, {"text": "Breakfast Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Breakfast Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Appam", "Idli", "Dosa", "Puttu", "Upma", "Poori", "etc."]}, {"text": "Lunch Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Lunch Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Rice Meals", "Sambar", "Fish Curry", "Chicken Curry", "Thoran", "Moru Curry", "etc."]}, {"text": "Dinner Type", "required": false, "type": "text input", "options": ["Normal", "Heavy", "Light"]}, {"text": "Select Dinner Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Chappathi", "Kanji with Payar", "Vegetable Stew", "Dosa", "etc."]}, {"text": "Select Snacks Dishes", "required": false, "type": "dish matrix selection", "options": ["Database items: Tea/Coffee", "Banana Fritters (Pazham Pori)", "Sukhiyan", "Parippu Vada", "etc."]}]}], "Gram Panchayat Representative": []}
+    </script>
+
+    <script>
+        const surveyData = JSON.parse(document.getElementById('survey-data').textContent);
+        let currentType = '';
+        let currentSectionIndex = 0;
+        let sections = [];
+
+        document.getElementById('start-btn').addEventListener('click', function() {
+            const selected = document.querySelector('input[name="respondent_type"]:checked');
+            if (!selected) {
+                alert('Please select a respondent type');
+                return;
+            }
+
+            currentType = selected.value;
+            sections = surveyData[currentType] || [];
+
+            if (sections.length === 0) {
+                alert('No questions available for this respondent type yet.');
+                return;
+            }
+
+            currentSectionIndex = 0;
+
+            document.getElementById('selection-screen').classList.remove('active');
+            document.getElementById('survey-container').style.display = 'block';
+            document.getElementById('survey-title').textContent = currentType + ' Survey';
+
+            renderCurrentSection();
+        });
+
+        function renderCurrentSection() {
+            const form = document.getElementById('main-survey-form');
+            form.innerHTML = '';
+
+            if (currentSectionIndex >= sections.length) {
+                // Completed
+                form.innerHTML = `
+                    <div class="card text-center py-5">
+                        <div class="card-body">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                            <h2 class="mt-3 text-success">Survey Completed!</h2>
+                            <p class="text-muted">Thank you for providing the information.</p>
+                            <button type="button" class="btn btn-nav-back mt-3" onclick="location.reload()">Back to Start</button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('progress-wrapper').style.display = 'none';
+                return;
+            }
+
+            const section = sections[currentSectionIndex];
+
+            // Update progress
+            const progressPct = ((currentSectionIndex + 1) / sections.length) * 100;
+            document.getElementById('step-indicator').textContent = `Section ${currentSectionIndex + 1} of ${sections.length}: ${section.title}`;
+            document.getElementById('progress-bar').style.width = `${progressPct}%`;
+
+            // Create card for section
+            const card = document.createElement('div');
+            card.className = 'card shadow-green step-container active';
+
+            let cardBody = `
+                <div class="card-body">
+                    <h2 class="section-heading"><i class="bi bi-card-list me-2"></i>${section.title}</h2>
+                    <div class="row g-4">
+            `;
+
+            // Add questions
+            section.questions.forEach((q, idx) => {
+                const reqStar = q.required ? '<span class="text-danger">*</span>' : '';
+                const qId = `q_${currentSectionIndex}_${idx}`;
+
+                cardBody += `<div class="col-12"><div class="mb-3">`;
+                cardBody += `<label class="form-label fw-bold">${q.text} ${reqStar}</label>`;
+
+                // Render based on type and options
+                const typeLower = q.type ? q.type.toLowerCase() : '';
+
+                if (q.options && q.options.length > 0) {
+                    if (typeLower.includes('dropdown') || q.options.length > 5) {
+                        cardBody += `<select class="form-select" name="${qId}" ${q.required ? 'required' : ''}>`;
+                        cardBody += `<option value="">Select an option</option>`;
+                        q.options.forEach(opt => {
+                            if (opt && opt.trim() !== 'None (\'Select an option\' prompt)' && opt.trim() !== 'None (\'Select District\' prompt)') {
+                                cardBody += `<option value="${opt.replace(/"/g, '&quot;')}">${opt}</option>`;
+                            }
+                        });
+                        cardBody += `</select>`;
+                    } else {
+                        // Radio buttons
+                        cardBody += `<div class="mt-2">`;
+                        q.options.forEach((opt, oIdx) => {
+                             if (opt && opt.trim() !== 'None (\'Select an option\' prompt)') {
+                                cardBody += `
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="${qId}" id="${qId}_${oIdx}" value="${opt.replace(/"/g, '&quot;')}" ${q.required ? 'required' : ''}>
+                                    <label class="form-check-label" for="${qId}_${oIdx}">${opt}</label>
+                                </div>`;
+                            }
+                        });
+                        cardBody += `</div>`;
+                    }
+                } else if (typeLower.includes('number') || typeLower.includes('numeric')) {
+                    cardBody += `<input type="number" class="form-control" name="${qId}" ${q.required ? 'required' : ''}>`;
+                } else {
+                    cardBody += `<input type="text" class="form-control" name="${qId}" ${q.required ? 'required' : ''}>`;
+                }
+
+                cardBody += `</div></div>`;
+            });
+
+            cardBody += `</div></div>`;
+            card.innerHTML = cardBody;
+            form.appendChild(card);
+
+            // Navigation buttons
+            const navDiv = document.createElement('div');
+            navDiv.className = 'd-flex justify-content-between mt-4 mb-2';
+
+            let btnHTML = '';
+            if (currentSectionIndex > 0) {
+                btnHTML += `<button type="button" class="btn btn-nav-back" onclick="prevSection()"><i class="bi bi-arrow-left me-2"></i>Back</button>`;
+            } else {
+                btnHTML += `<button type="button" class="btn btn-nav-back" onclick="location.reload()"><i class="bi bi-arrow-left me-2"></i>Back</button>`;
+            }
+
+            btnHTML += `<button type="button" class="btn btn-nav-next ms-auto" onclick="nextSection()">${currentSectionIndex === sections.length - 1 ? 'Submit' : 'Next'} <i class="bi bi-arrow-right ms-2"></i></button>`;
+
+            navDiv.innerHTML = btnHTML;
+            form.appendChild(navDiv);
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        window.nextSection = function() {
+            // Basic validation
+            const form = document.getElementById('main-survey-form');
+            if (!form.reportValidity()) {
+                return;
+            }
+
+            currentSectionIndex++;
+            renderCurrentSection();
+        };
+
+        window.prevSection = function() {
+            currentSectionIndex--;
+            renderCurrentSection();
+        };
+    </script>
+</body>
+</html>
